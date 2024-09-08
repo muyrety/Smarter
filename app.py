@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, g, redirect
+from flask import Flask, render_template, request, g, redirect, abort, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 
@@ -30,15 +30,27 @@ def init_db():
 def index():
     return render_template("index.html")
 
+@app.route("/api/check_username", methods = ["POST"])
+def check_username():
+    db = get_db()
+    cur = db.cursor()
+    users = cur.execute("SELECT * FROM users WHERE username = ?", (request.json["username"],)).fetchall()
+    db.commit()
+
+    # If there are no users with the same name, the username is available
+    return jsonify({"available": not bool(users)})
+
+
 @app.route("/register", methods = ["GET", "POST"])
 def register():
     if request.method == "GET":
         return render_template("register.html")
 
-    username = request.form.get("username")
+    username = request.form.get("username").strip()
     password = request.form.get("password")
     if not username or not password:
-        return render_template("error.html", message="One or more fields missing")
+        abort(400)
+        #return render_template("error.html", code=400, message="One or more fields missing"), 400
 
     db = get_db()
     cur = db.cursor()
@@ -46,10 +58,12 @@ def register():
     db.commit()
 
     if len(users) != 0:
-        return render_template("error.html", message="This username is taken")
+        abort(409)
+        #return render_template("error.html", code=409, message="This username is taken"), 409
 
     if len(password) < 8:
-        return render_template("error.html", message="Password too short")
+        abort(400)
+        #return render_template("error.html", code=400, message="Password too short"), 400
 
     cur = db.cursor()
     cur.execute("INSERT INTO users(username, hash) VALUES(?, ?)",

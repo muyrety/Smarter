@@ -9,6 +9,7 @@
             <div class="my-3">
                 <label for="username" class="form-label">Username</label>
                 <input type="text" required autofocus autocomplete="off" name="username" class="form-control" id="username">
+                <div class="form-text text-danger" style="display: none" id="usernameTakenField">This username is taken</div>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password (8+ characters)</label>
@@ -19,7 +20,7 @@
                 <label class="form-check-label" for="passwordremember">Remember password</label>
             </div>
             <div class="text-center">
-                <button type="submit" class="btn btn-primary">Register</button>
+                <button type="submit" class="btn btn-primary" id="registerButton">Register</button>
             </div>
         </form>
     </div>
