@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
-    let usernameField = document.getElementById("username");
-    let usernameTakenField = document.getElementById("usernameTakenField");
-    let submitButton = document.getElementById("registerButton");
-    username.addEventListener("input", function() {
+    const usernameField = document.getElementById("username");
+    const usernameTakenField = document.getElementById("usernameTakenField");
+    const submitButton = document.getElementById("registerButton");
+
+    usernameField.addEventListener("input", function() {
         const username = usernameField.value.trim(); 
         if (username) {
             checkUsername(username);
@@ -14,8 +15,9 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     async function checkUsername(username) {
+        const url = "api/check_username";
         try {
-            const response = await fetch("/api/check_username", {
+            const response = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

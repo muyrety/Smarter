@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 
+{% block js %} <script type="text/javascript" src="{{ url_for('static', filename='js/register.js') }}"></script> {% endblock %}
 {% block title %} Register {% endblock %}
 
 {% block main %}
 <div class="container">
     <div class="w-25 mx-auto">
-        <form method="post" action="/register">
+        <form method="post" action="{{ url_for('register') }}">
             <div class="my-3">
                 <label for="username" class="form-label">Username</label>
                 <input type="text" required autofocus autocomplete="off" name="username" class="form-control" id="username">
