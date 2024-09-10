@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, g, redirect, abort, url_for
+from flask import Flask, render_template, request, g, redirect, abort, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
+import os
 import sqlite3
 
 app = Flask(__name__)
-
+app.secret_key = os.environ["smarter_key"]
 
 """ Database configuration for sqlite3 """
 
@@ -23,6 +24,7 @@ def init_db():
             db.cursor().executescript(f.read())
         db.commit()
 
+
 # API for checking username availability with javascript
 @app.route("/api/check_username", methods = ["POST"])
 def check_username():
@@ -41,7 +43,6 @@ def check_username():
 @app.route("/")
 def index():
     return render_template("index.html")
-
 
 @app.route("/register", methods = ["GET", "POST"])
 def register():
@@ -69,12 +70,19 @@ def register():
                     (username, generate_password_hash(password)))
     db.commit()
         
+    # Remember user
+    cur = db.cursor()
+    cur.execute("SELECT id FROM users WHERE username = ?", (username,))
+    session.permanent = False
+    session["user_id"] = cur.fetchone()[0]
+    db.commit()
+
     return redirect(url_for("index"))
 
 @app.route("/logout")
 def logout():
+    session.pop("user_id", None)
     return redirect(url_for("index"))
-
 
 @app.route("/login")
 def login():
