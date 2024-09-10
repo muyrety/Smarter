@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     const usernameField = document.getElementById("username");
     const usernameTakenField = document.getElementById("usernameTakenField");
-    const submitButton = document.getElementById("registerButton");
+    const registerButton = document.getElementById("registerButton");
 
     usernameField.addEventListener("input", function() {
         const username = usernameField.value.trim(); 
@@ -10,28 +10,28 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         else {
             usernameTakenField.style.display = "none"; 
-            submitButton.removeAttribute("disabled");
+            registerButton.removeAttribute("disabled");
         }
     });
 
     async function checkUsername(username) {
         const url = "api/check_username";
+        let form = new FormData()
+        form.append("username", username)
+
         try {
             const response = await fetch(url, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ username: username })
+                body: form,
             });
             const data = await response.json();
             if (!data.available) {
                 usernameTakenField.style.display = "block";
-                submitButton.setAttribute("disabled", "");
+                registerButton.setAttribute("disabled", "");
             } 
             else {
                 usernameTakenField.style.display = "none";
-                submitButton.removeAttribute("disabled");
+                registerButton.removeAttribute("disabled");
             }
         } 
         catch (error) {

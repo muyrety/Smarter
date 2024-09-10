@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, g, redirect, abort, jsonify, url_for
+from flask import Flask, render_template, request, g, redirect, abort, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 
@@ -26,13 +26,13 @@ def init_db():
 # API for checking username availability with javascript
 @app.route("/api/check_username", methods = ["POST"])
 def check_username():
-    try:
-        db = get_db()
-        cur = db.cursor()
-        users = cur.execute("SELECT * FROM users WHERE username = ?", (request.json["username"],)).fetchall()
-    except sqlite3.Error:
-        db.commit()
-        abort(500)
+    username = request.form.get("username")
+    if not username:
+        abort(400)
+        
+    db = get_db()
+    cur = db.cursor()
+    users = cur.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
     db.commit()
         
     return {"available": not bool(users)}
@@ -53,28 +53,20 @@ def register():
     if not username or not password:
         abort(400)
 
-    try:
-        db = get_db()
-        cur = db.cursor()
-        users = cur.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchall()
-    except sqlite3.Error:
-        db.commit()
-        abort(500)
+    db = get_db()
+    cur = db.cursor()
+    users = cur.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
     db.commit()
 
-    if len(users) != 0:
+    if users:
         abort(409)
 
     if len(password) < 8:
         abort(400)
     
-    try:
-        cur = db.cursor()
-        cur.execute("INSERT INTO users(username, hash) VALUES(?, ?)",
+    cur = db.cursor()
+    cur.execute("INSERT INTO users(username, hash) VALUES(?, ?)",
                     (username, generate_password_hash(password)))
-    except sqlite3.Error:
-        db.commit()
-        abort(500) 
     db.commit()
         
     return redirect(url_for("index"))
