@@ -79,13 +79,40 @@ def register():
 
     return redirect(url_for("index"))
 
+@app.route("/login", methods = ["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
+
+    username = request.form.get("username").strip()
+    password = request.form.get("password")
+
+    if not username or not password:
+        abort(400)
+
+    db = get_db()
+    cur = db.cursor()
+    user_data = cur.execute("SELECT id, hash FROM users WHERE username = ?", (username,)).fetchone()
+    db.commit()
+
+    if not user_data:
+        abort(400)
+
+    if not check_password_hash(user_data[1], password):
+        # return render_template("wrong_password.html")
+        abort(400)
+
+    if request.form.get("remember_password"):
+        session.permanent = True
+    else:
+        session.permanent = False
+    session["user_id"] = user_data[0]
+
+    return redirect(url_for("index"))
+
 @app.route("/logout")
 def logout():
     session.pop("user_id", None)
-    return redirect(url_for("index"))
-
-@app.route("/login")
-def login():
     return redirect(url_for("index"))
 
 

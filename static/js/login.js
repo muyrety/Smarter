@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     const usernameField = document.getElementById("username");
-    const usernameTakenField = document.getElementById("usernameTakenField");
-    const registerButton = document.getElementById("registerButton");
+    const badUsernameField = document.getElementById("badUsernameField");
+    const loginButton = document.getElementById("loginButton");
 
     usernameField.addEventListener("input", function() {
         const username = usernameField.value.trim(); 
@@ -9,8 +9,8 @@ document.addEventListener("DOMContentLoaded", function() {
             checkUsername(username);
         }
         else {
-            usernameTakenField.style.display = "none"; 
-            registerButton.removeAttribute("disabled");
+            badUsernameField.style.display = "none"; 
+            loginButton.removeAttribute("disabled");
         }
     });
 
@@ -25,13 +25,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 body: form
             });
             const data = await response.json();
-            if (!data.available) {
-                usernameTakenField.style.display = "block";
-                registerButton.setAttribute("disabled", "");
+            if (data.available) {
+                badUsernameField.style.display = "block";
+                loginButton.setAttribute("disabled", "");
             } 
             else {
-                usernameTakenField.style.display = "none";
-                registerButton.removeAttribute("disabled");
+                badUsernameField.style.display = "none";
+                loginButton.removeAttribute("disabled");
             }
         } 
         catch (error) {
@@ -39,4 +39,3 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 });
-
