@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
-{% block head %} <script type="text/javascript" src="{{ url_for('static', filename='js/login.js') }}"></script> {% endblock %}
+{% block head %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/check_username.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% endblock %}
+
 {% block title %} Login {% endblock %}
 
 {% block main %}

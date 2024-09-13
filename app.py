@@ -36,8 +36,7 @@ def check_username():
     cur = db.cursor()
     users = cur.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
     db.commit()
-        
-    return {"available": not bool(users)}
+    return {"taken": bool(users)}
 
 
 @app.route("/")
