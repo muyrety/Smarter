@@ -1,7 +1,7 @@
-#usernameTakenField {
-    display: none;
-}
-
  #badUsernameField {
+     display: none;
+ }
+
+ #badPasswordField {
      display: none;
  }

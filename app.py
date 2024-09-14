@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, g, redirect, abort, url_for, 
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import sqlite3
+import re
 
 app = Flask(__name__)
 app.secret_key = os.environ["smarter_key"]
@@ -50,7 +51,11 @@ def register():
 
     username = request.form.get("username").strip()
     password = request.form.get("password")
-    if not username or not password:
+    repeat_password = request.form.get("repeatPassword")
+    if not username or not password or not repeat_password:
+        abort(400)
+
+    if re.search("\s", username):
         abort(400)
 
     db = get_db()
@@ -61,7 +66,7 @@ def register():
     if users:
         abort(409)
 
-    if len(password) < 8:
+    if len(password) < 8 or password != repeat_password:
         abort(400)
     
     cur = db.cursor()
@@ -83,7 +88,7 @@ def login():
     if request.method == "GET":
         return render_template("login.html")
 
-    username = request.form.get("username").strip()
+    username = request.form.get("username")
     password = request.form.get("password")
 
     if not username or not password:
