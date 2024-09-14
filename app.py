@@ -49,9 +49,10 @@ def register():
     if request.method == "GET":
         return render_template("register.html")
 
-    username = request.form.get("username").strip()
+    username = request.form.get("username")
     password = request.form.get("password")
     repeat_password = request.form.get("repeatPassword")
+
     if not username or not password or not repeat_password:
         abort(400)
 
@@ -60,15 +61,17 @@ def register():
 
     db = get_db()
     cur = db.cursor()
-    users = cur.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
+    existing_user = cur.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
     db.commit()
 
-    if users:
+    # Abort if another user with the same username exists
+    if existing_user:
         abort(409)
 
     if len(password) < 8 or password != repeat_password:
         abort(400)
     
+    # Register the user
     cur = db.cursor()
     cur.execute("INSERT INTO users(username, hash) VALUES(?, ?)",
                     (username, generate_password_hash(password)))
@@ -86,7 +89,7 @@ def register():
 @app.route("/login", methods = ["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.html")
+        return render_template("login.html", badPassword=False)
 
     username = request.form.get("username")
     password = request.form.get("password")
@@ -99,13 +102,15 @@ def login():
     user_data = cur.execute("SELECT id, hash FROM users WHERE username = ?", (username,)).fetchone()
     db.commit()
 
+    # If user not found
     if not user_data:
         abort(400)
 
+    # Reload the login form with a message if password is incorrect
     if not check_password_hash(user_data[1], password):
-        # return render_template("wrong_password.html")
-        abort(400)
+        return render_template("login.html", badPassword=True)
 
+    # Remember user
     if request.form.get("remember_password"):
         session.permanent = True
     else:
