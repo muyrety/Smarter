@@ -44,6 +44,10 @@ def check_username():
 def index():
     return render_template("index.html")
 
+@app.route("/browse")
+def browse():
+    return render_template("browse.html")
+
 @app.route("/register", methods = ["GET", "POST"])
 def register():
     if request.method == "GET":
