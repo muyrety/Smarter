@@ -5,6 +5,7 @@ import sqlite3
 import re
 
 app = Flask(__name__)
+
 app.secret_key = os.environ["smarter_key"]
 
 """ Database configuration for sqlite3 """
