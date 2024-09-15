@@ -5,6 +5,8 @@ import sqlite3
 import re
 
 app = Flask(__name__)
+
+# Environment variable "smarter_key" must be set for sessions to work
 app.secret_key = os.environ["smarter_key"]
 
 """ Database configuration for sqlite3 """
