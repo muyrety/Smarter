@@ -48,6 +48,10 @@ def index():
 def browse():
     return render_template("browse.html")
 
+@app.route("/about/opentdb")
+def opentdb():
+    return render_template("opentdb.html")
+
 @app.route("/register", methods = ["GET", "POST"])
 def register():
     if request.method == "GET":
