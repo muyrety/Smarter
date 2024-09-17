@@ -29,11 +29,33 @@ async function loadQuestions(token) {
     catch (error) {
         console.error(error);
     }
-    const table = document.getElementById("table");
+    let table = document.getElementById("table");
+    /*
+    table.innerHTML = `<thead><tr><th scope="col">Category</th>
+                                  <th scope="col">Difficulty</th>
+                                  <th scope="col">Question</th></tr></thead><tbody>`;
     for (let i of questions) {
         table.innerHTML += `<tr><td>${i["category"]}</td>
                                 <td>${i["difficulty"]}</td>
-                                <td>${i["question"]}</td></tr>`
+                                <td>${i["question"]}</td></tr>`;
+    }
+    table.innerHTML += "</tbody>";
+    */
+    const table_head = table.createTHead();
+    const row = table_head.insertRow();
+
+    let category = row.insertCell().innerHTML = "Category";
+    let difficulty = row.insertCell().innerHTML = "Difficulty";
+    let question = row.insertCell().innerHTML = "Question";
+
+
+    for (let i of questions)
+    {
+        const row = table.insertRow();
+
+        row.insertCell().innerHTML = i["category"];
+        row.insertCell().innerHTML = i["difficulty"];
+        row.insertCell().innerHTML = i["question"];
     }
 }
 
