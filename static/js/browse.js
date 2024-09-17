@@ -29,34 +29,35 @@ async function loadQuestions(token) {
     catch (error) {
         console.error(error);
     }
+
+    // Create a table with the data from the API
     let table = document.getElementById("table");
-    /*
-    table.innerHTML = `<thead><tr><th scope="col">Category</th>
-                                  <th scope="col">Difficulty</th>
-                                  <th scope="col">Question</th></tr></thead><tbody>`;
+
+    const tbl_head = document.createElement("thead");
+    const head_row = document.createElement("tr");
+
+    const headers = ["Category", "Difficulty", "Question"];
+    for (let i of headers) {
+        const column = document.createElement("th");
+        column.appendChild(document.createTextNode(i));
+        column.setAttribute("scope", "col");
+        head_row.appendChild(column);
+    }
+    tbl_head.appendChild(head_row);
+    table.appendChild(tbl_head);
+
+    const tbl_body = document.createElement("tbody");
+    const response_keys = ["category", "difficulty", "question"];
     for (let i of questions) {
-        table.innerHTML += `<tr><td>${i["category"]}</td>
-                                <td>${i["difficulty"]}</td>
-                                <td>${i["question"]}</td></tr>`;
+        const row = document.createElement("tr");
+        for (let j of response_keys) {
+            const data = document.createElement("td");
+            data.innerHTML = i[j];
+            row.appendChild(data);
+        }
+        tbl_body.appendChild(row);
     }
-    table.innerHTML += "</tbody>";
-    */
-    const table_head = table.createTHead();
-    const row = table_head.insertRow();
-
-    let category = row.insertCell().innerHTML = "Category";
-    let difficulty = row.insertCell().innerHTML = "Difficulty";
-    let question = row.insertCell().innerHTML = "Question";
-
-
-    for (let i of questions)
-    {
-        const row = table.insertRow();
-
-        row.insertCell().innerHTML = i["category"];
-        row.insertCell().innerHTML = i["difficulty"];
-        row.insertCell().innerHTML = i["question"];
-    }
+    table.appendChild(tbl_body);
 }
 
 async function getSessionToken() {
