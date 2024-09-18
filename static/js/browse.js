@@ -1,5 +1,7 @@
+var token_g;
+
 document.addEventListener("DOMContentLoaded", async function () {
-    const token = await  getSessionToken();
+    token_g = await getSessionToken();
 
     const db_button = document.getElementById("db_button");
     const user_button = document.getElementById("user_button");
@@ -13,12 +15,18 @@ document.addEventListener("DOMContentLoaded", async function () {
         user_button.setAttribute("disabled", "");
     });
 
-    loadQuestions(token);
+    let tbl_body = await initQuestionTable();
+
+    document.getElementById("load_questions").addEventListener("click", function () {
+        expandTable(tbl_body);
+    });
 });
 
-async function loadQuestions(token) {
+async function expandTable(tbl_body) {
+
+    // Get data from the API
     try {
-        const question_response = await fetch("https://opentdb.com/api.php?amount=50&token=" + token);
+        const question_response = await fetch("https://opentdb.com/api.php?amount=50&token=" + token_g);
         const questions_json = await question_response.json();
         if (questions_json.response_code != 0)
         {
@@ -30,14 +38,26 @@ async function loadQuestions(token) {
         console.error(error);
     }
 
-    // Create a table with the data from the API
+    // Add data to the table
+    for (let i of questions) {
+        const row = document.createElement("tr");
+        for (let j of ["category", "difficulty", "question"]) {
+            const data = document.createElement("td");
+            data.innerHTML = i[j];
+            row.appendChild(data);
+        }
+        tbl_body.appendChild(row);
+    }
+    return tbl_body;
+}
+        
+async function initQuestionTable() {
     let table = document.getElementById("table");
 
+    // Create table header
     const tbl_head = document.createElement("thead");
     const head_row = document.createElement("tr");
-
-    const headers = ["Category", "Difficulty", "Question"];
-    for (let i of headers) {
+    for (let i of ["Category", "Difficulty", "Question"]) {
         const column = document.createElement("th");
         column.appendChild(document.createTextNode(i));
         column.setAttribute("scope", "col");
@@ -46,21 +66,14 @@ async function loadQuestions(token) {
     tbl_head.appendChild(head_row);
     table.appendChild(tbl_head);
 
-    const tbl_body = document.createElement("tbody");
-    const response_keys = ["category", "difficulty", "question"];
-    for (let i of questions) {
-        const row = document.createElement("tr");
-        for (let j of response_keys) {
-            const data = document.createElement("td");
-            data.innerHTML = i[j];
-            row.appendChild(data);
-        }
-        tbl_body.appendChild(row);
-    }
+    let tbl_body = await expandTable(document.createElement("tbody"));
     table.appendChild(tbl_body);
+    return tbl_body;
 }
 
 async function getSessionToken() {
+    
+    // Get session token from the API
     try {
         const session_response = await fetch("https://opentdb.com/api_token.php?command=request");
         const session = await session_response.json();
