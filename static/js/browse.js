@@ -6,26 +6,26 @@ document.addEventListener("DOMContentLoaded", async function () {
         alert("Something went wrong while contacting the API. Try refreshing the page");
     }
 
-    const db_button = document.getElementById("db_button");
+    const otdb_button = document.getElementById("otdb_button");
     const user_button = document.getElementById("user_button");
-    db_button.addEventListener("click", function () {
-        db_button.setAttribute("disabled", "");
+    otdb_button.addEventListener("click", function () {
+        otdb_button.setAttribute("disabled", "");
         user_button.removeAttribute("disabled");
     });
 
     user_button.addEventListener("click", function () {
-        db_button.removeAttribute("disabled");
+        otdb_button.removeAttribute("disabled");
         user_button.setAttribute("disabled", "");
     });
 
-    let tbl_body = await initQuestionTable();
+    let otdb_tbl_body = await initOTDBTable();
 
     document.getElementById("load_questions").addEventListener("click", function () {
-        expandTable(tbl_body);
+        expandOTDBTable(otdb_tbl_body);
     });
 });
 
-async function expandTable(tbl_body) {
+async function expandOTDBTable(tbl_body) {
 
     const rate_limit_code = "5"; 
     // Get data from the API
@@ -59,8 +59,8 @@ async function expandTable(tbl_body) {
     return tbl_body;
 }
         
-async function initQuestionTable() {
-    let table = document.getElementById("table");
+async function initOTDBTable() {
+    let table = document.getElementById("opentdb_table");
 
     // Create table header
     const tbl_head = document.createElement("thead");
