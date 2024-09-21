@@ -25,6 +25,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("loadOTDBQuestions").addEventListener("click", function () {
         expandOTDBTable(otdb_tbl_body);
     });
+
+    document.getElementById("opentdbForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+    });
+
 });
 
 async function expandOTDBTable(tbl_body) {

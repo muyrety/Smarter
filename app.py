@@ -26,7 +26,8 @@ def init_db():
         db.commit()
 
 
-# API for interacting with the server using javascript
+""" API for interacting with the server using javascript """
+
 @app.route("/api/check_username")
 def check_username():
     username = request.args.get("username")
