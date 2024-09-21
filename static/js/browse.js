@@ -3,11 +3,11 @@ let token_g;
 document.addEventListener("DOMContentLoaded", async function () {
     token_g = await getSessionToken();
     if (!token_g) {
-        alert("Something went wrong while contacting the API. Try refreshing the page");
+        alert("Something went wrong while contacting the API. Try refreshing the page.");
     }
 
-    const otdb_button = document.getElementById("otdb_button");
-    const user_button = document.getElementById("user_button");
+    const otdb_button = document.getElementById("otdbButton");
+    const user_button = document.getElementById("userButton");
     otdb_button.addEventListener("click", function () {
         otdb_button.setAttribute("disabled", "");
         user_button.removeAttribute("disabled");
@@ -18,9 +18,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         user_button.setAttribute("disabled", "");
     });
 
-    let otdb_tbl_body = await initOTDBTable();
+    // Initialize the table with information
+    let otdb_tbl_body = await expandOTDBTable(document.createElement("tbody"));
+    document.getElementById("opentdbTable").appendChild(otdb_tbl_body);
 
-    document.getElementById("load_questions").addEventListener("click", function () {
+    document.getElementById("loadOTDBQuestions").addEventListener("click", function () {
         expandOTDBTable(otdb_tbl_body);
     });
 });
@@ -60,26 +62,6 @@ async function expandOTDBTable(tbl_body) {
     return tbl_body;
 }
         
-async function initOTDBTable() {
-    let table = document.getElementById("opentdb_table");
-
-    // Create table header
-    const tbl_head = document.createElement("thead");
-    const head_row = document.createElement("tr");
-    for (let i of ["Category", "Difficulty", "Question"]) {
-        const column = document.createElement("th");
-        column.appendChild(document.createTextNode(i));
-        column.setAttribute("scope", "col");
-        head_row.appendChild(column);
-    }
-    tbl_head.appendChild(head_row);
-    table.appendChild(tbl_head);
-
-    let tbl_body = await expandTable(document.createElement("tbody"));
-    table.appendChild(tbl_body);
-    return tbl_body;
-}
-
 async function getSessionToken() {
     
     // Get session token from the API

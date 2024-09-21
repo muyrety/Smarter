@@ -26,10 +26,10 @@ def init_db():
         db.commit()
 
 
-# API for checking username availability with javascript
-@app.route("/api/check_username", methods = ["POST"])
+# API for interacting with the server using javascript
+@app.route("/api/check_username")
 def check_username():
-    username = request.form.get("username")
+    username = request.args.get("username")
     if not username:
         abort(400)
         
@@ -38,6 +38,24 @@ def check_username():
     users = cur.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
     db.commit()
     return {"taken": bool(users)}
+
+@app.route("/api/get_questions")
+def get_questions():
+    try:
+        # ID from which to receive the questions
+        # e.g. id=9 would request the questions 9-[amount]
+        question_id = int(request.args.get("id", 1))
+        amount = int(request.args.get("amount", 50))
+
+        # Category (as an integer) value. 0 corresponds to any category.
+        category = int(request.args.get("category", 0))
+    except ValueError:
+        abort(400)
+
+    difficulty = request.args.get("difficulty", "any")
+    if difficulty not in ["easy", "medium", "hard", "any"]:
+        abort(400)
+    return redirect(url_for("index"))
 
 
 @app.route("/")

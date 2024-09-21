@@ -10,15 +10,12 @@
 <div class="container">
     <div class="row justify-content-center mt-3">
         <div class="col-xl-5 col-lg-7 col-md-8 col-sm-12 text-center">
-            <button class="btn btn-primary mb-xs-2" id="otdb_button" disabled>Open Trivia DB questions</button>
+            <button class="btn btn-primary mb-xs-2" id="otdbButton" disabled>Open Trivia DB questions</button>
             <a href="{{ url_for('opentdb') }}" class="link-offset-2 link-underline me-3 ms-1">?</a>
-            <button class="btn btn-primary ms-3 mt-xs-2" id="user_button">User-created questions</button>
+            <button class="btn btn-primary ms-3 mt-xs-2" id="userButton">User-created questions</button>
         </div>
     </div>
-    <table id="opentdb_table" class="table mt-3">
-    </table>
-
-    <table class="table mt-3" id="userTable">
+    <table id="opentdbTable" class="table mt-3">
         <thead>
             <tr>
                 <th>Category</th>
@@ -27,8 +24,20 @@
             </tr>
         </thead>
     </table>
+
+    <table class="table mt-3" id="userTable">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Difficulty</th>
+                <th>Question</th>
+                <th>Created by</th>
+            </tr>
+        </thead>
+    </table>
     <div class="text-center">
-        <button class="btn btn-outline-secondary mb-3" id="load_questions">Load more</button>
+        <button class="btn btn-outline-secondary mb-3" id="loadOTDBQuestions">Load more</button>
+        <button class="btn btn-outline-secondary mb-3" id="loadUserQuestions">Load more</button>
     </div>
 </div>
 {% endblock %}
