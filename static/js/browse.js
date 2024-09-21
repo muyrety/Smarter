@@ -29,6 +29,7 @@ async function expandOTDBTable(tbl_body) {
 
     const rate_limit_code = "5"; 
     // Get data from the API
+    let questions;
     try {
         const question_response = await fetch("https://opentdb.com/api.php?amount=50&token=" + token_g);
         const questions_json = await question_response.json();
@@ -36,7 +37,7 @@ async function expandOTDBTable(tbl_body) {
         {
             throw new Error("Bad response code to question request:" + questions_json.response_code);
         }
-        var questions = questions_json.results;
+        questions = questions_json.results;
     }
     catch (error) {
         if (error.message === "Bad response code to question request:" + rate_limit_code) {
