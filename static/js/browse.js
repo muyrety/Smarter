@@ -1,9 +1,12 @@
-let token_g;
-
 document.addEventListener("DOMContentLoaded", async function () {
-    token_g = await getSessionToken();
-    if (!token_g) {
+    const token = await getSessionToken();
+    if (!token) {
         alert("Something went wrong while contacting the API. Try refreshing the page.");
+    }
+
+    let table_config = {
+        "category" : "any",
+        "difficulty" : "any"
     }
 
     const otdb_button = document.getElementById("otdbButton");
@@ -19,26 +22,48 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     // Initialize the table with information
-    let otdb_tbl_body = await expandOTDBTable(document.createElement("tbody"));
+    let otdb_tbl_body = await expandOTDBTable(document.createElement("tbody"),
+                                                table_config, token);
+
     document.getElementById("opentdbTable").appendChild(otdb_tbl_body);
 
     document.getElementById("loadOTDBQuestions").addEventListener("click", function () {
-        expandOTDBTable(otdb_tbl_body);
+        expandOTDBTable(otdb_tbl_body, table_config, token);
     });
 
-    document.getElementById("opentdbForm").addEventListener("submit", function (e) {
+    const opentdbForm = document.getElementById("opentdbForm");
+    opentdbForm.addEventListener("submit", async function (e) {
         e.preventDefault();
+        
+        // Get the elements from the form
+        category = opentdbForm.elements["category"].value;
+        difficulty = opentdbForm.elements["difficulty"].value;
+
+        // Configure the table, so that future extends make use of user config
+        table_config["category"] = category;
+        table_config["difficulty"] = difficulty;
+
+        // Refresh the table
+        otdb_tbl_body = document.createElement("tbody");
+        /*
+        otdb_tbl_body = await expandOTDBTable(document.createElement("tbody"),
+                                                    table_config, token);
+        */
     });
 
 });
 
-async function expandOTDBTable(tbl_body) {
+async function expandOTDBTable(tbl_body, config, token) {
 
     const rate_limit_code = "5"; 
     // Get data from the API
     let questions;
     try {
-        const question_response = await fetch("https://opentdb.com/api.php?amount=50&token=" + token_g);
+        const base_url = "https://opentdb.com/api.php?amount=50";
+        const category = config["category"] !== "any" ? "&category=" + config["category"] : "";
+        const difficulty = config["difficulty"] !== "any" ? "&difficulty=" + config["difficulty"] : "";
+        
+        const question_response = await fetch(`${base_url}${category}${difficulty}&token=${token}`);
         const questions_json = await question_response.json();
         if (questions_json.response_code != 0)
         {
