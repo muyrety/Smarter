@@ -18,8 +18,11 @@
     <form id="opentdbForm">
         <div class="row justify-content-center mt-3">
             <div class="col-5">
+                <div class="ms-2 form-text text-info">
+                    Category
+                </div>
                 <select class="form-select" name="category">
-                    <option selected disabled value="any">Category</option>
+                    <option selected value="any">Any</option>
                     <option value="9">General Knowledge</option>
                     <option value="10">Entertainment: Books</option>
                     <option value="11">Entertainment: Film</option>
@@ -47,14 +50,17 @@
                 </select>
             </div>
             <div class="col-5">
+                <div class="ms-2 form-text text-info">
+                    Difficulty
+                </div>
                 <select class="form-select" name="difficulty">
-                    <option selected disabled value="any">Difficulty</option>
+                    <option selected value="any">Any</option>
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>
                     <option value="hard">Hard</option>
                 </select>
             </div>
-            <div class="col-2 text-start">
+            <div class="col-2 mt-4 text-start">
                 <button class="btn btn-primary" type="submit">Apply</button>
             </div>
         </div>
