@@ -1,5 +1,12 @@
 document.addEventListener("DOMContentLoaded", async function () {
-    let token = await getSessionToken();
+    let token;
+    try {
+        token = await getSessionToken();
+    }
+    catch (error) {
+        console.error(error);
+        alert("Something went wrong while contacting the API. Try refreshing the page.");
+    }
 
     let table_config = {
         "category" : "any",
@@ -40,7 +47,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         table_config["category"] = category;
         table_config["difficulty"] = difficulty;
         
-        await resetToken(token);
+        try {
+            await resetToken(token);
+        }
+        catch (error) {
+            console.error(error);
+            alert("Something went wrong while contacting the API. Try refreshing the page.");
+        }
 
         // Refresh the table
         let tmp = await expandOTDBTable(document.createElement("tbody"), table_config, token);
@@ -79,8 +92,7 @@ async function getQuestionAmount(category, difficulty) {
             }
         }
         catch (error) {
-            console.error(error);
-            return false;
+            throw error;
         }
     }
     else {
@@ -88,23 +100,18 @@ async function getQuestionAmount(category, difficulty) {
     }
 }
 
-
-async function expandOTDBTable(tbl_body, config, token) {
-
-    const api_error = "Bad response code to question request:"; 
-    const rate_limit_code = "5"; 
-    const no_results_code = "1";
-    const token_empty_code = "4";
+async function getQuestions(config, token) {
+    const base_url = "https://opentdb.com/api.php?";
+    const api_error_message = "Bad response code to question request:"; 
+    const api_errors = {
+        rate_limit : "5",
+        no_results : "1",
+        token_empty : "4"
+    }
 
     // Get data from the API
-    let questions;
     try {
-
-        const base_url = "https://opentdb.com/api.php?";
         let amount = await getQuestionAmount(config["category"], config["difficulty"]);
-        if (!amount) {
-            throw new Error("Unexpected error: bad return value from getQuestionAmount()");
-        }
         amount = "amount=" + amount;
         const category = config["category"] !== "any" ? "&category=" + config["category"] : "";
         const difficulty = config["difficulty"] !== "any" ? "&difficulty=" + config["difficulty"] : "";
@@ -116,24 +123,36 @@ async function expandOTDBTable(tbl_body, config, token) {
 
         const questions_json = await question_response.json();
         if (questions_json.response_code != 0) {
-            throw new Error(api_error + questions_json.response_code);
+            throw new Error(api_error_message + questions_json.response_code);
         }
-        questions = questions_json.results;
+        return questions_json.results;
     }
     catch (error) {
-        if (error.message === api_error + no_results_code ||
-            error.message === api_error + token_empty_code) {
+        throw error;
+        if (error.message === api_error_message + api_errors["no_results"] ||
+            error.message === api_error_message + api_errors["token_empty"]) {
             alert("You have exhausted all the questions. Please refresh the page to browse.");
         }
-        else if (error.message === api_error + rate_limit_code) {
+        else if (error.message === api_error_message + api_errors["rate_limit"]) {
             alert("You have made too many question requests. Please wait at least 5 seconds before loading more questions.");
         }
         else {
             alert("An unexpected error occured, try refreshing the page");
         }
-        console.error(error);
-        return tbl_body;
+        return error;
     }
+}
+
+async function expandOTDBTable(tbl_body, config, token) {
+    let questions;
+    try {
+        questions = await getQuestions(config, token);
+    }
+    catch (error) {
+        console.error(error.cause);
+        alert("ERROR WHILE GETTING QUESTIONS");
+        return tbl_body;
+    } 
 
     // Add data to the table
     for (let i of questions) {
@@ -164,8 +183,7 @@ async function getSessionToken() {
         return session.token;
     }
     catch (error) {
-        console.error(error);
-        alert("Something went wrong while contacting the API. Try refreshing the page.");
+        throw error;
     }
 }
 
@@ -181,7 +199,6 @@ async function resetToken(token) {
         }
     }
     catch (error) {
-        console.log(error);
-        alert("Something went wrong while contacting the API. Try refreshing the page.");
+        throw error;
     }
 }
