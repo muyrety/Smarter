@@ -1,18 +1,13 @@
 // Returns true if the username is in use
-async function checkUsername(username) {
-    const url = "api/check_username";
-    let form = new FormData();
-    form.append("username", username);
 
+async function checkUsername(username) {
+    const url = `api/check_username?username=${username}`;
     try {
-        const response = await fetch(url, {
-            method: "POST",
-            body: form
-        });
-        const data = await response.json();
-        return data.taken;
+        const response = await fetch(url);
+        const response_json = await response.json();
+        return response_json.taken;
     } 
     catch (error) {
-        console.error("Error checking username:", error);
+        console.error(error);
     }
 }

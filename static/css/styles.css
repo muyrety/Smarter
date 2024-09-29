@@ -5,3 +5,11 @@
  #badPasswordField {
      display: none;
  }
+
+ #userTable {
+     display: none;
+ }
+
+ #loadUserQuestions {
+     display: none;
+ }

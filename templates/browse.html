@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %} Browse questions {% endblock %}
+
+{% block head %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/browse.js') }}"></script>
+{% endblock %}
+
+{% block main %}
+<div class="container">
+    <div class="row justify-content-center mt-3">
+        <div class="col-xl-5 col-lg-7 col-md-8 col-sm-12 text-center">
+            <button class="btn btn-primary mb-xs-2" id="otdbButton" disabled>Open Trivia DB questions</button>
+            <a href="{{ url_for('opentdb') }}" class="link-offset-2 link-underline me-3 ms-1">?</a>
+            <button class="btn btn-primary ms-3 mt-xs-2" id="userButton">User-created questions</button>
+        </div>
+    </div>
+    <form id="opentdbForm">
+        <div class="row justify-content-center mt-3">
+            <div class="col-5">
+                <div class="ms-2 form-text text-info">
+                    Category
+                </div>
+                <select class="form-select" name="category">
+                    <option selected value="any">Any</option>
+                    <option value="9">General Knowledge</option>
+                    <option value="10">Entertainment: Books</option>
+                    <option value="11">Entertainment: Film</option>
+                    <option value="12">Entertainment: Music</option>
+                    <option value="13">Entertainment: Musicals & Theatres</option>
+                    <option value="14">Entertainment: Television</option>
+                    <option value="15">Entertainment: Video Games</option>
+                    <option value="16">Entertainment: Board Games</option>
+                    <option value="17">Science & Nature</option>
+                    <option value="18">Science: Computers</option>
+                    <option value="19">Science: Mathematics</option>
+                    <option value="20">Mythology</option>
+                    <option value="21">Sports</option>
+                    <option value="22">Geography</option>
+                    <option value="23">History</option>
+                    <option value="24">Politics</option>
+                    <option value="25">Art</option>
+                    <option value="26">Celebrities</option>
+                    <option value="27">Animals</option>
+                    <option value="28">Vehicles</option>
+                    <option value="29">Entertainment: Comics</option>
+                    <option value="30">Science: Gadgets</option>
+                    <option value="31">Entertainment: Japanese Anime & Manga</option>
+                    <option value="32">Entertainment: Cartoon & Animations</option>	
+                </select>
+            </div>
+            <div class="col-5">
+                <div class="ms-2 form-text text-info">
+                    Difficulty
+                </div>
+                <select class="form-select" name="difficulty">
+                    <option selected value="any">Any</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            <div class="col-2 mt-4 text-start">
+                <button class="btn btn-primary" type="submit">Apply</button>
+            </div>
+        </div>
+    </form>
+
+    <table id="opentdbTable" class="table mt-3">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Difficulty</th>
+                <th>Question</th>
+            </tr>
+        </thead>
+    </table>
+
+    <table class="table mt-3" id="userTable">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Difficulty</th>
+                <th>Question</th>
+                <th>Created by</th>
+            </tr>
+        </thead>
+    </table>
+    <div class="text-center">
+        <button class="btn btn-outline-secondary mb-3" id="loadOTDBQuestions">Load more</button>
+        <button class="btn btn-outline-secondary mb-3" id="loadUserQuestions">Load more</button>
+    </div>
+</div>
+{% endblock %}
