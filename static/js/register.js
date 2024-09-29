@@ -3,12 +3,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const usernameField = document.getElementById("username");
     const passwordField = document.getElementById("password");
     const repeatPasswordField = document.getElementById("repeatPassword");
+    const badUsernameField = document.getElementById("badUsernameField");
+    const registerButton = document.getElementById("registerButton");
 
     passwordField.addEventListener("input", checkPassword);
     repeatPasswordField.addEventListener("input", checkPassword);
     usernameField.addEventListener("input", async function() {
-        const badUsernameField = document.getElementById("badUsernameField");
-        const registerButton = document.getElementById("registerButton");
         const username = usernameField.value; 
 
         // Check for username availability
@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", function() {
             badUsernameField.style.display = "block";
             registerButton.setAttribute("disabled", "");
         }
-        // TODO: Check profanity
         else {
             badUsernameField.style.display = "none"; 
             registerButton.removeAttribute("disabled");
@@ -31,9 +30,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     function checkPassword() {
-        const badPasswordField = document.getElementById("badPasswordField");
-        const registerButton = document.getElementById("registerButton");
-
         if (repeatPasswordField.value !== passwordField.value) {
             badPasswordField.style.display = "block";
             registerButton.setAttribute("disabled", "");

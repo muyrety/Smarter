@@ -31,9 +31,6 @@ def init_db():
 @app.route("/api/check_username")
 def check_username():
     username = request.args.get("username")
-    if not username:
-        abort(400)
-        
     db = get_db()
     cur = db.cursor()
     users = cur.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
