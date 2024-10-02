@@ -62,9 +62,13 @@ def get_questions():
 def index():
     return render_template("index.html")
 
-@app.route("/browse")
-def browse():
-    return render_template("browse.html")
+@app.route("/otdb_browse")
+def otdb_browse():
+    return render_template("otdb_browse.html")
+
+@app.route("/user-generated_browse")
+def user_browse():
+    return render_template("user_browse.html")
 
 @app.route("/about/opentdb")
 def opentdb():

@@ -1,4 +1,5 @@
-// This file requires check_username.js in order to run
+import {checkUsername} from "./modules/check_username.js";
+
 document.addEventListener("DOMContentLoaded", function() {
     const usernameField = document.getElementById("username");
 
@@ -8,11 +9,11 @@ document.addEventListener("DOMContentLoaded", function() {
         const username = usernameField.value.trim(); 
 
         if (username && !(await checkUsername(username))) {
-            badUsernameField.style.display = "block";
+            badUsernameField.classList.toggle("d-none", false);
             loginButton.setAttribute("disabled", "");
         }
         else {
-            badUsernameField.style.display = "none"; 
+            badUsernameField.classList.toggle("d-none", true);
             loginButton.removeAttribute("disabled");
         }
     });

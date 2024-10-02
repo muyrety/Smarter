@@ -1,6 +1,5 @@
 // Returns true if the username is in use
-
-async function checkUsername(username) {
+export async function checkUsername(username) {
     const url = `api/check_username?username=${username}`;
     try {
         const response = await fetch(url);

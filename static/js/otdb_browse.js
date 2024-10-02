@@ -1,60 +1,78 @@
-// Track how many questions were loaded. Resets on category/difficulty change.
+// Track how many questions are loaded. Resets on category/difficulty change.
 let questions_loaded = 0;
 
 document.addEventListener("DOMContentLoaded", async function () {
-    const token = await getSessionToken();
-
     let table_config = {
         category: "any",
         difficulty: "any"
     };
 
-    const otdb_button = document.getElementById("otdbButton");
-    const user_button = document.getElementById("userButton");
-    otdb_button.addEventListener("click", function () {
-        otdb_button.setAttribute("disabled", "");
-        user_button.removeAttribute("disabled");
-    });
+    let token = await getSessionToken();
 
-    user_button.addEventListener("click", function () {
-        otdb_button.removeAttribute("disabled");
-        user_button.setAttribute("disabled", "");
-    });
-
+    // Track questions available. Changes accordingly on category/difficulty change.
+    let questions_available = await getQuestionCount(table_config);
+    
     // Initialize the table with information
-    let otdb_tbl_body = await expandOTDBTable(document.createElement("tbody"), table_config, token);
+    let tbl_body = await expandTable(document.createElement("tbody"), table_config, token, questions_available);
+    document.getElementById("questionTable").appendChild(tbl_body);
 
-    document.getElementById("opentdbTable").appendChild(otdb_tbl_body);
-
-    document.getElementById("loadOTDBQuestions").addEventListener("click", function () {
-        expandOTDBTable(otdb_tbl_body, table_config, token);
+    document.getElementById("loadQuestions").addEventListener("click", function () {
+        expandTable(tbl_body, table_config, token, questions_available);
     });
 
-    const opentdbForm = document.getElementById("opentdbForm");
-    opentdbForm.addEventListener("submit", async function (e) {
+    const configForm = document.getElementById("configurationForm");
+    configForm.addEventListener("submit", async function (e) {
         e.preventDefault();
         
         // Get the elements from the form
-        category = opentdbForm.elements.category.value;
-        difficulty = opentdbForm.elements.difficulty.value;
+        category = configForm.elements.category.value;
+        difficulty = configForm.elements.difficulty.value;
+
+        // Backup of program state in case category change fails
+        const backup = {
+            token: token,
+            category: table_config.category,
+            difficulty: table_config.difficulty,
+            questions_loaded: questions_loaded,
+            questions_available: questions_available
+        };
 
         // Configure the table, so that future extends make use of user config
         table_config.category = category;
         table_config.difficulty = difficulty;
-        
-        await resetToken(token);
+
+        token = await getSessionToken();
+
+        // Only request counts again if the category or difficulty were changed
+        if (table_config.category !== category || table_config.difficulty !== difficulty) {
+            questions_available = await getQuestionCount(table_config);
+        }
+
         questions_loaded = 0;
+        const tmp = await expandTable(document.createElement("tbody"), table_config, token, questions_available);
+
+        // Only refresh the table if some questions were loaded
+        // tmp.children.legnth is used here instead of questions_loaded
+        // because different instances of this function can't change it
+        // (questions_loaded is a global variable)
+        if (tmp.children.length > 0) {
+            tbl_body.replaceWith(tmp);
+            tbl_body = tmp;
+        }
+        else {
+            token = backup.token;
+            table_config.category = backup.category;
+            table_config.difficulty = backup.difficulty;
+            questions_loaded = backup.questions_loaded;
+            questions_available = backup.questions_available;
+        }
         
-        // Refresh the table
-        const tmp = await expandOTDBTable(document.createElement("tbody"), table_config, token);
-        otdb_tbl_body.replaceWith(tmp);
-        otdb_tbl_body = tmp;
     });
 
 });
 
-async function getQuestionAmount(config) {
-    const max_questions = 50;
+async function getQuestionCount(config) {
+    const question_cap = 1000;
 
     if (config.category !== "any") {
         const response = await fetch(`https://opentdb.com/api_count.php?category=${category}`);
@@ -83,19 +101,16 @@ async function getQuestionAmount(config) {
                 break;
 
             default:
-                throw new Error("Unexpected error: invalid config parameter passed to getQuestionAmount()")
+                throw new Error("Unexpected error: invalid config parameter passed to getQuestionCount()")
         }
-
-        const available = total - questions_loaded;
-        const to_send = available > 50 ? 50 : available;
-        return to_send; 
+        return total > question_cap ? question_cap : total;
     }
     else {
-        return max_questions;
+        return question_cap;
     }
 }
 
-async function getQuestions(config, token) {
+async function getQuestions(config, token, questions_available) {
     const base_url = "https://opentdb.com/api.php?";
     const http_error_message = "HTTP error when requesting questions: ";
     const http_too_many_requests = "429";
@@ -103,7 +118,8 @@ async function getQuestions(config, token) {
 
     // Get data from the API
     try {
-        const amount = await getQuestionAmount(config);
+        let amount = questions_available - questions_loaded;
+        amount = amount > 50 ? 50 : amount;
         if (amount <= 0) {
             throw new Error(no_questions_left_message);
         }
@@ -146,8 +162,8 @@ function HTMLToText(html) {
     return temp.textContent;
 }
 
-async function expandOTDBTable(tbl_body, config, token) {
-    const questions = await getQuestions(config, token);
+async function expandTable(tbl_body, config, token, questions_available) {
+    const questions = await getQuestions(config, token, questions_available);
 
     // Retain the already loaded questions if getQuestions() fails
     if (questions === null) {
@@ -181,24 +197,6 @@ async function getSessionToken() {
             throw new Error(`Bad response code to token request: ${response_json.response_code}`);
         }
         return response_json.token;
-    }
-    catch (error) {
-        console.error(error);
-        alert("Something went wrong while contacting the API. Try refreshing the page.");
-    }
-}
-
-// Reset the API token
-async function resetToken(token) {
-    try {
-        const response = await fetch(`https://opentdb.com/api_token.php?command=reset&token=${token}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const response_json = await response.json();
-        if (response_json.response_code != 0) {
-            throw new Error(`Bad response code to token reset request: ${response_json.response_code}`);
-        }
     }
     catch (error) {
         console.error(error);

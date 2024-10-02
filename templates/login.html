@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-<script type="text/javascript" src="{{ url_for('static', filename='js/check_username.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/login.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/login.js') }}"></script>
 {% endblock %}
 
 {% block title %} Login {% endblock %}
@@ -24,7 +23,7 @@
                 <div class="my-3">
                     <label for="username" class="form-label">Username</label>
                     <input type="text" required autofocus autocomplete="off" name="username" class="form-control" id="username">
-                    <div class="form-text text-danger" id="badUsernameField">This username does not exist</div>
+                    <div class="form-text text-danger d-none" id="badUsernameField">This username does not exist</div>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
