@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         difficulty: "any"
     };
 
-    let token = await getSessionToken();
+    const token = await getSessionToken();
 
     // Track questions available. Changes accordingly on category/difficulty change.
     let questions_available = await getQuestionCount(table_config);
@@ -28,45 +28,18 @@ document.addEventListener("DOMContentLoaded", async function () {
         category = configForm.elements.category.value;
         difficulty = configForm.elements.difficulty.value;
 
-        // Backup of program state in case category change fails
-        const backup = {
-            token: token,
-            category: table_config.category,
-            difficulty: table_config.difficulty,
-            questions_loaded: questions_loaded,
-            questions_available: questions_available
-        };
-
         // Configure the table, so that future extends make use of user config
         table_config.category = category;
         table_config.difficulty = difficulty;
 
-        token = await getSessionToken();
-
-        // Only request counts again if the category or difficulty were changed
-        if (table_config.category !== category || table_config.difficulty !== difficulty) {
-            questions_available = await getQuestionCount(table_config);
-        }
-
+        await resetToken(token);
+        questions_available = await getQuestionCount(table_config);
         questions_loaded = 0;
-        const tmp = await expandTable(document.createElement("tbody"), table_config, token, questions_available);
 
-        // Only refresh the table if some questions were loaded
-        // tmp.children.legnth is used here instead of questions_loaded
-        // because different instances of this function can't change it
-        // (questions_loaded is a global variable)
-        if (tmp.children.length > 0) {
-            tbl_body.replaceWith(tmp);
-            tbl_body = tmp;
-        }
-        else {
-            token = backup.token;
-            table_config.category = backup.category;
-            table_config.difficulty = backup.difficulty;
-            questions_loaded = backup.questions_loaded;
-            questions_available = backup.questions_available;
-        }
-        
+        const tmp = await expandTable(document.createElement("tbody"), table_config, token, questions_available);
+        tbl_body.replaceWith(tmp);
+        tbl_body = tmp;
+
     });
 
 });
@@ -197,6 +170,24 @@ async function getSessionToken() {
             throw new Error(`Bad response code to token request: ${response_json.response_code}`);
         }
         return response_json.token;
+    }
+    catch (error) {
+        console.error(error);
+        alert("Something went wrong while contacting the API. Try refreshing the page.");
+    }
+}
+
+// Reset the API token
+async function resetToken(token) {
+    try {
+        const response = await fetch(`https://opentdb.com/api_token.php?command=reset&token=${token}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const response_json = await response.json();
+        if (response_json.response_code != 0) {
+            throw new Error(`Bad response code to token reset request: ${response_json.response_code}`);
+        }
     }
     catch (error) {
         console.error(error);
