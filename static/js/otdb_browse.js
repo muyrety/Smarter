@@ -1,5 +1,10 @@
 // Track how many questions are loaded. Resets on category/difficulty change.
 let questions_loaded = 0;
+const errors = {
+    no_questions_left: "All available questions already loaded",
+    getQuestions_http: "HTTP error when requesting questions: ",
+    too_many_requests_code: "429"
+}
 
 document.addEventListener("DOMContentLoaded", async function () {
     let table_config = {
@@ -7,10 +12,23 @@ document.addEventListener("DOMContentLoaded", async function () {
         difficulty: "any"
     };
 
-    const token = await getSessionToken();
+    let token;
+    try {
+        token = await getSessionToken();
+    }
+    catch (error) {
+        logErrors(error);
+        return;
+    }
 
     // Track questions available. Changes accordingly on category/difficulty change.
-    let questions_available = await getQuestionCount(table_config);
+    let questions_available;
+    try {
+        questions_available = await getQuestionCount(table_config);
+    }
+    catch (error) {
+        logErrors(error);
+    }
     
     // Initialize the table with information
     let tbl_body = await expandTable(document.createElement("tbody"), table_config, token, questions_available);
@@ -21,34 +39,43 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     const configForm = document.getElementById("configurationForm");
+    const formButton = document.getElementById("formButton");
     configForm.addEventListener("submit", async function (e) {
         e.preventDefault();
-        
-        // Get the elements from the form
-        category = configForm.elements.category.value;
-        difficulty = configForm.elements.difficulty.value;
+        formButton.setAttribute("disabled", "");
 
         // Configure the table, so that future extends make use of user config
-        table_config.category = category;
-        table_config.difficulty = difficulty;
+        table_config.category = configForm.elements.category.value;
+        table_config.difficulty = configForm.elements.difficulty.value;
 
-        await resetToken(token);
-        questions_available = await getQuestionCount(table_config);
-        questions_loaded = 0;
+        try {
+            await resetToken(token) 
+            questions_available = await getQuestionCount(table_config);
+            questions_loaded = 0;
 
-        const tmp = await expandTable(document.createElement("tbody"), table_config, token, questions_available);
-        tbl_body.replaceWith(tmp);
-        tbl_body = tmp;
-
+            const tmp = await expandTable(document.createElement("tbody"), table_config, token, questions_available);
+            tbl_body.replaceWith(tmp);
+            tbl_body = tmp;
+        }
+        catch (error) {
+            logErrors(error);
+        }
+        formButton.removeAttribute("disabled");
     });
 
 });
 
 async function getQuestionCount(config) {
     const question_cap = 1000;
+    const bad_parameter_error = "Unexpected error: invalid config parameter passed to getQuestionCount()";
 
     if (config.category !== "any") {
-        const response = await fetch(`https://opentdb.com/api_count.php?category=${category}`);
+        category_int = Number(config.category);
+        if (!Number.isInteger(category_int) || category_int < 9 || category_int > 32) {
+            throw new Error(bad_parameter_error)
+        }
+
+        const response = await fetch(`https://opentdb.com/api_count.php?category=${config.category}`);
         if (!response.ok) {
             throw new Error(`HTTP error while querying API for question count: ${response.status}`);
         }
@@ -74,7 +101,7 @@ async function getQuestionCount(config) {
                 break;
 
             default:
-                throw new Error("Unexpected error: invalid config parameter passed to getQuestionCount()")
+                throw new Error(bad_parameter_error)
         }
         return total > question_cap ? question_cap : total;
     }
@@ -85,47 +112,28 @@ async function getQuestionCount(config) {
 
 async function getQuestions(config, token, questions_available) {
     const base_url = "https://opentdb.com/api.php?";
-    const http_error_message = "HTTP error when requesting questions: ";
-    const http_too_many_requests = "429";
-    const no_questions_left_message = "All available questions already loaded";
 
     // Get data from the API
-    try {
-        let amount = questions_available - questions_loaded;
-        amount = amount > 50 ? 50 : amount;
-        if (amount <= 0) {
-            throw new Error(no_questions_left_message);
-        }
-            
-        const category = config.category === "any" ? "" : `&category=${config.category}`;
-        const difficulty = config.difficulty === "any" ? "" : `&difficulty=${config.difficulty}`;
-        
-        const response = await fetch(`${base_url}amount=${amount}${category}${difficulty}&token=${token}`);
-
-        if (!response.ok) {
-            throw new Error(`${http_error_message}${response.status}`);
-        }
-
-        const response_json = await response.json();
-        if (response_json.response_code != 0) {
-            throw new Error(`Bad response code to question request: ${response_json.response_code}`);
-        }
-        return response_json.results;
+    let amount = questions_available - questions_loaded;
+    amount = amount > 50 ? 50 : amount;
+    if (amount <= 0) {
+        throw new Error(errors.no_questions_left);
     }
-    catch (error) {
-        console.error(error);
 
-        if (error.message === `${http_error_message}${http_too_many_requests}`) {
-            alert("You have made too many question requests. Please wait at least 5 seconds before loading more questions.");
-        }
-        else if (error.message === no_questions_left_message) {
-            alert("You have exhausted all the questions. Please refresh the page to continue browsing.");
-        }
-        else {
-            alert("An unexpected error occured, try refreshing the page");
-        }
-        return null;
+    const category = config.category === "any" ? "" : `&category=${config.category}`;
+    const difficulty = config.difficulty === "any" ? "" : `&difficulty=${config.difficulty}`;
+
+    const response = await fetch(`${base_url}amount=${amount}${category}${difficulty}&token=${token}`);
+
+    if (!response.ok) {
+        throw new Error(`${errors.getQuestions_http}${response.status}`);
     }
+
+    const response_json = await response.json();
+    if (response_json.response_code != 0) {
+        throw new Error(`Bad response code to question request: ${response_json.response_code}`);
+    }
+    return response_json.results;
 }
 
 // Helper function to parse API data
@@ -136,10 +144,13 @@ function HTMLToText(html) {
 }
 
 async function expandTable(tbl_body, config, token, questions_available) {
-    const questions = await getQuestions(config, token, questions_available);
-
+    let questions;
+    try {
+        questions = await getQuestions(config, token, questions_available);
+    }
     // Retain the already loaded questions if getQuestions() fails
-    if (questions === null) {
+    catch (error) {
+        logErrors(error);
         return tbl_body;
     }
 
@@ -159,38 +170,40 @@ async function expandTable(tbl_body, config, token, questions_available) {
         
 // Get session token from the API
 async function getSessionToken() {
-    try {
-        const response = await fetch("https://opentdb.com/api_token.php?command=request");
-        if (!response.ok) {
-            throw new Error(`HTTP error when requesting token: ${response.status}`);
-        }
-        const response_json = await response.json();
-        if (response_json.response_code != 0)
-        {
-            throw new Error(`Bad response code to token request: ${response_json.response_code}`);
-        }
-        return response_json.token;
+    const response = await fetch("https://opentdb.com/api_token.php?command=request");
+    if (!response.ok) {
+        throw new Error(`HTTP error when requesting token: ${response.status}`);
     }
-    catch (error) {
-        console.error(error);
-        alert("Something went wrong while contacting the API. Try refreshing the page.");
+    const response_json = await response.json();
+    if (response_json.response_code != 0)
+    {
+        throw new Error(`Bad response code to token request: ${response_json.response_code}`);
     }
+    return response_json.token;
 }
 
 // Reset the API token
 async function resetToken(token) {
-    try {
-        const response = await fetch(`https://opentdb.com/api_token.php?command=reset&token=${token}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const response_json = await response.json();
-        if (response_json.response_code != 0) {
-            throw new Error(`Bad response code to token reset request: ${response_json.response_code}`);
-        }
+    const response = await fetch(`https://opentdb.com/api_token.php?command=reset&token=${token}`);
+    if (!response.ok) {
+        throw new Error(`HTTP error when reseting token: ${response.status}`);
     }
-    catch (error) {
-        console.error(error);
-        alert("Something went wrong while contacting the API. Try refreshing the page.");
+    const response_json = await response.json();
+    if (response_json.response_code != 0) {
+        throw new Error(`Bad response code to token reset request: ${response_json.response_code}`);
+    }
+}
+
+function logErrors(error) {
+    console.error(error);
+
+    if (error.message === `${errors.getQuestions_http}${errors.too_many_requests_code}`) {
+        alert("You have made too many question requests. Please wait at least 5 seconds before loading more questions.");
+    }
+    else if (error.message === errors.no_questions_left) {
+        alert("You have exhausted all the questions. Please refresh the page to continue browsing.");
+    }
+    else {
+        alert("An unexpected error occured, try refreshing the page");
     }
 }
