@@ -1,5 +1,6 @@
 // Track how many questions are loaded. Resets on category/difficulty change.
 let questions_loaded = 0;
+
 const errors = {
     no_questions_left: "All available questions already loaded",
     getQuestions_http: "HTTP error when requesting questions: ",
@@ -52,6 +53,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             await resetToken(token) 
             questions_available = await getQuestionCount(table_config);
             questions_loaded = 0;
+            changeButton(true);
 
             const tmp = await expandTable(document.createElement("tbody"), table_config, token, questions_available);
             tbl_body.replaceWith(tmp);
@@ -150,7 +152,12 @@ async function expandTable(tbl_body, config, token, questions_available) {
     }
     // Retain the already loaded questions if getQuestions() fails
     catch (error) {
-        logErrors(error);
+        if (error.message === errors.no_questions_left) {
+            changeButton(false);
+        }
+        else {
+            logErrors(error);
+        }
         return tbl_body;
     }
 
@@ -200,10 +207,20 @@ function logErrors(error) {
     if (error.message === `${errors.getQuestions_http}${errors.too_many_requests_code}`) {
         alert("You have made too many question requests. Please wait at least 5 seconds before loading more questions.");
     }
-    else if (error.message === errors.no_questions_left) {
-        alert("You have exhausted all the questions. Please refresh the page to continue browsing.");
-    }
     else {
         alert("An unexpected error occured, try refreshing the page");
+    }
+}
+
+function changeButton(enable) {
+    let end_reached = document.getElementById("endReached");
+    let button = document.getElementById("loadQuestions");
+    if (enable) {
+        end_reached.classList.toggle("d-none", true);
+        button.classList.toggle("d-none", false);
+    }
+    else {
+        end_reached.classList.toggle("d-none", false);
+        button.classList.toggle("d-none", true);
     }
 }
