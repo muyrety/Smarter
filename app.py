@@ -62,6 +62,11 @@ def get_questions():
 def index():
     return render_template("index.html")
 
+# Login required
+@app.route("/add_questions")
+def add_questions():
+    return render_template("add_questions.html")
+
 @app.route("/otdb_browse")
 def otdb_browse():
     return render_template("otdb_browse.html")

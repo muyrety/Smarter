@@ -5,7 +5,7 @@ const errors = {
     no_questions_left: "All available questions already loaded",
     getQuestions_http: "HTTP error when requesting questions: ",
     too_many_requests_code: "429"
-}
+};
 
 document.addEventListener("DOMContentLoaded", async function () {
     let table_config = {
