@@ -9,19 +9,19 @@
 {% block main %}
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-lg-5 col-md-6 col-sm-8">
+        <div class="col-lg-5 col-md-7 col-sm-9">
             <form method="post" action="{{ url_for('add_questions') }}">
                 <div class="my-2">
                     <label for="type" class="form-label text-info">Type</label>
-                    <select required class="form-select" name="type">
-                        <option value="multiple">Multiple choice</option>
+                    <select required class="form-select" name="type" id="type">
+                        <option selected value="multiple">Multiple choice</option>
                         <option value="boolean">True / False</option>
                     </select>
                 </div>
                 <div class="my-2">
                     <label for="category" class="form-label text-info">Category</label>
-                    <select required class="form-select" name="category">
-                        <option value="9">General Knowledge</option>
+                    <select required class="form-select" id="category" name="category">
+                        <option selected value="9">General Knowledge</option>
                         <option value="10">Entertainment: Books</option>
                         <option value="11">Entertainment: Film</option>
                         <option value="12">Entertainment: Music</option>
@@ -49,40 +49,44 @@
                 </div>
                 <div class="my-2">
                     <label for="difficulty" class="form-label text-info">Difficulty</label>
-                    <select required class="form-select" name="difficulty">
-                        <option value="easy">Easy</option>
+                    <select required class="form-select" id="difficulty" name="difficulty">
+                        <option selected value="easy">Easy</option>
                         <option value="medium">Medium</option>
                         <option value="hard">Hard</option>
                     </select>
                 </div>
                 <div class="my-2">
                     <label for="question" class="form-label text-info">Question</label>
-                    <input required type="text" autocomplete="off" class="form-control" name="question">
+                    <input required type="text" autocomplete="off" class="form-control" name="question" id="question">
                 </div>
-                <div id="answers">
-                    <div class="my-2">
-                        <label for="correctAnswer" class="form-label text-success">Correct answer</label>
-                        <input required type="text" autocomplete="off" class="form-control" name="correctAnswer">
-                    </div>
-                    <div class="my-2">
-                        <label for="incorrectAnswer1" class="form-label text-danger">Incorrect answer 1</label>
-                        <input required type="text" autocomplete="off" class="form-control" name="incorrectAnswer1">
-                    </div>
-                    <div class="my-2">
-                        <label for="incorrectAnswer2" class="form-label text-danger">Incorrect answer 2</label>
-                        <input required type="text" autocomplete="off" class="form-control" name="incorrectAnswer2">
-                    </div>
-                    <div class="my-2">
-                        <label for="incorrectAnswer3" class="form-label text-danger">Incorrect answer 3</label>
-                        <input required type="text" autocomplete="off" class="form-control" name="incorrectAnswer3">
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary mt-2 text-center">Submit for review</button>
-                    </div>
+                <div class="my-2">
+                    <label for="correctAnswerMultiple" class="form-label text-success">Correct answer</label>
+                    <input required type="text" autocomplete="off" class="form-control" name="correctAnswerMultiple" id="correctAnswerMultiple">
+                </div>
+                <div class="my-2 d-none">
+                    <label for="correctAnswerBoolean" class="form-label text-success">Correct answer</label>
+                    <select required class="form-select" name="correctAnswerBoolean" id="correctAnswerBoolean">
+                        <option selected value="true">True</option>
+                        <option value="false">False</option>
+                    </select>
+                </div>
+                <div class="my-2">
+                    <label for="incorrectAnswer1" class="form-label text-danger">Incorrect answer 1</label>
+                    <input required type="text" autocomplete="off" class="form-control" name="incorrectAnswers" id="incorrectAnswer1">
+                </div>
+                <div class="my-2">
+                    <label for="incorrectAnswer2" class="form-label text-danger">Incorrect answer 2</label>
+                    <input required type="text" autocomplete="off" class="form-control" name="incorrectAnswers" id="incorrectAnswer2">
+                </div>
+                <div class="my-2">
+                    <label for="incorrectAnswer3" class="form-label text-danger">Incorrect answer 3</label>
+                    <input required type="text" autocomplete="off" class="form-control" name="incorrectAnswers" id="incorrectAnswer3">
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary mt-2">Submit for review</button>
                 </div>
             </form>
         </div>
     </div> 
 </div>
 {% endblock %}
-

@@ -62,7 +62,7 @@ def get_questions():
 def index():
     return render_template("index.html")
 
-# Login required
+# TODO: Login required
 @app.route("/add_questions")
 def add_questions():
     return render_template("add_questions.html")
