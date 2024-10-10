@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, g, redirect, abort, url_for, session
+from flask import Flask, render_template, request, g, redirect, abort, url_for, session, flash
+from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import sqlite3
@@ -8,6 +9,15 @@ app = Flask(__name__)
 
 # Environment variable "smarter_key" must be set for sessions to work
 app.secret_key = os.environ["smarter_key"]
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get("user_id") is None:
+            return redirect(url_for('login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
+
 
 """ Database configuration for sqlite3 """
 
@@ -58,12 +68,14 @@ def get_questions():
     return redirect(url_for("index"))
 
 
+""" Site routes """
+
 @app.route("/")
 def index():
     return render_template("index.html")
 
-# TODO: Login required
 @app.route("/add_questions")
+@login_required
 def add_questions():
     return render_template("add_questions.html")
 
@@ -119,13 +131,17 @@ def register():
     session["user_id"] = cur.fetchone()[0]
     db.commit()
 
+    flash("You have successfully registered", "success")
+
     return redirect(url_for("index"))
 
 @app.route("/login", methods = ["GET", "POST"])
 def login():
+    app.logger.debug(request.url)
     if request.method == "GET":
-        return render_template("login.html", badPassword=False)
+        return render_template("login.html")
 
+    next = request.form.get("next")
     username = request.form.get("username")
     password = request.form.get("password")
 
@@ -143,7 +159,11 @@ def login():
 
     # Reload the login form with a message if password is incorrect
     if not check_password_hash(user_data[1], password):
-        return render_template("login.html", badPassword=True)
+        flash("The password you entered is incorrect", "error")
+        # Keep the next argument between requests
+        if next:
+            return redirect(url_for("login", next=next))
+        return render_template("login.html")
 
     # Remember user
     if request.form.get("remember_password"):
@@ -152,11 +172,16 @@ def login():
         session.permanent = False
     session["user_id"] = user_data[0]
 
+    flash("You have successfully logged-in", "success")
+    if next:
+        return redirect(next)
+
     return redirect(url_for("index"))
 
 @app.route("/logout")
 def logout():
     session.pop("user_id", None)
+    flash("You are now logged out", "success")
     return redirect(url_for("index"))
 
 
