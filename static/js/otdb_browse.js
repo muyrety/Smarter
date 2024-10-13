@@ -152,12 +152,7 @@ async function expandTable(tbl_body, config, token, questions_available) {
     }
     // Retain the already loaded questions if getQuestions() fails
     catch (error) {
-        if (error.message === errors.no_questions_left) {
-            changeButton(false);
-        }
-        else {
-            logErrors(error);
-        }
+        logErrors(error);
         return tbl_body;
     }
 
@@ -172,6 +167,11 @@ async function expandTable(tbl_body, config, token, questions_available) {
         tbl_body.appendChild(row);
     } 
     questions_loaded += questions.length;
+
+    if (questions_loaded >= questions_available) {
+        changeButton(false);
+    }
+
     return tbl_body;
 }
         
