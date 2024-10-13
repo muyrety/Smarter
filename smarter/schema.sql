@@ -1,6 +1,10 @@
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS user_questions;
+DROP TABLE IF EXISTS answers;
+
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
-    username TEXT NOT NULL,
+    username TEXT NOT NULL UNIQUE,
     hash TEXT NOT NULL
 );
 
@@ -11,7 +15,7 @@ CREATE TABLE user_questions (
     creator_id TEXT NOT NULL,
     category INTEGER NOT NULL CHECK(category >= 9 AND category <= 32),
     difficulty TEXT NOT NULL CHECK(difficulty IN ('easy', 'medium', 'hard')),
-    question TEXT NOT NULL
+    question TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE answers (
