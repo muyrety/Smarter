@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// Display different options when question is True/False and multiple choice
 function checkFormTemplate(question_type) {
     const correct_bool_div = document.getElementById("correctAnswerBoolean").parentNode;
     const correct_multiple_div = document.getElementById("correctAnswerMultiple").parentNode;

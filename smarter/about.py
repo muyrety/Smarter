@@ -4,4 +4,4 @@ bp = Blueprint("about", __name__, url_prefix="/about")
 
 @bp.route("/opentdb")
 def opentdb():
-    return render_template("opentdb.html")
+    return render_template("about/opentdb.html")

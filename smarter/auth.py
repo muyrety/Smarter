@@ -30,7 +30,7 @@ def load_logged_in_user():
 @bp.route("/register", methods = ["GET", "POST"])
 def register():
     if request.method == "GET":
-        return render_template("register.html")
+        return render_template("auth/register.html")
 
     username = request.form["username"]
     password = request.form["password"]
@@ -54,26 +54,26 @@ def register():
                     "INSERT INTO users(username, hash) VALUES(?, ?)",
                     (username, generate_password_hash(password))
                     )
+            db.commit()
         except db.IntegrityError:
             error = "User already taken"
         else:
             # Remember user
             session.permanent = False
             session["user_id"] = cursor.lastrowid
-            db.commit()
             flash("You have successfully registered", "success")
             return redirect(url_for("index"))
         
     flash(error, "error")
-    return render_template("register.html")
+    return render_template("auth/register.html")
 
 @bp.route("/login", methods = ["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.html")
+        return render_template("auth/login.html")
 
-    next = request.form.get("next")
-    username = request.form["username"]
+    next = request.form["next"]
+    username = request.form["username"].strip()
     password = request.form["password"]
     error = None
 
@@ -82,10 +82,8 @@ def login():
             "SELECT id, hash FROM users WHERE username = ?", (username,)
             ).fetchone()
 
-    # If user not found
     if user_data is None:
         error = "Wrong username"
-
     elif not check_password_hash(user_data["hash"], password):
         error = "The password you entered is incorrect"
 
@@ -96,14 +94,14 @@ def login():
         if next:
             return redirect(url_for("auth.login", next=next))
 
-        return render_template("login.html")
+        return render_template("auth/login.html")
 
     # Remember user
     if request.form.get("remember_password"):
         session.permanent = True
     else:
         session.permanent = False
-    session["user_id"] = user_data[id]
+    session["user_id"] = user_data["id"]
 
     flash("You have successfully logged-in", "success")
     if next:
