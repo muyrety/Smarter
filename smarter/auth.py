@@ -50,17 +50,17 @@ def register():
         try:
             # Register the user
             db = get_db()
-            cursor = db.execute(
+            user_id = db.execute(
                     "INSERT INTO users(username, hash) VALUES(?, ?)",
                     (username, generate_password_hash(password))
-                    )
+                    ).lastrowid
             db.commit()
         except db.IntegrityError:
             error = "User already taken"
         else:
             # Remember user
             session.permanent = False
-            session["user_id"] = cursor.lastrowid
+            session["user_id"] = user_id
             flash("You have successfully registered", "success")
             return redirect(url_for("index"))
         

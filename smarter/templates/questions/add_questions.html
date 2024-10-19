@@ -57,7 +57,7 @@
                 </div>
                 <div class="my-2">
                     <label for="question" class="form-label text-info">Question</label>
-                    <input required type="text" autocomplete="off" class="form-control" name="question" id="question">
+                    <input required type="text" autocomplete="off" class="form-control" name="question" id="question" value="{{ request.form.get("question", "") }}">
                 </div>
                 <div class="my-2">
                     <label for="correctAnswerMultiple" class="form-label text-success">Correct answer</label>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="my-2 d-none">
                     <label for="correctAnswerBoolean" class="form-label text-success">Correct answer</label>
-                    <select required class="form-select" name="correctAnswerBoolean" id="correctAnswerBoolean">
+                    <select class="form-select" name="correctAnswerBoolean" id="correctAnswerBoolean">
                         <option selected value="true">True</option>
                         <option value="false">False</option>
                     </select>
