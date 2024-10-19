@@ -20,13 +20,16 @@ from . import auth
 from . import api
 from . import questions
 from . import about
+from . import admin
+from . import db
 
 app.register_blueprint(auth.bp)
 app.register_blueprint(api.bp)
 app.register_blueprint(questions.bp)
 app.register_blueprint(about.bp)
+app.register_blueprint(admin.bp)
 
-from . import db
+admin.init_app(app)
 db.init_app(app)
 
 @app.route("/")

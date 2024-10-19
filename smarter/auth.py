@@ -1,18 +1,24 @@
 import functools, re
-from flask import Blueprint, redirect, url_for, g, session, request, flash, render_template
+from flask import (
+    Blueprint, redirect, url_for, g, session, request, flash, render_template, abort
+)
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db import get_db
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
-def login_required(f):
-    @functools.wraps(f)
-    def decorated_function(*args, **kwargs):
-        if g.user is None:
-            return redirect(url_for('auth.login', next=request.url))
-        return f(*args, **kwargs)
-    return decorated_function
+def login_required(admin=False):
+    def decorator(f):
+        @functools.wraps(f)
+        def decorated_function(*args, **kwargs):
+            if g.user is None:
+                return redirect(url_for('auth.login', next=request.url))
+            elif admin and not g.user["admin"]:
+                abort(403)
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 @bp.before_app_request
 def load_logged_in_user():
@@ -23,9 +29,19 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = (
-            get_db().execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
-        )
+        db = get_db()
+        row = db.execute("SELECT username FROM users WHERE id = ?", (user_id,)).fetchone()
+        g.user = dict()
+        g.user["username"] = row["username"]
+        g.user["id"] = user_id
+
+        # Check if user is an admin
+        admin = db.execute("SELECT * FROM admins WHERE user_id = ?", (user_id,)).fetchone()
+        if admin is None:
+            g.user["admin"] = False
+        else:
+            g.user["admin"] = True
+
 
 @bp.route("/register", methods = ["GET", "POST"])
 def register():

@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS user_questions;
 DROP TABLE IF EXISTS answers;
+DROP TABLE IF EXISTS admins;
 
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
@@ -25,4 +26,9 @@ CREATE TABLE answers (
     answer TEXT NOT NULL,
     correct INTEGER NOT NULL CHECK(correct = 0 OR correct = 1),
     FOREIGN KEY (question_id) REFERENCES user_questions(id)
+);
+
+CREATE TABLE admins (
+    user_id INTEGER PRIMARY KEY,
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );

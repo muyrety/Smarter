@@ -1,14 +1,12 @@
-from flask import (
-        Blueprint, render_template, request, flash, current_app, redirect,
-        url_for, g
-)
+from flask import Blueprint, render_template, request, flash, redirect, url_for, g
+
 from .auth import login_required
 from .db import get_db
 
 bp = Blueprint("questions", __name__, url_prefix="/questions")
 
 @bp.route("/add", methods = ["GET", "POST"])
-@login_required
+@login_required()
 def add():
     if request.method == "GET":
         return render_template("questions/add_questions.html")
