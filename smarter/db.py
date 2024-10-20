@@ -3,12 +3,16 @@ import click
 from flask import current_app
 from flask import g
 
+def dict_factory(cursor, row):
+    keys = [column[0] for column in cursor.description]
+    return {key: value for key, value in zip(keys, row)}
+
 def get_db():
     if "db" not in g:
         g.db = sqlite3.connect(
             current_app.config["DATABASE"], detect_types=sqlite3.PARSE_DECLTYPES
         )
-        g.db.row_factory = sqlite3.Row
+        g.db.row_factory = dict_factory
 
     return g.db
 

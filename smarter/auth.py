@@ -30,10 +30,7 @@ def load_logged_in_user():
         g.user = None
     else:
         db = get_db()
-        row = db.execute("SELECT username FROM users WHERE id = ?", (user_id,)).fetchone()
-        g.user = dict()
-        g.user["username"] = row["username"]
-        g.user["id"] = user_id
+        g.user = db.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
 
         # Check if user is an admin
         admin = db.execute("SELECT * FROM admins WHERE user_id = ?", (user_id,)).fetchone()
@@ -95,8 +92,8 @@ def login():
 
     db = get_db()
     user_data = db.execute(
-            "SELECT id, hash FROM users WHERE username = ?", (username,)
-            ).fetchone()
+        "SELECT id, hash FROM users WHERE username = ?", (username,)
+    ).fetchone()
 
     if user_data is None:
         error = "Wrong username"

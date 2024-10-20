@@ -1,16 +1,39 @@
-import getpass
 import click
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, g
 from werkzeug.security import generate_password_hash
 from .db import get_db
 from .auth import login_required
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 
-@bp.route("/verify-questions")
+@bp.route("/verify-questions", methods=["GET", "POST"])
 @login_required(admin=True)
 def verify_questions():
-    return render_template("admin/verify_questions.html")
+    if request.method == "GET":
+        db = get_db()
+
+        # Select unverified questions
+        questions = db.execute(
+            '''SELECT q.id, q.type, q.category, q.difficulty, q.question, u.username AS creator
+            FROM user_questions AS q JOIN users AS u ON q.creator_id = u.id WHERE q.verified = 0'''
+        ).fetchall()
+
+        for question in questions:
+            # Convert category numbers to strings
+            question["category"] = g.categories[question["category"]]
+
+            # Load answers
+            answers = db.execute(
+                "SELECT answer, correct FROM answers WHERE question_id = ?", (question["id"],)
+            ).fetchall()
+            question["incorrect_answers"] = []
+            for answer in answers:
+                if answer["correct"]:
+                    question["correct_answer"] = answer["answer"]
+                else:
+                    question["incorrect_answers"].append(answer["answer"])
+
+        return render_template("admin/verify_questions.html", questions=questions)
 
 
 @click.command("add-admin")
