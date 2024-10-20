@@ -1,7 +1,7 @@
 # Smarter
 Web application for playing trivia games using [Flask][], [SQLite][] and [Bootstrap][]. Users are able
 to add new questions or use the ones provided by the [OpenTriviaDatabase][].
-The server has moderation, so submited question are first reviewed by an admin.
+The server has moderation, so submited questions are first reviewed by an admin.
 This project is still under development and many features are not yet implemented.
 
 [OpenTriviaDatabase]: https://opentdb.com/
@@ -35,7 +35,7 @@ $ pip install Flask
 $ git clone https://github.com/muyrety/Smarter.git
 ```
 
-### 3. Generate and set the SECRET_KEY Smarter/instance/config.py to securely sign the session cookies
+### 3. Generate and set the SECRET_KEY in Smarter/instance/config.py to securely sign the session cookies
 ```
 $ python -c 'import secrets; print(secrets.token_hex())'
 YOUR_GENERATED_VALUE
