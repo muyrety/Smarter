@@ -32,3 +32,10 @@ CREATE TABLE admins (
     user_id INTEGER PRIMARY KEY,
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
+
+CREATE TABLE question_status (
+    id INTEGER PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    status TEXT NOT NULL CHECK(status IN ('verified', 'rejected')),
+    FOREIGN KEY (user_id) REFERENCES users (id)
+)
