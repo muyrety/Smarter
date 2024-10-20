@@ -11,7 +11,7 @@ This project is still under development and many features are not yet implemente
 
 # Building
 ## Cloning the repo
-### 1. Create a python virtual environment and install flask ([Python][] and [pip][] are required)
+### 1. Create a python virtual environment and install flask ([Python][] is required)
 **Linux/MacOS**
 ```
 $ mkdir Smarter
@@ -64,6 +64,5 @@ $ flask --app smarter run
 ```
 
 [Python]: https://www.python.org/downloads/
-[pip]: https://pip.pypa.io/en/stable/installation/
 [git]: https://git-scm.com/downloads
 [Deploying to Production]: https://flask.palletsprojects.com/en/3.0.x/deploying/
