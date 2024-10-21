@@ -1,6 +1,6 @@
 # Smarter
-Web application for playing trivia games using [Flask][], [SQLite][] and [Bootstrap][]. Users are able
-to add new questions or use the ones provided by the [OpenTriviaDatabase][].
+Web application for playing trivia games using [Flask][], [SQLite][], [Bootstrap][] and JavaScript.
+Users are able to add new questions or use the ones provided by the [OpenTriviaDatabase][].
 The server has moderation, so submited questions are first reviewed by an admin.
 This project is still under development and many features are not yet implemented.
 
@@ -11,28 +11,26 @@ This project is still under development and many features are not yet implemente
 
 # Building
 ## Cloning the repo
-### 1. Create a python virtual environment and install flask ([Python][] is required)
-**Linux/MacOS**
+### 1. Clone the github repository ([git][] is required)
 ```
-$ mkdir Smarter
+$ git clone https://github.com/muyrety/Smarter.git
+```
+
+### 2. Create a python virtual environment and install flask ([Python][] is required)
+#### Linux/MacOS
+```
 $ cd Smarter
 $ python -m venv .venv 
 $ . .venv/bin/activate
 $ pip install Flask
 ```
 
-**Windows**
+#### Windows
 ```
-> mkdir Smarter
 > cd Smarter
 > python -m venv .venv
 > .venv\Scripts\activate
 > pip install Flask
-```
-
-### 2. Clone the github repository ([git][] is required)
-```
-$ git clone https://github.com/muyrety/Smarter.git
 ```
 
 ### 3. Generate and set the SECRET_KEY in Smarter/instance/config.py to securely sign the session cookies
@@ -58,7 +56,7 @@ or
 $ flask --app smarter add-admin --username YOUR_USERNAME --password YOUR_PASSWORD
 ```
 
-### 6. Run the app (for development purposes, for production see [Deploying to Production])
+### 6. Run the app
 ```
 $ flask --app smarter run
 ```
