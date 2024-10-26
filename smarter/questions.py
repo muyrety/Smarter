@@ -45,7 +45,7 @@ def add():
                 error = "Bad incorrect answers"
 
     if error is not None:
-        flash(error, "error")
+        flash(error, "danger")
         return render_template("questions/add_questions.html")
 
     # Insert the question into the database
@@ -56,7 +56,7 @@ def add():
             (question_type, g.user["id"], category, difficulty, question)
         ).lastrowid
     except db.IntegrityError:
-        flash("This question already exists", "error")
+        flash("This question already exists", "danger")
         return render_template("questions/add_questions.html")
 
     # Insert the answers into the database

@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash
 from .db import get_db
 from .auth import login_required
 from .constants import categories
+from .helpers import add_notification
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -39,20 +40,36 @@ def verify_questions():
 @login_required(admin=True)
 def remove_question(id):
     db = get_db()
+    question = db.execute(
+        "SELECT question, creator_id FROM user_questions WHERE id = ?", (id,)
+    ).fetchone()
     db.execute(
         "DELETE FROM user_questions WHERE id = ?", (id,)
     )
     db.commit()
+
+    add_notification(
+        question["creator_id"], f'Your question "{question["question"]}" was rejected',
+        category="danger"
+    )
     return redirect(url_for("admin.verify_questions"))
 
 @bp.route("/accept/<int:id>", methods=["POST"])
 @login_required(admin=True)
 def accept_question(id):
     db = get_db()
+    question = db.execute(
+        "SELECT question, creator_id FROM user_questions WHERE id = ?", (id,)
+    ).fetchone()
     db.execute(
         "UPDATE user_questions SET verified = 1 WHERE id = ?", (id,)
     )
     db.commit()
+
+    add_notification(
+        question["creator_id"], f'Your question "{question["question"]}" was approved!',
+        category="success"
+    )
     return redirect(url_for("admin.verify_questions"))
 
 @click.command("add-admin")

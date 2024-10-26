@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS user_questions;
 DROP TABLE IF EXISTS answers;
 DROP TABLE IF EXISTS admins;
+DROP TABLE IF EXISTS notifications;
 
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
@@ -33,9 +34,10 @@ CREATE TABLE admins (
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
-CREATE TABLE question_status (
+CREATE TABLE notifications (
     id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    status TEXT NOT NULL CHECK(status IN ('verified', 'rejected')),
+    category TEXT,
+    notification TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id)
-)
+); 

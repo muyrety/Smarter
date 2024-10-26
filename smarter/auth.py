@@ -6,6 +6,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db import get_db
 
+from .helpers import get_notifications
+
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 def login_required(admin=False):
@@ -23,7 +25,7 @@ def login_required(admin=False):
 @bp.before_app_request
 def load_logged_in_user():
     """If a user id is stored in the session, load the user object from
-    the database into g.user."""
+    the database into g.user"""
     user_id = session.get("user_id")
 
     if user_id is None:
@@ -38,6 +40,11 @@ def load_logged_in_user():
             g.user["admin"] = False
         else:
             g.user["admin"] = True
+
+        # Flash any messages left for the user
+        notifications = get_notifications(user_id)
+        for notification in notifications:
+            flash(notification["notification"], notification["category"])
 
 
 @bp.route("/register", methods = ["GET", "POST"])
@@ -77,7 +84,7 @@ def register():
             flash("You have successfully registered", "success")
             return redirect(url_for("index"))
         
-    flash(error, "error")
+    flash(error, "danger")
     return render_template("auth/register.html")
 
 @bp.route("/login", methods = ["GET", "POST"])
@@ -101,7 +108,7 @@ def login():
         error = "The password you entered is incorrect"
 
     if error is not None:
-        flash(error, "error")
+        flash(error, "danger")
 
         # Keep the next argument between requests
         if next:
