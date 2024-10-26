@@ -52,24 +52,24 @@ def register():
 
     if not username or not password or not repeat_password:
         error = "Missing one or more fields"
-    elif re.search("\s", username):
-        error = "Username has whitespace"
+    elif re.search(r"\s", username):
+        error = "Usernames cannot have whitespace"
     elif len(password) < 8: 
         error = "Password is not long enough"
     elif password != repeat_password:
         error = "Passwords don't match"
 
     if error is None:
+        db = get_db()
         try:
             # Register the user
-            db = get_db()
             user_id = db.execute(
                     "INSERT INTO users(username, hash) VALUES(?, ?)",
                     (username, generate_password_hash(password))
                     ).lastrowid
             db.commit()
         except db.IntegrityError:
-            error = "User already taken"
+            error = "Username already taken"
         else:
             # Remember user
             session.permanent = False

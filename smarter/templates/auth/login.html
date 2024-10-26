@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 
-{% block head %}
-<script type="module" src="{{ url_for('static', filename='js/login.js') }}"></script>
-{% endblock %}
-
 {% block title %} Login {% endblock %}
 
 {% block main %}
@@ -13,8 +9,7 @@
             <form method="post" action="{{ url_for('auth.login') }}">
                 <div class="my-3">
                     <label for="username" class="form-label">Username</label>
-                    <input type="text" required autofocus autocomplete="off" name="username" class="form-control" id="username">
-                    <div class="form-text text-danger d-none" id="badUsernameField">This username does not exist</div>
+                    <input value="{{ request.form.get('username', '') }}" type="text" required autofocus autocomplete="off" name="username" class="form-control" id="username">
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>

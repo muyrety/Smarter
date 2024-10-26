@@ -1,8 +1,9 @@
 import click
-from flask import Blueprint, render_template, request, g, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for
 from werkzeug.security import generate_password_hash
 from .db import get_db
 from .auth import login_required
+from .constants import categories
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -19,7 +20,7 @@ def verify_questions():
 
     for question in questions:
         # Convert category numbers to strings
-        question["category"] = g.categories[question["category"]]
+        question["category"] = categories[question["category"]]
 
         # Load answers
         answers = db.execute(

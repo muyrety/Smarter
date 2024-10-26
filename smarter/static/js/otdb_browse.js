@@ -7,7 +7,7 @@ const errors = {
     too_many_requests_code: "429"
 };
 
-document.addEventListener("DOMContentLoaded", async function () {
+document.addEventListener("DOMContentLoaded", async function() {
     let table_config = {
         category: "any",
         difficulty: "any"
@@ -30,18 +30,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     catch (error) {
         logErrors(error);
     }
-    
+
     // Initialize the table with information
     let tbl_body = await expandTable(document.createElement("tbody"), table_config, token, questions_available);
     document.getElementById("questionTable").appendChild(tbl_body);
 
-    document.getElementById("loadQuestions").addEventListener("click", function () {
+    document.getElementById("loadQuestions").addEventListener("click", function() {
         expandTable(tbl_body, table_config, token, questions_available);
     });
 
     const configForm = document.getElementById("configurationForm");
     const formButton = document.getElementById("formButton");
-    configForm.addEventListener("submit", async function (e) {
+    configForm.addEventListener("submit", async function(e) {
         e.preventDefault();
         formButton.setAttribute("disabled", "");
 
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         table_config.difficulty = configForm.elements.difficulty.value;
 
         try {
-            await resetToken(token) 
+            await resetToken(token)
             questions_available = await getQuestionCount(table_config);
             questions_loaded = 0;
             changeButton(true);
@@ -91,15 +91,15 @@ async function getQuestionCount(config) {
                 break;
 
             case "easy":
-                total = response_json.category_question_count.total_easy_question_count; 
+                total = response_json.category_question_count.total_easy_question_count;
                 break;
 
             case "medium":
-                total = response_json.category_question_count.total_medium_question_count; 
+                total = response_json.category_question_count.total_medium_question_count;
                 break;
 
             case "hard":
-                total = response_json.category_question_count.total_hard_question_count; 
+                total = response_json.category_question_count.total_hard_question_count;
                 break;
 
             default:
@@ -165,7 +165,7 @@ async function expandTable(tbl_body, config, token, questions_available) {
             row.appendChild(data);
         }
         tbl_body.appendChild(row);
-    } 
+    }
     questions_loaded += questions.length;
 
     if (questions_loaded >= questions_available) {
@@ -174,7 +174,7 @@ async function expandTable(tbl_body, config, token, questions_available) {
 
     return tbl_body;
 }
-        
+
 // Get session token from the API
 async function getSessionToken() {
     const response = await fetch("https://opentdb.com/api_token.php?command=request");
@@ -182,8 +182,7 @@ async function getSessionToken() {
         throw new Error(`HTTP error when requesting token: ${response.status}`);
     }
     const response_json = await response.json();
-    if (response_json.response_code != 0)
-    {
+    if (response_json.response_code != 0) {
         throw new Error(`Bad response code to token request: ${response_json.response_code}`);
     }
     return response_json.token;

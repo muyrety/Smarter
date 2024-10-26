@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-<script type="module" src="{{ url_for('static', filename='js/register.js') }}"></script>
+<script src="{{ url_for('static', filename='js/register.js') }}"></script>
 {% endblock %}
 {% block title %} Register {% endblock %}
 
@@ -12,8 +12,7 @@
             <form method="post" action="{{ url_for('auth.register') }}">
                 <div class="my-3">
                     <label for="username" class="form-label">Username</label>
-                    <input type="text" required autofocus autocomplete="off" name="username" class="form-control" id="username">
-                    <div class="form-text text-danger d-none" id="badUsernameField"></div>
+                    <input value="{{ request.form.get('username', '') }}" type="text" required autofocus autocomplete="off" name="username" class="form-control" id="username">
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password (8+ characters)</label>

@@ -17,6 +17,10 @@ def add():
     difficulty = request.form["difficulty"]
     question_type = request.form["type"]
     question = request.form["question"]
+    category = None
+    incorrect_answers = None 
+    correct_answer = None
+
     try:
         category = int(request.form["category"])
     except ValueError:
@@ -34,7 +38,6 @@ def add():
             correct_answer = request.form["correctAnswerBoolean"]
             if correct_answer not in ["true", "false"]:
                 error = "Bad boolean question answer"
-            incorrect_answers = None 
         elif question_type == "multiple":
             correct_answer = request.form["correctAnswerMultiple"]
             incorrect_answers = request.form.getlist("incorrectAnswers")
@@ -46,8 +49,8 @@ def add():
         return render_template("questions/add_questions.html")
 
     # Insert the question into the database
+    db = get_db()
     try:
-        db = get_db()
         question_id = db.execute(
             "INSERT INTO user_questions (type, creator_id, category, difficulty, question) VALUES (?, ?, ?, ?, ?)",
             (question_type, g.user["id"], category, difficulty, question)
