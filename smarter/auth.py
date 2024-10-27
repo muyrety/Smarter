@@ -7,6 +7,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from .db import get_db
 
 from .helpers import get_notifications
+from better_profanity import profanity
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -61,6 +62,8 @@ def register():
         error = "Missing one or more fields"
     elif re.search(r"\s", username):
         error = "Usernames cannot have whitespace"
+    elif profanity.contains_profanity(username):
+        error = "Profanity detected in username"
     elif len(password) < 8: 
         error = "Password is not long enough"
     elif password != repeat_password:

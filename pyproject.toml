@@ -4,6 +4,7 @@ version = "1.0.0"
 description = "Web application for playing trivia games using Flask and the Open Trivia Database API"
 dependencies = [
     "flask",
+    "better_profanity",
 ]
 
 
