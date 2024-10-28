@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 
 from .auth import login_required
 from .db import get_db
+from .constants import categories
 
 bp = Blueprint("questions", __name__, url_prefix="/questions")
 
@@ -82,4 +83,13 @@ def otdb_browse():
 
 @bp.route("/browse/user-generated")
 def user_browse():
-    return render_template("questions/user_browse.html")
+    questions = get_db().execute(
+        """SELECT q.id, q.category, q.difficulty, q.question, u.username AS creator
+        FROM user_questions AS q JOIN users AS u ON u.id = q.creator_id"""
+    ).fetchall()
+
+    # Replace category numbers with strings
+    for question in questions:
+        question["category"] = categories[question["category"]]
+
+    return render_template("questions/user_browse.html", questions=questions)

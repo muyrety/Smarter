@@ -13,5 +13,36 @@
             <button class="btn btn-primary" disabled>User-created questions</button>
         </div>
     </div>
+
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Category</th>
+                <th scope="col">Difficulty</th>
+                <th scope="col">Question</th>
+                <th scope="col">Created by</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for question in questions %}
+            <tr>
+                <th scope="row">{{ question["id"] }}</th>
+                <td>{{ question["category"] }}</td>
+                <td>{{ question["difficulty"] }}</td>
+                <td>{{ question["question"] }}</td>
+                <td>{{ question["creator"] }}</td>
+            {% if g.user["admin"] %}
+                <td>
+                    <form method="post" action="{{ url_for('admin.remove_question', id=question["id"], next=request.url) }}">
+                        <button onclick="return confirm('Are you sure? This action is irreversible')" type="submit" class="btn btn-danger">Remove</button>
+                    </form>
+                </td>
+            {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p class="text-center">You have reached the end</p>
 </div>
 {% endblock %}

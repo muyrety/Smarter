@@ -127,10 +127,8 @@ def login():
     session["user_id"] = user_data["id"]
 
     flash("You have successfully logged-in", "success")
-    if next:
-        return redirect(next)
 
-    return redirect(url_for("index"))
+    return redirect(next if next else url_for("index"))
 
 @bp.route("/logout")
 def logout():

@@ -1,5 +1,5 @@
 import click
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, request
 from werkzeug.security import generate_password_hash
 from .db import get_db
 from .auth import login_required
@@ -49,10 +49,10 @@ def remove_question(id):
     db.commit()
 
     add_notification(
-        question["creator_id"], f'Your question "{question["question"]}" was rejected',
-        category="danger"
+        question["creator_id"], f'Your question "{question["question"]}" was rejected/deleted',
+        category="question-removal"
     )
-    return redirect(url_for("admin.verify_questions"))
+    return redirect(request.args.get("next", url_for("admin.verify_questions")))
 
 @bp.route("/accept/<int:id>", methods=["POST"])
 @login_required(admin=True)
