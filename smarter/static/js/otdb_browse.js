@@ -50,8 +50,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         table_config.difficulty = configForm.elements.difficulty.value;
 
         try {
-            await resetToken(token)
             questions_available = await getQuestionCount(table_config);
+            token = await resetToken(token);
             questions_loaded = 0;
             changeButton(true);
 
@@ -77,7 +77,7 @@ async function getQuestionCount(config) {
             throw new Error(bad_parameter_error)
         }
 
-        const response = await fetch(`https://opentdb.com/api_count.php?category=${config.category}`);
+        const response = await fetch(`https://otriviata.com/api_count.php?category=${config.category}`);
         if (!response.ok) {
             throw new Error(`HTTP error while querying API for question count: ${response.status}`);
         }
@@ -113,7 +113,7 @@ async function getQuestionCount(config) {
 }
 
 async function getQuestions(config, token, questions_available) {
-    const base_url = "https://opentdb.com/api.php?";
+    const base_url = "https://otriviata.com/api.php?";
 
     // Get data from the API
     let amount = questions_available - questions_loaded;
@@ -132,7 +132,7 @@ async function getQuestions(config, token, questions_available) {
     }
 
     const response_json = await response.json();
-    if (response_json.response_code != 0) {
+    if (response_json.response_code && response_json.response_code != 0) {
         throw new Error(`Bad response code to question request: ${response_json.response_code}`);
     }
     return response_json.results;
@@ -159,6 +159,13 @@ async function expandTable(tbl_body, config, token, questions_available) {
     // Add data to the table
     for (const question of questions) {
         const row = document.createElement("tr");
+
+        // Add ID as a header
+        const id = document.createElement("th");
+        id.textContent = HTMLToText(question.id);
+        id.setAttribute("scope", "row");
+        row.appendChild(id);
+
         for (const attribute of ["category", "difficulty", "question"]) {
             const data = document.createElement("td");
             data.textContent = HTMLToText(question[attribute]);
@@ -177,12 +184,12 @@ async function expandTable(tbl_body, config, token, questions_available) {
 
 // Get session token from the API
 async function getSessionToken() {
-    const response = await fetch("https://opentdb.com/api_token.php?command=request");
+    const response = await fetch("https://otriviata.com/api_token.php?command=request");
     if (!response.ok) {
         throw new Error(`HTTP error when requesting token: ${response.status}`);
     }
     const response_json = await response.json();
-    if (response_json.response_code != 0) {
+    if (response_json.response_code && response_json.response_code != 0) {
         throw new Error(`Bad response code to token request: ${response_json.response_code}`);
     }
     return response_json.token;
@@ -190,14 +197,15 @@ async function getSessionToken() {
 
 // Reset the API token
 async function resetToken(token) {
-    const response = await fetch(`https://opentdb.com/api_token.php?command=reset&token=${token}`);
+    const response = await fetch(`https://otriviata.com/api_token.php?command=reset&token=${token}`);
     if (!response.ok) {
         throw new Error(`HTTP error when reseting token: ${response.status}`);
     }
     const response_json = await response.json();
-    if (response_json.response_code != 0) {
+    if (response_json.response_code && response_json.response_code != 0) {
         throw new Error(`Bad response code to token reset request: ${response_json.response_code}`);
     }
+    return response_json.token;
 }
 
 function logErrors(error) {
