@@ -2,6 +2,10 @@
 
 {% block title %} Browse questions {% endblock %}
 
+{% block head %}
+<script src="{{ url_for('static', filename='js/user_browse.js') }}"></script>
+{% endblock %}
+
 {% block main %}
 <div class="container">
     <div class="row justify-content-center mt-3">
@@ -14,6 +18,53 @@
         </div>
     </div>
 
+    <form id="configurationForm">
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-5 m-2">
+                <label for="category" class="form-label text-info">Category</label>
+                <select required class="form-select" id="category">
+                    <option selected value="any">Any</option>
+                    <option>General Knowledge</option>
+                    <option>Entertainment: Books</option>
+                    <option>Entertainment: Film</option>
+                    <option>Entertainment: Music</option>
+                    <option>Entertainment: Musicals & Theatres</option>
+                    <option>Entertainment: Television</option>
+                    <option>Entertainment: Video Games</option>
+                    <option>Entertainment: Board Games</option>
+                    <option>Science & Nature</option>
+                    <option>Science: Computers</option>
+                    <option>Science: Mathematics</option>
+                    <option>Mythology</option>
+                    <option>Sports</option>
+                    <option>Geography</option>
+                    <option>History</option>
+                    <option>Politics</option>
+                    <option>Art</option>
+                    <option>Celebrities</option>
+                    <option>Animals</option>
+                    <option>Vehicles</option>
+                    <option>Entertainment: Comics</option>
+                    <option>Science: Gadgets</option>
+                    <option>Entertainment: Japanese Anime & Manga</option>
+                    <option>Entertainment: Cartoon & Animations</option>	
+                </select>
+            </div>
+            <div class="col-md-5 m-2">
+                <label for="difficulty" class="form-label text-info">Difficulty</label>
+                <select required class="form-select" id="difficulty">
+                    <option selected value="any">Any</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            <div class="col-md-1 m-2 d-flex justify-content-center align-items-end">
+                <button class="btn btn-primary" id="formButton" type="submit">Apply</button>
+            </div>
+        </div>
+    </form>
+
     <table class="table mt-3">
         <thead>
             <tr>
@@ -24,7 +75,7 @@
                 <th scope="col">Created by</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="questionTableBody">
             {% for question in questions %}
             <tr>
                 <th scope="row">{{ question["id"] }}</th>
