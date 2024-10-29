@@ -3,7 +3,36 @@
 {% block title %} Why was my question removed? {% endblock %}
 
 {% block main %}
-<div class="container text-center">
+<div class="container text-center justify-content-center">
     <h1 class="mt-2"> Why was my question removed? </h1>
+    <p>
+        Question removal can happen due to various reasons. First of all, if you have recently submitted
+        a new question, it is very likely that it has been rejected. Make sure your submission meets these criteria:
+    </p>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"> 
+            Similar question has not been submitted before. You can check questions submitted by users 
+            <a class="link-offset-2" href="{{ url_for('questions.user_browse') }}"> here </a>.
+        </li>
+        <li class="list-group-item"> 
+            Your question has the right category and difficulty selected. Make sure to go through all
+            categories and difficulty levels to decide which one best suits your question.
+        </li>
+        <li class="list-group-item">
+            The answers to your question are factually correct. Check if the correct answer is definitely correct
+            and incorrect answers are all unambiguously incorrect.
+        </li>
+        <li class="list-group-item">
+            The answer fields are filled correctly. For example, if a question has 3 incorrect answers, make sure they are all different.
+        </li>
+    </ul>
+
+    <hr>
+
+    <p>
+        On the other hand, if your question was accepted and then deleted afterwards,
+        it may have been overlooked and its flaws detected only after submission.
+        Again, make sure it met all the aforementioned requirements.
+    </p>
 </div>
 {% endblock %}
