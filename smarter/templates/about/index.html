@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %} About {% endblock %}
+
+{% block main %}
+<div class="container text-center">
+    <h1 class="mt-2"> About Smarter </h1>
+    <p> 
+        Smarter is an open source platform for playing trivia games, contributing new questions and having fun!
+        It is built using the Flask framework and stylized with Bootstrap. All contributions are welcome.
+        For more specific information, refer to the pages below.
+    </p>
+    <ul class="list-group list-group-flush">
+        <a class="list-group-item list-group-item-action" href="{{ url_for('about.license') }}">License</a>
+        <a class="list-group-item list-group-item-action" href="{{ url_for('about.opentdb') }}">Open Trivia Database (where we source a lot of our questions from!)</a>
+        <a class="list-group-item list-group-item-action" href="{{ url_for('about.question_removed') }}">Possible reasons for question removal</a>
+        <a class="list-group-item list-group-item-action" href="{{ url_for('about.contacts') }}">Get in contact</a>
+    </ul>
+</div>
+{% endblock %}
