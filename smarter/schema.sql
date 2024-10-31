@@ -37,7 +37,7 @@ CREATE TABLE admins (
 CREATE TABLE notifications (
     id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    category TEXT,
+    category TEXT NOT NULL,
     notification TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id)
 ); 

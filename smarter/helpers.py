@@ -13,13 +13,9 @@ def get_notifications(user_id):
     db.execute("DELETE FROM notifications WHERE user_id = ?", (user_id,))
     db.commit()
 
-    for notification in notifications:
-        if not notification["category"]:
-            notification["category"] = "message"
-
     return notifications
 
-def add_notification(user_id, message, category=None):
+def add_notification(user_id, message, category="message"):
     db = get_db()
     db.execute(
         "INSERT INTO notifications (user_id, category, notification) VALUES (?, ?, ?)",
