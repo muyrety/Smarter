@@ -10,7 +10,7 @@ bp = Blueprint("questions", __name__, url_prefix="/questions")
 @login_required()
 def add():
     if request.method == "GET":
-        return render_template("questions/add_questions.html")
+        return render_template("questions/add.html")
 
     error = None
 
@@ -47,7 +47,7 @@ def add():
 
     if error is not None:
         flash(error, "danger")
-        return render_template("questions/add_questions.html")
+        return render_template("questions/add.html")
 
     # Insert the question into the database
     db = get_db()
@@ -58,7 +58,7 @@ def add():
         ).lastrowid
     except db.IntegrityError:
         flash("This question already exists", "danger")
-        return render_template("questions/add_questions.html")
+        return render_template("questions/add.html")
 
     # Insert the answers into the database
     db.execute(
