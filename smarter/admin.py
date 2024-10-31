@@ -15,8 +15,8 @@ def verify_questions():
 
     # Select unverified questions
     questions = db.execute(
-        '''SELECT q.id, q.type, q.category, q.difficulty, q.question, u.username AS creator
-        FROM user_questions AS q JOIN users AS u ON q.creator_id = u.id WHERE q.verified = 0'''
+        """SELECT q.id, q.type, q.category, q.difficulty, q.question, u.username AS creator
+        FROM questions AS q JOIN users AS u ON q.creator_id = u.id WHERE q.verified = 0 AND q.source = 'user'"""
     ).fetchall()
 
     for question in questions:
@@ -41,10 +41,10 @@ def verify_questions():
 def remove_question(id):
     db = get_db()
     question = db.execute(
-        "SELECT question, creator_id FROM user_questions WHERE id = ?", (id,)
+        "SELECT question, creator_id FROM questions WHERE id = ?", (id,)
     ).fetchone()
     db.execute(
-        "DELETE FROM user_questions WHERE id = ?", (id,)
+        "DELETE FROM questions WHERE id = ?", (id,)
     )
     db.commit()
 
@@ -59,10 +59,10 @@ def remove_question(id):
 def accept_question(id):
     db = get_db()
     question = db.execute(
-        "SELECT question, creator_id FROM user_questions WHERE id = ?", (id,)
+        "SELECT question, creator_id FROM questions WHERE id = ?", (id,)
     ).fetchone()
     db.execute(
-        "UPDATE user_questions SET verified = 1 WHERE id = ?", (id,)
+        "UPDATE questions SET verified = 1 WHERE id = ?", (id,)
     )
     db.commit()
 

@@ -1,8 +1,11 @@
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS user_questions;
+DROP TABLE IF EXISTS questions;
 DROP TABLE IF EXISTS answers;
 DROP TABLE IF EXISTS admins;
 DROP TABLE IF EXISTS notifications;
+DROP TABLE IF EXISTS games;
+DROP TABLE IF EXISTS players;
+DROP TABLE IF EXISTS question_sets;
 
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
@@ -10,15 +13,18 @@ CREATE TABLE users (
     hash TEXT NOT NULL
 );
 
-CREATE TABLE user_questions (
+CREATE TABLE questions (
     id INTEGER PRIMARY KEY,
-    verified INTEGER DEFAULT 0 NOT NULL CHECK(verified = 0 OR verified = 1),
+    source TEXT NOT NULL CHECK (source = 'opentdb' OR source = 'user'),
+    verified INTEGER DEFAULT 0 CHECK(verified = 0 OR verified = 1),
     type TEXT NOT NULL CHECK(type IN ('boolean', 'multiple')),
-    creator_id INTEGER NOT NULL,
+    creator_id INTEGER,
     category INTEGER NOT NULL CHECK(category >= 9 AND category <= 32),
     difficulty TEXT NOT NULL CHECK(difficulty IN ('easy', 'medium', 'hard')),
-    question TEXT NOT NULL UNIQUE,
-    FOREIGN KEY (creator_id) REFERENCES users(id)
+    question TEXT NOT NULL,
+    question_set_id INTEGER DEFAULT NULL,
+    FOREIGN KEY (creator_id) REFERENCES users(id),
+    FOREIGN KEY (question_set_id) REFERENCES question_sets (id)
 );
 
 CREATE TABLE answers (
@@ -26,7 +32,7 @@ CREATE TABLE answers (
     question_id INTEGER NOT NULL,
     answer TEXT NOT NULL,
     correct INTEGER NOT NULL CHECK(correct = 0 OR correct = 1),
-    FOREIGN KEY (question_id) REFERENCES user_questions(id)
+    FOREIGN KEY (question_id) REFERENCES questions(id)
 );
 
 CREATE TABLE admins (
@@ -41,3 +47,29 @@ CREATE TABLE notifications (
     notification TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id)
 ); 
+
+CREATE TABLE games (
+    id INTEGER PRIMARY KEY,
+    owner_id INTEGER NOT NULL,
+    question_set_id INTEGER NOT NULL,
+    joinable INTEGER NOT NULL DEFAULT 1 CHECK (joinable = 0 OR joinable = 1),
+    current_question_id INTEGER DEFAULT NULL,
+    FOREIGN KEY (owner_id) REFERENCES users (id),
+    FOREIGN KEY (question_set_id) REFERENCES question_set (id),
+    FOREIGN KEY (current_question_id) REFERENCES questions (id)
+);
+
+CREATE TABLE players (
+    game_id INTEGER NOT NULL,
+    player_id INTEGER NOT NULL,
+    correct_answers INTEGER DEFAULT 0,
+    FOREIGN KEY (game_id) REFERENCES games (id),
+    FOREIGN KEY (player_id) REFERENCES users (id)
+);
+
+CREATE TABLE question_sets (
+    id INTEGER PRIMARY KEY,
+    creator_id INTEGER NOT NULL,
+    temporary INTEGER NOT NULL CHECK (temporary = 0 OR temporary = 1),
+    FOREIGN KEY (creator_id) REFERENCES users (id)
+);

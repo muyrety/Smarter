@@ -53,8 +53,8 @@ def add():
     db = get_db()
     try:
         question_id = db.execute(
-            "INSERT INTO user_questions (type, creator_id, category, difficulty, question) VALUES (?, ?, ?, ?, ?)",
-            (question_type, g.user["id"], category, difficulty, question)
+            "INSERT INTO questions (source, type, creator_id, category, difficulty, question) VALUES (?, ?, ?, ?, ?, ?)",
+            ("user", question_type, g.user["id"], category, difficulty, question)
         ).lastrowid
     except db.IntegrityError:
         flash("This question already exists", "danger")
@@ -85,7 +85,7 @@ def otdb_browse():
 def user_browse():
     questions = get_db().execute(
         """SELECT q.id, q.category, q.difficulty, q.question, u.username AS creator
-        FROM user_questions AS q JOIN users AS u ON u.id = q.creator_id"""
+        FROM questions AS q JOIN users AS u ON u.id = q.creator_id WHERE q.source = 'user'"""
     ).fetchall()
 
     # Replace category numbers with strings
