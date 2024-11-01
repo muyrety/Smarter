@@ -6,7 +6,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-5">
-            <form action="{{ url_for('questions.user_browse') }}">
+            <form method="post" action="{{ url_for('question_sets.add') }}">
                 <div class="mt-4">
                     <label for="name" class="form-label">Question set name</label>
                     <input required type="text" autocomplete="off" class="form-control" name="name" id="name">
