@@ -22,9 +22,7 @@ CREATE TABLE questions (
     category INTEGER NOT NULL CHECK(category >= 9 AND category <= 32),
     difficulty TEXT NOT NULL CHECK(difficulty IN ('easy', 'medium', 'hard')),
     question TEXT NOT NULL,
-    question_set_id INTEGER DEFAULT NULL,
     FOREIGN KEY (creator_id) REFERENCES users(id),
-    FOREIGN KEY (question_set_id) REFERENCES question_sets (id)
 );
 
 CREATE TABLE answers (
@@ -72,4 +70,12 @@ CREATE TABLE question_sets (
     creator_id INTEGER NOT NULL,
     temporary INTEGER NOT NULL CHECK (temporary = 0 OR temporary = 1),
     FOREIGN KEY (creator_id) REFERENCES users (id)
+);
+
+CREATE TABLE question_set_questions (
+    question_set_id INTEGER NOT NULL,
+    question_id INTEGER NOT NULL,
+    PRIMARY KEY (question_set_id, question_id),
+    FOREIGN KEY (question_set_id) REFERENCES question_sets (id),
+    FOREIGN KEY (question_id) REFERENCES questions (id)
 );
