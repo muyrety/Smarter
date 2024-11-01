@@ -2,7 +2,8 @@ document.addEventListener("DOMContentLoaded", function() {
     let configForm = document.getElementById("configurationForm");
     configForm.addEventListener("submit", function(e) {
         e.preventDefault();
-        let category = configForm.elements.category.value;
+        // Get the selected categories text
+        let category = configForm.elements.category.selectedOptions[0].textContent;
         let difficulty = configForm.elements.difficulty.value;
         configureTable(category, difficulty);
     });
@@ -16,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const rowDifficulty = row.children[2].textContent;
 
             // Show the entry if both category and difficulty match
-            if ((category === "any" || rowCategory === category) &&
+            if ((category === "Any" || rowCategory === category) &&
                 (difficulty === "any" || rowDifficulty === difficulty)) {
                 row.classList.toggle("d-none", false)
             }

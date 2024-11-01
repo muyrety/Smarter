@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "browsing.html" %}
 
 {% block title %} Browse questions {% endblock %}
 
@@ -6,94 +6,47 @@
 <script src="{{ url_for('static', filename='js/user_browse.js') }}"></script>
 {% endblock %}
 
-{% block main %}
-<div class="container">
-    <div class="row justify-content-center mt-3">
-        <div class="col-lg-4 col-md-5 m-2 text-center">
-            <a href="{{ url_for('questions.otdb_browse') }}" class="btn btn-primary">Open Trivia DB questions</a>
-            <a href="{{ url_for('about.opentdb') }}" class="link-offset-2 link-underline ms-1">?</a>
-        </div>
-        <div class="col-lg-4 col-md-5 m-2 text-center">
-            <button class="btn btn-primary" disabled>User-created questions</button>
-        </div>
+{% block selection %}
+<div class="row justify-content-center mt-3">
+    <div class="col-lg-4 col-md-5 m-2 text-center">
+        <a href="{{ url_for('questions.otdb_browse') }}" class="btn btn-primary">Open Trivia DB questions</a>
+        <a href="{{ url_for('about.opentdb') }}" class="link-offset-2 link-underline ms-1">?</a>
     </div>
-
-    <form id="configurationForm">
-        <div class="row justify-content-center mt-3">
-            <div class="col-md-5 m-2">
-                <label for="category" class="form-label text-info">Category</label>
-                <select required class="form-select" id="category">
-                    <option selected value="any">Any</option>
-                    <option>General Knowledge</option>
-                    <option>Entertainment: Books</option>
-                    <option>Entertainment: Film</option>
-                    <option>Entertainment: Music</option>
-                    <option>Entertainment: Musicals & Theatres</option>
-                    <option>Entertainment: Television</option>
-                    <option>Entertainment: Video Games</option>
-                    <option>Entertainment: Board Games</option>
-                    <option>Science & Nature</option>
-                    <option>Science: Computers</option>
-                    <option>Science: Mathematics</option>
-                    <option>Mythology</option>
-                    <option>Sports</option>
-                    <option>Geography</option>
-                    <option>History</option>
-                    <option>Politics</option>
-                    <option>Art</option>
-                    <option>Celebrities</option>
-                    <option>Animals</option>
-                    <option>Vehicles</option>
-                    <option>Entertainment: Comics</option>
-                    <option>Science: Gadgets</option>
-                    <option>Entertainment: Japanese Anime & Manga</option>
-                    <option>Entertainment: Cartoon & Animations</option>	
-                </select>
-            </div>
-            <div class="col-md-5 m-2">
-                <label for="difficulty" class="form-label text-info">Difficulty</label>
-                <select required class="form-select" id="difficulty">
-                    <option selected value="any">Any</option>
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
-                </select>
-            </div>
-            <div class="col-md-1 m-2 d-flex justify-content-center align-items-end">
-                <button class="btn btn-primary" id="formButton" type="submit">Apply</button>
-            </div>
-        </div>
-    </form>
-
-    <table class="table mt-3">
-        <thead>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Category</th>
-                <th scope="col">Difficulty</th>
-                <th scope="col">Question</th>
-                <th scope="col">Created by</th>
-            </tr>
-        </thead>
-        <tbody id="questionTableBody">
-            {% for question in questions %}
-            <tr>
-                <th scope="row">{{ question["id"] }}</th>
-                <td>{{ question["category"] }}</td>
-                <td>{{ question["difficulty"] }}</td>
-                <td>{{ question["question"] }}</td>
-                <td>{{ question["creator"] }}</td>
-            {% if g.user["admin"] %}
-                <td>
-                    <form method="post" action="{{ url_for('admin.remove_question', id=question["id"], next=request.url) }}">
-                        <button onclick="return confirm('Are you sure? This action is irreversible')" type="submit" class="btn btn-danger">Remove</button>
-                    </form>
-                </td>
-            {% endif %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <p class="text-center">You have reached the end</p>
+    <div class="col-lg-4 col-md-5 m-2 text-center">
+        <button class="btn btn-primary" disabled>User-created questions</button>
+    </div>
 </div>
+{% endblock %}
+
+{% block table %}
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Category</th>
+            <th scope="col">Difficulty</th>
+            <th scope="col">Question</th>
+            <th scope="col">Created by</th>
+        </tr>
+    </thead>
+    <tbody id="questionTableBody">
+        {% for question in questions %}
+        <tr>
+            <th scope="row">{{ question["id"] }}</th>
+            <td>{{ question["category"] }}</td>
+            <td>{{ question["difficulty"] }}</td>
+            <td>{{ question["question"] }}</td>
+            <td>{{ question["creator"] }}</td>
+        {% if g.user["admin"] %}
+            <td>
+                <form method="post" action="{{ url_for('admin.remove_question', id=question["id"], next=request.url) }}">
+                    <button onclick="return confirm('Are you sure? This action is irreversible')" type="submit" class="btn btn-danger">Remove</button>
+                </form>
+            </td>
+        {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p class="text-center">You have reached the end</p>
 {% endblock %}
