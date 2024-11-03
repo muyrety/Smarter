@@ -28,6 +28,7 @@
             <th scope="col">Difficulty</th>
             <th scope="col">Question</th>
             <th scope="col">Created by</th>
+            <th scope="col" class="invisible">Select</th>
         </tr>
     </thead>
     <tbody id="questionTableBody">
@@ -38,12 +39,12 @@
             <td>{{ question["difficulty"] }}</td>
             <td>{{ question["question"] }}</td>
             <td>{{ question["creator"] }}</td>
-            <form class="selectQuestion">
-                <input name="id" type="hidden" value="{{ question["id"] }}">
             <td>
-                <button name="submitButton" class="btn btn-success" type="submit">Select</button>
+                <form class="selectQuestion">
+                    <input name="id" type="hidden" value="{{ question["id"] }}">
+                    <button name="submitButton" class="btn btn-success" type="submit">Select</button>
+                </form>
             </td>
-            </form>
         </tr>
         {% endfor %}
     </tbody>

@@ -17,15 +17,19 @@ document.addEventListener("DOMContentLoaded", function() {
     disableSelected(ids);
 
     const forms = document.getElementsByClassName("selectQuestion");
+
+    // Add an event listener to each form
     Array.from(forms).forEach(function(form) {
         form.addEventListener("submit", function(e) {
             e.preventDefault();
             ids.push(form.elements.id.value);
+            // Add the ID to session storage
             sessionStorage.setItem("user_question_ids", JSON.stringify(ids));
             form.elements.submitButton.setAttribute("disabled", "");
         });
     });
 
+    // Disable buttons with the selected IDs
     function disableSelected(ids) {
         const table = document.getElementById("questionTableBody");
         const id_col = 0;
@@ -33,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
         for (const row of table.children) {
             if (row.children[id_col].textContent in ids) {
                 // Select the rows form and disable it's submit button
-                row.children[form_col].elements.submitButton.setAttribute("disabled", "");
+                row.children[form_col].children[0].elements.submitButton.setAttribute("disabled", "");
             }
         }
     }

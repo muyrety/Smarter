@@ -8,6 +8,10 @@ const errors = {
 };
 
 document.addEventListener("DOMContentLoaded", async function() {
+    // Indicates if select buttons should be shown to each question
+    // (for adding question to question sets)
+    const selectRequired = Boolean(document.getElementById("selectIndicator"));
+
     let table_config = {
         category: "any",
         difficulty: "any"
@@ -32,11 +36,12 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     // Initialize the table with information
-    let tbl_body = await expandTable(document.createElement("tbody"), table_config, token, questions_available);
+    let tbl_body = await expandTable(document.createElement("tbody"), table_config, token,
+        questions_available, selectRequired);
     document.getElementById("questionTable").appendChild(tbl_body);
 
     document.getElementById("loadQuestions").addEventListener("click", function() {
-        expandTable(tbl_body, table_config, token, questions_available);
+        expandTable(tbl_body, table_config, token, questions_available, selectRequired);
     });
 
     const configForm = document.getElementById("configurationForm");
@@ -55,7 +60,8 @@ document.addEventListener("DOMContentLoaded", async function() {
             questions_loaded = 0;
             changeButton(true);
 
-            const tmp = await expandTable(document.createElement("tbody"), table_config, token, questions_available);
+            const tmp = await expandTable(document.createElement("tbody"),
+                table_config, token, questions_available, selectRequired);
             tbl_body.replaceWith(tmp);
             tbl_body = tmp;
         }
@@ -145,7 +151,7 @@ function HTMLToText(html) {
     return temp.textContent;
 }
 
-async function expandTable(tbl_body, config, token, questions_available) {
+async function expandTable(tbl_body, config, token, questions_available, selectRequired) {
     let questions;
     try {
         questions = await getQuestions(config, token, questions_available);
@@ -157,12 +163,15 @@ async function expandTable(tbl_body, config, token, questions_available) {
     }
 
     // Add data to the table
-    for (const question of questions) {
+    for (let i = 0; i < questions.length; i++) {
         const row = document.createElement("tr");
         for (const attribute of ["category", "difficulty", "question"]) {
             const data = document.createElement("td");
-            data.textContent = HTMLToText(question[attribute]);
+            data.textContent = HTMLToText(questions[i][attribute]);
             row.appendChild(data);
+        }
+        if (selectRequired) {
+            row.appendChild(getSelectCell(i));
         }
         tbl_body.appendChild(row);
     }
@@ -222,4 +231,14 @@ function changeButton(enable) {
         end_reached.classList.toggle("d-none", false);
         button.classList.toggle("d-none", true);
     }
+}
+
+function getSelectCell(questionNo) {
+    const cell = document.createElement("td");
+    cell.innerHTML =
+        `<form class="selectQuestion">
+            <input name="row" type="hidden" value="${questionNo}">
+            <button name="submitButton" class="btn btn-success" type="submit">Select</button>
+         </form>`;
+    return cell;
 }

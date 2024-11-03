@@ -1,1 +1,36 @@
 {% extends "browsing.html" %}
+
+{% block title %} Select questions {% endblock %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='js/otdb_browse.js') }}"></script>
+{% endblock %}
+
+{% block selection %}
+<div class="row justify-content-center mt-3">
+    <div class="col-lg-4 col-md-5 m-2 text-center">
+        <button class="btn btn-primary" disabled>Open Trivia DB questions</button>
+        <a href="{{ url_for('about.opentdb') }}" class="link-offset-2 link-underline ms-1">?</a>
+    </div>
+    <div class="col-lg-4 col-md-5 m-2 text-center">
+        <a href="{{ url_for('question_sets.add_user_generated') }}" class="btn btn-primary">User-created questions</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block table %}
+<table id="questionTable" class="table mt-3">
+    <thead>
+        <tr>
+            <th scope="col">Category</th>
+            <th scope="col">Difficulty</th>
+            <th scope="col">Question</th>
+            <th scope="col" id="selectIndicator" class="invisible">Select</th>
+        </tr>
+    </thead>
+</table>
+<div class="text-center">
+    <button class="btn btn-outline-secondary mb-3" id="loadQuestions">Load more</button>
+    <p class="d-none" id="endReached">You have reached the end</p>
+</div>
+{% endblock %}

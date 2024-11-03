@@ -22,6 +22,7 @@ def add():
         error = "Name is required"
     elif profanity.contains_profanity(name):
         error = "Question set name contains profanity"
+    # TODO: Check for duplicate questions
 
     if error is not None:
         flash(error, "danger")
