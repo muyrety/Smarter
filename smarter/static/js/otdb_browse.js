@@ -7,6 +7,8 @@ const errors = {
     too_many_requests_code: "429"
 };
 
+const tableChanged = new CustomEvent("tableChanged");
+
 document.addEventListener("DOMContentLoaded", async function() {
     // Indicates if select buttons should be shown to each question
     // (for adding question to question sets)
@@ -39,9 +41,11 @@ document.addEventListener("DOMContentLoaded", async function() {
     let tbl_body = await expandTable(document.createElement("tbody"), table_config, token,
         questions_available, selectRequired);
     document.getElementById("questionTable").appendChild(tbl_body);
+    document.dispatchEvent(tableChanged);
 
     document.getElementById("loadQuestions").addEventListener("click", function() {
         expandTable(tbl_body, table_config, token, questions_available, selectRequired);
+        document.dispatchEvent(tableChanged);
     });
 
     const configForm = document.getElementById("configurationForm");
@@ -64,6 +68,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 table_config, token, questions_available, selectRequired);
             tbl_body.replaceWith(tmp);
             tbl_body = tmp;
+            document.dispatchEvent(tableChanged);
         }
         catch (error) {
             logErrors(error);
@@ -163,18 +168,19 @@ async function expandTable(tbl_body, config, token, questions_available, selectR
     }
 
     // Add data to the table
-    for (let i = 0; i < questions.length; i++) {
+    for (const question of questions) {
         const row = document.createElement("tr");
         for (const attribute of ["category", "difficulty", "question"]) {
             const data = document.createElement("td");
-            data.textContent = HTMLToText(questions[i][attribute]);
+            data.textContent = HTMLToText(question[attribute]);
             row.appendChild(data);
         }
         if (selectRequired) {
-            row.appendChild(getSelectCell(i));
+            row.appendChild(getSelectCell(question));
         }
         tbl_body.appendChild(row);
     }
+
     questions_loaded += questions.length;
 
     if (questions_loaded >= questions_available) {
@@ -233,12 +239,26 @@ function changeButton(enable) {
     }
 }
 
-function getSelectCell(questionNo) {
-    const cell = document.createElement("td");
-    cell.innerHTML =
-        `<form class="selectQuestion">
-            <input name="row" type="hidden" value="${questionNo}">
-            <button name="submitButton" class="btn btn-success" type="submit">Select</button>
-         </form>`;
-    return cell;
+function getSelectCell(question) {
+    const form = document.createElement("form");
+    form.setAttribute("class", "selectQuestion");
+    form.innerHTML =
+        `<button name="submitButton" class="btn btn-success" type="submit">Select</button>
+            <input name="type" type="hidden" value="${HTMLToText(question['type'])}">
+            <input name="difficulty" type="hidden" value="${HTMLToText(question['difficulty'])}">
+            <input name="category" type="hidden" value="${HTMLToText(question['category'])}">
+            <input name="question" type="hidden" value="${HTMLToText(question['question'])}">
+            <input name="correct_answer" type="hidden" value="${HTMLToText(question['correct_answer'])}">`;
+
+    for (const incorrect_answer of question["incorrect_answers"]) {
+        const input = document.createElement("input");
+        input.setAttribute("name", "incorrect_answers");
+        input.setAttribute("type", "hidden");
+        input.setAttribute("value", HTMLToText(incorrect_answer));
+        form.appendChild(input);
+    }
+
+    const td = document.createElement("td");
+    td.appendChild(form);
+    return td;
 }
