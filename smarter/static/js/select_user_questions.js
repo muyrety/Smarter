@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    ids = JSON.parse(sessionStorage.getItem("user_question_ids"));
+    const ids = JSON.parse(sessionStorage.getItem("user_question_ids"));
     disableSelected(ids);
 
     const forms = document.getElementsByClassName("selectQuestion");
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const table = document.getElementById("questionTableBody");
         const id_col = 0;
         for (const row of table.children) {
-            if (row.children[id_col].textContent in ids) {
+            if (ids.includes(row.children[id_col].textContent)) {
                 // Select the rows form and disable it's submit button
                 row.getElementsByClassName("selectQuestion")[0].elements.submitButton.setAttribute("disabled", "");
             }
