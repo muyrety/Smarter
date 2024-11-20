@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     const ids = JSON.parse(sessionStorage.getItem("user_question_ids"));
+    setButtonText(document.getElementById("submitSet"), ids,
+        JSON.parse(sessionStorage.getItem("otdb_questions")));
     disableSelected(ids);
 
     const forms = document.getElementsByClassName("selectQuestion");
@@ -29,6 +31,8 @@ document.addEventListener("DOMContentLoaded", function() {
             // Add the ID to session storage
             sessionStorage.setItem("user_question_ids", JSON.stringify(ids));
             form.elements.submitButton.setAttribute("disabled", "");
+            setButtonText(document.getElementById("submitSet"), ids,
+                JSON.parse(sessionStorage.getItem("otdb_questions")));
         });
     });
 
@@ -42,6 +46,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 row.getElementsByClassName("selectQuestion")[0].elements.submitButton.setAttribute("disabled", "");
             }
         }
+    }
+
+    function setButtonText(button, user_questions, otdb_questions) {
+        let questionCount = user_questions.length + otdb_questions.length;
+        button.textContent = `Submit question set (${questionCount} questions selected)`;
     }
 
 });

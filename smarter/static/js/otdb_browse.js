@@ -43,8 +43,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     document.getElementById("questionTable").appendChild(tbl_body);
     document.dispatchEvent(tableChanged);
 
-    document.getElementById("loadQuestions").addEventListener("click", function() {
-        expandTable(tbl_body, table_config, token, questions_available, selectRequired);
+    document.getElementById("loadQuestions").addEventListener("click", async function() {
+        await expandTable(tbl_body, table_config, token, questions_available, selectRequired);
         document.dispatchEvent(tableChanged);
     });
 
