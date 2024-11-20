@@ -7,7 +7,11 @@
 <script src="{{ url_for('static', filename='js/select_otdb_questions.js') }}"></script>
 {% endblock %}
 
-{% block selection %}
+{% block header %}
+<div class="text-center mt-3">
+    <button class="btn btn-success"> Submit question set (0 questions selected) </button>
+</div>
+
 <div class="row justify-content-center mt-3">
     <div class="col-lg-4 col-md-5 m-2 text-center">
         <button class="btn btn-primary" disabled>Open Trivia DB questions</button>

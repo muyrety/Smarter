@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     const parameters = new URLSearchParams(window.location.search);
     // If this page is loaded just after adding a question_set, load the neccessary values
+    // and change the URL so page refreshes don't interact with sessionStorage data
     if (parameters.get("name")) {
         sessionStorage.clear();
         sessionStorage.setItem("name", parameters.get("name"));
@@ -12,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
         else {
             sessionStorage.setItem("temporary", JSON.stringify(true));
         }
+        window.location.href = '/question-sets/add/user-generated';
     }
 
     const ids = JSON.parse(sessionStorage.getItem("user_question_ids"));

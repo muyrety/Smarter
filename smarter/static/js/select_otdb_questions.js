@@ -1,6 +1,7 @@
 document.addEventListener("tableChanged", function() {
     const parameters = new URLSearchParams(window.location.search);
     // If this page is loaded just after adding a question_set, load the neccessary values
+    // and change the URL so that refreshes don't reset sessionStorage data
     if (parameters.get("name")) {
         sessionStorage.clear();
         sessionStorage.setItem("name", parameters.get("name"));
@@ -12,6 +13,7 @@ document.addEventListener("tableChanged", function() {
         else {
             sessionStorage.setItem("temporary", JSON.stringify(true));
         }
+        window.location.href = '/question-sets/add/opentdb';
     }
 
     const forms = document.getElementsByClassName("selectQuestion");
