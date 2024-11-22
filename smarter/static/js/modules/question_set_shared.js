@@ -11,13 +11,16 @@ async function submitSet() {
         return;
     }
     const response = await fetch("/question-sets/submit", {
+        headers: {
+            "Content-Type": "application/json",
+        },
         method: "POST",
-        body: {
+        body: JSON.stringify({
             name: sessionStorage.getItem("name"),
             temporary: sessionStorage.getItem("temporary"),
             otdb_questions: sessionStorage.getItem("otdb_questions"),
             user_questions: sessionStorage.getItem("user_question_ids")
-        }
+        })
     });
     if (response.ok) {
         window.location.replace(response.url);
