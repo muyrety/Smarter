@@ -1,3 +1,5 @@
+import { setButtonText, submitSet, hideAlert } from "./modules/question_set_shared.js";
+
 document.addEventListener("tableChanged", function() {
     const parameters = new URLSearchParams(window.location.search);
     // If this page is loaded just after adding a question_set, load the neccessary values
@@ -20,7 +22,9 @@ document.addEventListener("tableChanged", function() {
     let questions = JSON.parse(sessionStorage.getItem("otdb_questions"));
     const submitSetButton = document.getElementById("submitSet");
     setButtonText(submitSetButton, JSON.parse(sessionStorage.getItem("user_question_ids")), questions);
+    submitSetButton.addEventListener("click", submitSet);
     disableSelected(questions, forms);
+
     Array.from(forms).forEach(function(form) {
         form.addEventListener("submit", function(e) {
             e.preventDefault();
@@ -32,6 +36,8 @@ document.addEventListener("tableChanged", function() {
             setButtonText(submitSetButton, JSON.parse(sessionStorage.getItem("user_question_ids")), questions);
         });
     });
+
+    document.getElementById("notEnoughQuestionsDismiss").addEventListener("click", hideAlert);
 
     // Disable selected questions' buttons
     function disableSelected(questions, forms) {
@@ -65,8 +71,4 @@ document.addEventListener("tableChanged", function() {
         };
     }
 
-    function setButtonText(button, user_questions, otdb_questions) {
-        let questionCount = user_questions.length + otdb_questions.length;
-        button.textContent = `Submit question set (${questionCount} questions selected)`;
-    }
 });

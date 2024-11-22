@@ -48,3 +48,8 @@ def add_user_generated():
 @login_required()
 def add_opentdb():
     return render_template("question-sets/add_otdb_questions.html")
+
+@bp.route("/submit", methods=["POST"])
+@login_required()
+def submit_set():
+    return redirect(url_for("index"))
