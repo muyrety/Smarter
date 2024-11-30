@@ -1,3 +1,4 @@
+import { categories } from "./modules/constants.js"
 // Track how many questions are loaded. Resets on category/difficulty change.
 let questions_loaded = 0;
 
@@ -83,7 +84,7 @@ async function getQuestionCount(config) {
     const bad_parameter_error = "Unexpected error: invalid config parameter passed to getQuestionCount()";
 
     if (config.category !== "any") {
-        category_int = Number(config.category);
+        const category_int = Number(config.category);
         if (!Number.isInteger(category_int) || category_int < 9 || category_int > 32) {
             throw new Error(bad_parameter_error)
         }
@@ -241,20 +242,34 @@ function changeButton(enable) {
 
 function getSelectCell(question) {
     const form = document.createElement("form");
-    form.setAttribute("class", "selectQuestion");
-    form.innerHTML =
-        `<button name="submitButton" class="btn btn-success" type="submit">Select</button>
-            <input name="type" type="hidden" value="${HTMLToText(question['type'])}">
-            <input name="difficulty" type="hidden" value="${HTMLToText(question['difficulty'])}">
-            <input name="category" type="hidden" value="${HTMLToText(question['category'])}">
-            <input name="question" type="hidden" value="${HTMLToText(question['question'])}">
-            <input name="correct_answer" type="hidden" value="${HTMLToText(question['correct_answer'])}">`;
+    form.className = "selectQuestion";
+
+    const button = document.createElement("button");
+    button.name = "submitButton";
+    button.type = "submit";
+    button.className = "btn btn-success";
+    button.textContent = "Select";
+    form.appendChild(button);
+
+    const category = document.createElement("input");
+    category.name = "category";
+    category.type = "hidden";
+    category.value = categories[HTMLToText(question["category"])];
+    form.appendChild(category);
+
+    for (const question_part of ["type", "difficulty", "question", "correct_answer"]) {
+        const input = document.createElement("input");
+        input.name = question_part;
+        input.type = "hidden";
+        input.value = HTMLToText(question[question_part]);
+        form.appendChild(input);
+    }
 
     for (const incorrect_answer of question["incorrect_answers"]) {
         const input = document.createElement("input");
-        input.setAttribute("name", "incorrect_answers");
-        input.setAttribute("type", "hidden");
-        input.setAttribute("value", HTMLToText(incorrect_answer));
+        input.name = "incorrect_answers";
+        input.type = "hidden";
+        input.value = HTMLToText(incorrect_answer);
         form.appendChild(input);
     }
 

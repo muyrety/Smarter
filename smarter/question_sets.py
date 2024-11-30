@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, g
 from .db import get_db
 from .constants import categories
 from better_profanity import profanity
@@ -22,7 +22,8 @@ def add():
         error = "Name is required"
     elif profanity.contains_profanity(name):
         error = "Question set name contains profanity"
-    # TODO: Check for duplicate questions
+    elif get_db().execute("SELECT * FROM question_sets WHERE name = ?", (name,)).fetchone():
+        error = "This question set name is already used"
 
     if error is not None:
         flash(error, "danger")
@@ -53,3 +54,24 @@ def add_opentdb():
 @login_required()
 def submit_set():
     return redirect(url_for("index"))
+    name = request.json["name"]
+    temp = request.json["temporary"]
+    userQuestions = request.json["user_questions"]
+    otdbQuesions = request.json["otdb_questions"]
+
+    db = get_db()
+    try:
+        # Create the question_set entry
+        db.execute("""INSERT INTO question_sets (name, creator_id, temporary)
+                VALUES (?, ?, ?)""", (name, int(g.user["id"]), int(temp)))
+
+        # Insert the questions
+        for question in otdbQuesions:
+            db.execute("""INSERT INTO questions (source, type, category, difficulty, question)
+                        VALUES (?, ?, ?, ?, ?)""", ("opentdb", question["type"], int(question["category"]),
+                        question["difficulty"], question["question"]))
+
+        
+    except:
+        pass
+

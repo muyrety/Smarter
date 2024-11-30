@@ -37,22 +37,23 @@ async function submitSet() {
         return;
     }
 
-    let data = new FormData();
-    data.append("name", sessionStorage.getItem("name"));
-    data.append("temporary", sessionStorage.getItem("temporary"));
-    data.append("otdb_questions", sessionStorage.getItem("otdb_questions"));
-    data.append("user_questions", sessionStorage.getItem("user_question_ids"));
+    const data = {
+        name: sessionStorage.getItem("name"),
+        temporary: JSON.parse(sessionStorage.getItem("temporary")),
+        otdb_questions: JSON.parse(sessionStorage.getItem("otdb_questions")),
+        user_questions: JSON.parse(sessionStorage.getItem("user_question_ids"))
+    }
 
     const response = await fetch("/question-sets/submit", {
         method: "POST",
-        body: data
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
     });
     if (response.ok) {
         window.location.replace(response.url);
     }
     else {
-        alert(`Something has gone wrong while contacting the server,
-        check your connection and try again later`);
+        alert("Something has gone wrong while contacting the server, check your connection and try again later");
     }
 }
 
