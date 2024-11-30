@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS notifications;
 DROP TABLE IF EXISTS games;
 DROP TABLE IF EXISTS players;
 DROP TABLE IF EXISTS question_sets;
+DROP TABLE IF EXISTS question_set_questions;
 
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
@@ -16,7 +17,7 @@ CREATE TABLE users (
 CREATE TABLE questions (
     id INTEGER PRIMARY KEY,
     source TEXT NOT NULL CHECK (source = 'opentdb' OR source = 'user'),
-    verified INTEGER DEFAULT 0 CHECK(verified = 0 OR verified = 1),
+    verified INTEGER DEFAULT 0 CHECK(verified = NULL OR verified = 0 OR verified = 1),
     type TEXT NOT NULL CHECK(type IN ('boolean', 'multiple')),
     creator_id INTEGER,
     category INTEGER NOT NULL CHECK(category >= 9 AND category <= 32),

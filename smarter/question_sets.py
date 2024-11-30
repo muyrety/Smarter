@@ -53,25 +53,48 @@ def add_opentdb():
 @bp.route("/submit", methods=["POST"])
 @login_required()
 def submit_set():
-    return redirect(url_for("index"))
-    name = request.json["name"]
-    temp = request.json["temporary"]
-    userQuestions = request.json["user_questions"]
-    otdbQuesions = request.json["otdb_questions"]
+    request_json = request.get_json()
+    name = request_json["name"]
+    temp = request_json["temporary"]
+    userQuestions = request_json["user_questions"]
+    otdbQuestions = request_json["otdb_questions"]
+
+    # Only temporary question sets can have questions from the Open Trivia Database
+    if not temp and otdbQuestions:
+        flash("Non-temporary question sets can only have user created questions", "danger")
+        return redirect(url_for("question_sets.add"))
+
 
     db = get_db()
     try:
         # Create the question_set entry
-        db.execute("""INSERT INTO question_sets (name, creator_id, temporary)
-                VALUES (?, ?, ?)""", (name, int(g.user["id"]), int(temp)))
+        question_set_id = db.execute("""INSERT INTO question_sets (name, creator_id, temporary)
+                VALUES (?, ?, ?)""", (name, int(g.user["id"]), int(temp))).lastrowid
 
-        # Insert the questions
-        for question in otdbQuesions:
-            db.execute("""INSERT INTO questions (source, type, category, difficulty, question)
-                        VALUES (?, ?, ?, ?, ?)""", ("opentdb", question["type"], int(question["category"]),
-                        question["difficulty"], question["question"]))
+        # Add otdb questions to the database and connect them to the question_set
+        for question in otdbQuestions:
+            question_id = db.execute("""INSERT INTO questions (source, verified, type, category, difficulty, question)
+                        VALUES (?, ?, ?, ?, ?, ?)""", ("opentdb", None, question["type"], int(question["category"]),
+                        question["difficulty"], question["question"])).lastrowid
 
-        
-    except:
-        pass
+            db.execute("INSERT INTO answers (question_id, answer, correct) VALUES (?, ?, ?)",
+                        (question_id, question["correct_answer"], 1));
 
+            for incorrect in question["incorrect_answers"]:
+                db.execute("INSERT INTO answers (question_id, answer, correct) VALUES (?, ?, ?)",
+                            (question_id, incorrect, 0))
+            db.execute("INSERT INTO question_set_questions (question_set_id, question_id) VALUES (?, ?)",
+                        (question_set_id, question_id))
+
+        # Connect user questions with the question set
+        for question in userQuestions:
+            db.execute("INSERT INTO question_set_questions (question_set_id, question_id) VALUES (?, ?)",
+                        (question_set_id, question))
+        db.commit()
+
+    except (db.IntegrityError, ValueError):
+        flash("An unexpected error occured while processing your request, please try again later", "danger")
+        redirect(url_for("question_sets.add"))
+
+    flash("Question set successfully created", "success")
+    return redirect(url_for("index"))
