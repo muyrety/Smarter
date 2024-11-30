@@ -16,7 +16,7 @@ document.addEventListener("tableChanged", function() {
             questions.push(getQuestionData(form));
 
             sessionStorage.setItem("otdb_questions", JSON.stringify(questions));
-            form.elements.submitButton.setAttribute("disabled", "");
+            form.elements.submitButton.disabled = true;
             setButtonText(submitSetButton, JSON.parse(sessionStorage.getItem("user_question_ids")), questions);
         });
     });
@@ -28,7 +28,7 @@ document.addEventListener("tableChanged", function() {
         for (const form of forms) {
             for (const question of questions) {
                 if (JSON.stringify(getQuestionData(form)) === JSON.stringify(question)) {
-                    form.elements.submitButton.setAttribute("disabled", "");
+                    form.elements.submitButton.disabled = true;
                 }
             }
         }

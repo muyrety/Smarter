@@ -14,15 +14,14 @@ document.addEventListener("DOMContentLoaded", function() {
             badPasswordField.classList.remove("d-none");
 
             // Disable register button
-            registerButton.setAttribute("disabled", "");
+            registerButton.disabled = true;
         }
         else {
             // Hide the message
             badPasswordField.classList.add("d-none");
 
             // Enable register button
-            registerButton.removeAttribute("disabled")
+            registerButton.disabled = false;
         }
     }
 });
-

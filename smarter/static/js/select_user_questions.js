@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
             ids.push(form.elements.id.value);
             // Add the ID to session storage
             sessionStorage.setItem("user_question_ids", JSON.stringify(ids));
-            form.elements.submitButton.setAttribute("disabled", "");
+            form.elements.submitButton.disabled = true;
             setButtonText(document.getElementById("submitSet"), ids,
                 JSON.parse(sessionStorage.getItem("otdb_questions")));
         });
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
         for (const row of table.children) {
             if (ids.includes(row.children[id_col].textContent)) {
                 // Select the rows form and disable it's submit button
-                row.getElementsByClassName("selectQuestion")[0].elements.submitButton.setAttribute("disabled", "");
+                row.getElementsByClassName("selectQuestion")[0].elements.submitButton.disabled = true;
             }
         }
     }
