@@ -17,31 +17,31 @@ function checkFormTemplate(question_type) {
     if (question_type === "multiple") {
         // Deactivate bool options
         correct_bool.removeAttribute("required");
-        correct_bool.parentNode.classList.toggle("d-none", true);
+        correct_bool.parentNode.classList.add("d-none");
 
         // Activate multiple choice options
         correct_multiple.setAttribute("required", "");
-        correct_multiple.parentNode.classList.toggle("d-none", false);
+        correct_multiple.parentNode.classList.remove("d-none");
 
         // Make the answers parent nodes (divs) visible and the input fields required
         for (const incorrect_answer of incorrect_answers) {
             incorrect_answer.setAttribute("required", "");
-            incorrect_answer.parentNode.classList.toggle("d-none", false);
+            incorrect_answer.parentNode.classList.remove("d-none");
         }
     }
     else if (question_type === "boolean") {
         // Activate bool options
         correct_bool.setAttribute("required", "");
-        correct_bool.parentNode.classList.toggle("d-none", false);
+        correct_bool.parentNode.classList.remove("d-none");
 
         // Deactivate multiple choice options
         correct_multiple.removeAttribute("required");
-        correct_multiple.parentNode.classList.toggle("d-none", true);
+        correct_multiple.parentNode.classList.add("d-none");
 
         // Make the answers parent nodes (divs) invisible and input fields not required
         for (const incorrect_answer of incorrect_answers) {
             incorrect_answer.removeAttribute("required");
-            incorrect_answer.parentNode.classList.toggle("d-none", true);
+            incorrect_answer.parentNode.classList.add("d-none");
         }
     }
 }

@@ -18,17 +18,21 @@ function configureSessionStorage() {
         else {
             sessionStorage.setItem("temporary", JSON.stringify(true));
         }
+        // Remove the arguments from the url, so that page refreshes don't reset sessionStorage
         window.location.replace("/question-sets/add/opentdb");
     }
+    // If someone tries to access the /add/opentdb|user-generated routes
+    // without creating a question-set first, redirect them to create a question-set
     else if (sessionStorage.length == 0) {
         window.location.replace("/question-sets/add");
     }
 }
 
 async function submitSet() {
-    const questions = JSON.parse(sessionStorage.getItem("otdb_questions")).length +
+    const minQuestions = 5;
+    const questionCount = JSON.parse(sessionStorage.getItem("otdb_questions")).length +
         JSON.parse(sessionStorage.getItem("user_question_ids")).length;
-    if (questions < 5) {
+    if (questionCount < minQuestions) {
         document.getElementById("notEnoughQuestions").classList.remove("d-none");
         return;
     }
@@ -46,7 +50,10 @@ async function submitSet() {
     if (response.ok) {
         window.location.replace(response.url);
     }
-
+    else {
+        alert(`Something has gone wrong while contacting the server,
+        check your connection and try again later`);
+    }
 }
 
 function hideAlert() {

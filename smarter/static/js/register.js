@@ -11,14 +11,14 @@ document.addEventListener("DOMContentLoaded", function() {
     function checkPassword() {
         if (repeatPasswordField.value !== passwordField.value) {
             // Show the message
-            badPasswordField.classList.toggle("d-none", false);
+            badPasswordField.classList.remove("d-none");
 
             // Disable register button
             registerButton.setAttribute("disabled", "");
         }
         else {
             // Hide the message
-            badPasswordField.classList.toggle("d-none", true);
+            badPasswordField.classList.add("d-none");
 
             // Enable register button
             registerButton.removeAttribute("disabled")

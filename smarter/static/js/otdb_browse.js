@@ -230,12 +230,12 @@ function changeButton(enable) {
     let end_reached = document.getElementById("endReached");
     let button = document.getElementById("loadQuestions");
     if (enable) {
-        end_reached.classList.toggle("d-none", true);
-        button.classList.toggle("d-none", false);
+        end_reached.classList.add("d-none");
+        button.classList.remove("d-none");
     }
     else {
-        end_reached.classList.toggle("d-none", false);
-        button.classList.toggle("d-none", true);
+        end_reached.classList.remove("d-none");
+        button.classList.add("d-none");
     }
 }
 

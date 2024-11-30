@@ -19,11 +19,11 @@ document.addEventListener("DOMContentLoaded", function() {
             // Show the entry if both category and difficulty match
             if ((category === "Any" || rowCategory === category) &&
                 (difficulty === "any" || rowDifficulty === difficulty)) {
-                row.classList.toggle("d-none", false)
+                row.classList.remove("d-none");
             }
             // Hide the entry
             else {
-                row.classList.toggle("d-none", true)
+                row.classList.add("d-none");
             }
         }
 
