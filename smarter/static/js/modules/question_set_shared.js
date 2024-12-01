@@ -50,7 +50,8 @@ async function submitSet() {
         body: JSON.stringify(data)
     });
     if (response.ok) {
-        window.location.replace(response.url);
+        const response_json = await response.json();
+        window.location.replace(response_json.url);
     }
     else {
         alert("Something has gone wrong while contacting the server, check your connection and try again later");

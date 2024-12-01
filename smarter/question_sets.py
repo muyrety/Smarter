@@ -62,7 +62,7 @@ def submit_set():
     # Only temporary question sets can have questions from the Open Trivia Database
     if not temp and otdbQuestions:
         flash("Non-temporary question sets can only have user created questions", "danger")
-        return redirect(url_for("question_sets.add"))
+        return {"url": url_for("question_sets.add")}
 
 
     db = get_db()
@@ -73,9 +73,16 @@ def submit_set():
 
         # Add otdb questions to the database and connect them to the question_set
         for question in otdbQuestions:
-            question_id = db.execute("""INSERT INTO questions (source, verified, type, category, difficulty, question)
-                        VALUES (?, ?, ?, ?, ?, ?)""", ("opentdb", None, question["type"], int(question["category"]),
-                        question["difficulty"], question["question"])).lastrowid
+            question_id = db.execute("""SELECT id FROM questions WHERE source = ? AND 
+                question = ? AND type = ? AND category = ? AND difficulty = ?""", ("opentdb", 
+                question["question"], question["type"], int(question["category"]), question["difficulty"])).fetchone()
+
+            if question_id is not None:
+                question_id = question_id["id"]
+            else:
+                question_id = db.execute("""INSERT INTO questions (source, verified, type, category, difficulty, question)
+                    VALUES (?, ?, ?, ?, ?, ?)""", ("opentdb", None, question["type"], int(question["category"]),
+                    question["difficulty"], question["question"])).lastrowid
 
             db.execute("INSERT INTO answers (question_id, answer, correct) VALUES (?, ?, ?)",
                         (question_id, question["correct_answer"], 1));
@@ -94,7 +101,7 @@ def submit_set():
 
     except (db.IntegrityError, ValueError):
         flash("An unexpected error occured while processing your request, please try again later", "danger")
-        redirect(url_for("question_sets.add"))
+        return {"url": url_for("question_sets.add")}
 
     flash("Question set successfully created", "success")
-    return redirect(url_for("index"))
+    return {"url": url_for("index")}
