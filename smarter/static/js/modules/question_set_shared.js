@@ -19,7 +19,7 @@ function configureSessionStorage() {
             sessionStorage.setItem("temporary", JSON.stringify(true));
         }
         // Remove the arguments from the url, so that page refreshes don't reset sessionStorage
-        window.location.replace("/question-sets/add/opentdb");
+        window.location.replace("/question-sets/add/user-generated");
     }
     // If someone tries to access the /add/opentdb|user-generated routes
     // without creating a question-set first, redirect them to create a question-set

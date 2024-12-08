@@ -2,6 +2,9 @@ import { setButtonText, submitSet, hideAlert, configureSessionStorage } from "./
 
 document.addEventListener("DOMContentLoaded", function() {
     configureSessionStorage();
+    if (!JSON.parse(sessionStorage.getItem("temporary"))) {
+        document.getElementById("otdblink").classList.add("d-none");
+    }
     const ids = JSON.parse(sessionStorage.getItem("user_question_ids"));
     const submitSetButton = document.getElementById("submitSet");
     setButtonText(submitSetButton, ids, JSON.parse(sessionStorage.getItem("otdb_questions")));
