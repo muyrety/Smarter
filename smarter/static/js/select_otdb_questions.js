@@ -1,11 +1,16 @@
 import { setButtonText, submitSet, hideAlert, configureSessionStorage } from "./modules/question_set_shared.js";
 
+document.addEventListener("DOMContentLoaded", function() {
+    const questions = JSON.parse(sessionStorage.getItem("otdb_questions"));
+    const submitSetButton = document.getElementById("submitSet");
+    setButtonText(submitSetButton, JSON.parse(sessionStorage.getItem("user_question_ids")), questions);
+});
+
 document.addEventListener("tableChanged", function() {
     configureSessionStorage();
     const forms = document.getElementsByClassName("selectQuestion");
     let questions = JSON.parse(sessionStorage.getItem("otdb_questions"));
     const submitSetButton = document.getElementById("submitSet");
-    setButtonText(submitSetButton, JSON.parse(sessionStorage.getItem("user_question_ids")), questions);
     submitSetButton.addEventListener("click", submitSet);
     disableSelected(questions, forms);
 
@@ -27,9 +32,8 @@ document.addEventListener("tableChanged", function() {
     function disableSelected(questions, forms) {
         for (const form of forms) {
             for (const question of questions) {
-                if (JSON.stringify(getQuestionData(form)) === JSON.stringify(question)) {
+                if (JSON.stringify(getQuestionData(form)) === JSON.stringify(question))
                     form.elements.submitButton.disabled = true;
-                }
             }
         }
     }
