@@ -1,4 +1,7 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, g
+from flask import (
+    Blueprint, render_template, request, flash,
+    redirect, url_for, g
+)
 
 from .auth import login_required
 from .db import get_db
@@ -6,7 +9,8 @@ from .constants import categories
 
 bp = Blueprint("questions", __name__, url_prefix="/questions")
 
-@bp.route("/add", methods = ["GET", "POST"])
+
+@bp.route("/add", methods=["GET", "POST"])
 @login_required()
 def add():
     if request.method == "GET":
@@ -19,7 +23,7 @@ def add():
     question_type = request.form["type"]
     question = request.form["question"]
     category = None
-    incorrect_answers = None 
+    incorrect_answers = None
     correct_answer = None
 
     try:
@@ -53,8 +57,13 @@ def add():
     db = get_db()
     try:
         question_id = db.execute(
-            "INSERT INTO questions (source, type, creator_id, category, difficulty, question) VALUES (?, ?, ?, ?, ?, ?)",
-            ("user", question_type, g.user["id"], category, difficulty, question)
+            """INSERT INTO questions (source, type, creator_id,
+            category, difficulty, question)
+            VALUES (?, ?, ?, ?, ?, ?)""",
+            (
+                "user", question_type, g.user["id"],
+                category, difficulty, question
+            )
         ).lastrowid
     except db.IntegrityError:
         flash("This question already exists", "danger")
@@ -68,7 +77,8 @@ def add():
     if incorrect_answers is not None:
         for answer in incorrect_answers:
             db.execute(
-                "INSERT INTO answers (question_id, answer, correct) VALUES (?, ?, ?)",
+                """INSERT INTO answers (question_id, answer, correct)
+                VALUES (?, ?, ?)""",
                 (question_id, answer, 0)
             )
 
@@ -77,15 +87,19 @@ def add():
     flash("Question successfuly submited", "success")
     return redirect(url_for("index"))
 
+
 @bp.route("/browse/otdb")
 def otdb_browse():
     return render_template("questions/otdb_browse.html")
 
+
 @bp.route("/browse/user-generated")
 def user_browse():
     questions = get_db().execute(
-        """SELECT q.id, q.category, q.difficulty, q.question, u.username AS creator
-        FROM questions AS q JOIN users AS u ON u.id = q.creator_id WHERE q.source = 'user'"""
+        """SELECT q.id, q.category, q.difficulty, q.question,
+        u.username AS creator
+        FROM questions AS q JOIN users AS u ON u.id = q.creator_id
+        WHERE q.source = 'user'"""
     ).fetchall()
 
     # Replace category numbers with strings

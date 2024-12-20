@@ -1,6 +1,8 @@
-import functools, re
+import functools
+import re
 from flask import (
-    Blueprint, redirect, url_for, g, session, request, flash, render_template, abort
+    Blueprint, redirect, url_for, g, session, request, flash,
+    render_template, abort
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -10,6 +12,7 @@ from .helpers import get_notifications
 from better_profanity import profanity
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
+
 
 def login_required(admin=False):
     def decorator(f):
@@ -23,6 +26,7 @@ def login_required(admin=False):
         return decorated_function
     return decorator
 
+
 @bp.before_app_request
 def load_logged_in_user():
     """If a user id is stored in the session, load the user object from
@@ -33,10 +37,14 @@ def load_logged_in_user():
         g.user = None
     else:
         db = get_db()
-        g.user = db.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
+        g.user = db.execute(
+            "SELECT * FROM users WHERE id = ?", (user_id,)
+        ).fetchone()
 
         # Check if user is an admin
-        admin = db.execute("SELECT * FROM admins WHERE user_id = ?", (user_id,)).fetchone()
+        admin = db.execute(
+            "SELECT * FROM admins WHERE user_id = ?", (user_id,)
+        ).fetchone()
         if admin is None:
             g.user["admin"] = False
         else:
@@ -48,7 +56,7 @@ def load_logged_in_user():
             flash(notification["notification"], notification["category"])
 
 
-@bp.route("/register", methods = ["GET", "POST"])
+@bp.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
         return render_template("auth/register.html")
@@ -64,7 +72,7 @@ def register():
         error = "Usernames cannot have whitespace"
     elif profanity.contains_profanity(username):
         error = "Profanity detected in username"
-    elif len(password) < 8: 
+    elif len(password) < 8:
         error = "Password is not long enough"
     elif password != repeat_password:
         error = "Passwords don't match"
@@ -74,9 +82,9 @@ def register():
         try:
             # Register the user
             user_id = db.execute(
-                    "INSERT INTO users(username, hash) VALUES(?, ?)",
-                    (username, generate_password_hash(password))
-                    ).lastrowid
+                "INSERT INTO users(username, hash) VALUES(?, ?)",
+                (username, generate_password_hash(password))
+            ).lastrowid
             db.commit()
         except db.IntegrityError:
             error = "Username already taken"
@@ -86,11 +94,12 @@ def register():
             session["user_id"] = user_id
             flash("You have successfully registered", "success")
             return redirect(url_for("index"))
-        
+
     flash(error, "danger")
     return render_template("auth/register.html")
 
-@bp.route("/login", methods = ["GET", "POST"])
+
+@bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
         return render_template("auth/login.html")
@@ -129,6 +138,7 @@ def login():
     flash("You have successfully logged-in", "success")
 
     return redirect(next if next else url_for("index"))
+
 
 @bp.route("/logout")
 def logout():

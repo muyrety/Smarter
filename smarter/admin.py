@@ -8,6 +8,7 @@ from .helpers import add_notification
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 
+
 @bp.route("/verify-questions")
 @login_required(admin=True)
 def verify_questions():
@@ -15,8 +16,10 @@ def verify_questions():
 
     # Select unverified questions
     questions = db.execute(
-        """SELECT q.id, q.type, q.category, q.difficulty, q.question, u.username AS creator
-        FROM questions AS q JOIN users AS u ON q.creator_id = u.id WHERE q.verified = 0 AND q.source = 'user'"""
+        """SELECT q.id, q.type, q.category, q.difficulty,
+        q.question, u.username AS creator FROM questions AS q
+        JOIN users AS u ON q.creator_id = u.id
+        WHERE q.verified = 0 AND q.source = 'user'"""
     ).fetchall()
 
     for question in questions:
@@ -25,7 +28,8 @@ def verify_questions():
 
         # Load answers
         answers = db.execute(
-            "SELECT answer, correct FROM answers WHERE question_id = ?", (question["id"],)
+            "SELECT answer, correct FROM answers WHERE question_id = ?",
+            (question["id"],)
         ).fetchall()
         question["incorrect_answers"] = []
         for answer in answers:
@@ -35,6 +39,7 @@ def verify_questions():
                 question["incorrect_answers"].append(answer["answer"])
 
     return render_template("admin/verify_questions.html", questions=questions)
+
 
 @bp.route("/remove/<int:id>", methods=["POST"])
 @login_required(admin=True)
@@ -49,10 +54,14 @@ def remove_question(id):
     db.commit()
 
     add_notification(
-        question["creator_id"], f'Your question "{question["question"]}" was rejected/deleted',
+        question["creator_id"],
+        f'Your question "{question["question"]}" was rejected/deleted',
         category="question-removal"
     )
-    return redirect(request.args.get("next", url_for("admin.verify_questions")))
+    return redirect(
+        request.args.get("next", url_for("admin.verify_questions"))
+    )
+
 
 @bp.route("/accept/<int:id>", methods=["POST"])
 @login_required(admin=True)
@@ -67,10 +76,12 @@ def accept_question(id):
     db.commit()
 
     add_notification(
-        question["creator_id"], f'Your question "{question["question"]}" was approved!',
+        question["creator_id"],
+        f'Your question "{question["question"]}" was approved!',
         category="success"
     )
     return redirect(url_for("admin.verify_questions"))
+
 
 @click.command("add-admin")
 @click.option('--username', prompt=True)
@@ -78,7 +89,7 @@ def accept_question(id):
 def add_admin_command(username, password):
     if len(password) < 8:
         click.echo("Password is too short")
-        return  
+        return
 
     # Create user
     db = get_db()
@@ -95,7 +106,7 @@ def add_admin_command(username, password):
     # Add the user to the admin list
     db.execute("INSERT INTO admins (user_id) VALUES (?)", (user_id,))
     db.commit()
-    
+
     click.echo("Admin successfully added")
 
 
