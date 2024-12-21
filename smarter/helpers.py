@@ -27,3 +27,41 @@ def add_notification(user_id, message, category="message"):
         (user_id, category, message)
     )
     db.commit()
+
+
+def submitQuestion(source, question_type, creator, category, difficulty,
+                   question, correct_answer, incorrect_answers):
+    db = get_db()
+
+    if source == "user":
+        dupQuestions = db.execute(
+            "SELECT 1 FROM questions WHERE question = ?", (question,)
+        ).fetchone()
+        if dupQuestions:
+            return "This question already exists"
+
+    question_id = db.execute(
+        """INSERT INTO questions (source, verified, type,
+           creator_id, category, difficulty, question)
+           VALUES (?, ?, ?, ?, ?, ?, ?)""",
+        (
+            source, 0 if source == "user" else None, question_type,
+            creator, category, difficulty, question
+        )
+    ).lastrowid
+
+    # Insert the answers into the database
+    db.execute(
+        "INSERT INTO answers (question_id, answer, correct) VALUES (?, ?, ?)",
+        (question_id, correct_answer, 1)
+    )
+    if incorrect_answers is not None:
+        for answer in incorrect_answers:
+            db.execute(
+                """INSERT INTO answers (question_id, answer, correct)
+                VALUES (?, ?, ?)""",
+                (question_id, answer, 0)
+            )
+
+    db.commit()
+    return None

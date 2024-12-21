@@ -1,4 +1,5 @@
 import { categories } from "./modules/constants.js"
+
 // Track how many questions are loaded. Resets on category/difficulty change.
 let questions_loaded = 0;
 

@@ -43,7 +43,7 @@ def load_logged_in_user():
 
         # Check if user is an admin
         admin = db.execute(
-            "SELECT * FROM admins WHERE user_id = ?", (user_id,)
+            "SELECT 1 FROM admins WHERE user_id = ?", (user_id,)
         ).fetchone()
         if admin is None:
             g.user["admin"] = False

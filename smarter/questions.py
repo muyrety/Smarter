@@ -6,6 +6,7 @@ from flask import (
 from .auth import login_required
 from .db import get_db
 from .constants import categories
+from .helpers import submitQuestion
 
 bp = Blueprint("questions", __name__, url_prefix="/questions")
 
@@ -16,9 +17,9 @@ def add():
     if request.method == "GET":
         return render_template("questions/add.html")
 
+    # Validate input
     error = None
 
-    # Validate input
     difficulty = request.form["difficulty"]
     question_type = request.form["type"]
     question = request.form["question"]
@@ -29,60 +30,38 @@ def add():
     try:
         category = int(request.form["category"])
     except ValueError:
+        flash("Bad category", "danger")
+        return render_template("questions/add.html")
+
+    if category not in range(9, 33):
         error = "Bad category"
-    else:
-        if category not in range(9, 33):
-            error = "Bad category"
-        elif not question:
-            error = "Bad question"
-        elif difficulty not in ["easy", "medium", "hard"]:
-            error = "Bad difficulty"
-        elif question_type not in ["boolean", "multiple"]:
-            error = "Bad question type"
-        elif question_type == "boolean":
-            correct_answer = request.form["correctAnswerBoolean"]
-            if correct_answer not in ["true", "false"]:
-                error = "Bad boolean question answer"
-        elif question_type == "multiple":
-            correct_answer = request.form["correctAnswerMultiple"]
-            incorrect_answers = request.form.getlist("incorrectAnswers")
-            if len(incorrect_answers) != 3 or "" in incorrect_answers:
-                error = "Bad incorrect answers"
+    elif not question:
+        error = "Bad question"
+    elif difficulty not in ["easy", "medium", "hard"]:
+        error = "Bad difficulty"
+    elif question_type not in ["boolean", "multiple"]:
+        error = "Bad question type"
+    elif question_type == "boolean":
+        correct_answer = request.form["correctAnswerBoolean"]
+        if correct_answer not in ["true", "false"]:
+            error = "Bad boolean question answer"
+    elif question_type == "multiple":
+        correct_answer = request.form["correctAnswerMultiple"]
+        incorrect_answers = request.form.getlist("incorrectAnswers")
+        if len(incorrect_answers) != 3 or "" in incorrect_answers:
+            error = "Bad incorrect answers"
 
     if error is not None:
         flash(error, "danger")
         return render_template("questions/add.html")
 
     # Insert the question into the database
-    db = get_db()
-    try:
-        question_id = db.execute(
-            """INSERT INTO questions (source, type, creator_id,
-            category, difficulty, question)
-            VALUES (?, ?, ?, ?, ?, ?)""",
-            (
-                "user", question_type, g.user["id"],
-                category, difficulty, question
-            )
-        ).lastrowid
-    except db.IntegrityError:
-        flash("This question already exists", "danger")
+    error = submitQuestion("user", question_type, g.user["id"],
+                           category, difficulty, question,
+                           correct_answer, incorrect_answers)
+    if error is not None:
+        flash(error, "danger")
         return render_template("questions/add.html")
-
-    # Insert the answers into the database
-    db.execute(
-        "INSERT INTO answers (question_id, answer, correct) VALUES (?, ?, ?)",
-        (question_id, correct_answer, 1)
-    )
-    if incorrect_answers is not None:
-        for answer in incorrect_answers:
-            db.execute(
-                """INSERT INTO answers (question_id, answer, correct)
-                VALUES (?, ?, ?)""",
-                (question_id, answer, 0)
-            )
-
-    db.commit()
 
     flash("Question successfuly submited", "success")
     return redirect(url_for("index"))

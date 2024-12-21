@@ -27,7 +27,7 @@ def add():
         error = "Name is required"
     elif profanity.contains_profanity(name):
         error = "Question set name contains profanity"
-    elif get_db().execute("SELECT * FROM question_sets WHERE name = ?",
+    elif get_db().execute("SELECT 1 FROM question_sets WHERE name = ?",
                           (name,)).fetchone():
         error = "This question set name is already used"
 
