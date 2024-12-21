@@ -6,6 +6,7 @@ from better_profanity import profanity
 from .db import get_db
 from .constants import categories
 from .auth import login_required
+from .helpers import submitQuestion
 
 bp = Blueprint("question_sets", __name__, url_prefix="/question-sets")
 
@@ -95,6 +96,7 @@ def submit_set():
         # Add otdb questions to the database and
         # connect them to the question_set
         for question in otdbQuestions:
+            # See if question already exists in the database
             question_id = db.execute(
                 """SELECT id FROM questions WHERE source = ? AND question = ?
                 AND type = ? AND category = ? AND difficulty = ?""",
@@ -102,30 +104,16 @@ def submit_set():
                  int(question["category"]), question["difficulty"])
             ).fetchone()
 
-            if question_id is not None:
-                question_id = question_id["id"]
-            else:
-                question_id = db.execute(
-                    """INSERT INTO questions (source, verified, type, category,
-                    difficulty, question) VALUES (?, ?, ?, ?, ?, ?)""",
-                    (
-                        "opentdb", None, question["type"],
-                        int(question["category"]), question["difficulty"],
-                        question["question"]
-                    )
-                ).lastrowid
-
-            db.execute("""INSERT INTO answers (question_id, answer, correct)
-                          VALUES (?, ?, ?)""",
-                       (question_id, question["correct_answer"], 1)
-                       )
-
-            for incorrect in question["incorrect_answers"]:
-                db.execute(
-                    """INSERT INTO answers (question_id, answer, correct)
-                    VALUES (?, ?, ?)""",
-                    (question_id, incorrect, 0)
+            # Add question to DB if it doesn't exist
+            if question_id is None:
+                question_id, error = submitQuestion(
+                    "opentdb", question["type"], None, question["category"],
+                    question["difficulty"], question["question"],
+                    question["correct_answer"], question["incorrect_answers"]
                 )
+            else:
+                question_id = question_id["id"]
+
             db.execute(
                 """INSERT INTO question_set_questions (question_set_id,
                        question_id) VALUES (?, ?)""",

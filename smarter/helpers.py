@@ -38,7 +38,7 @@ def submitQuestion(source, question_type, creator, category, difficulty,
             "SELECT 1 FROM questions WHERE question = ?", (question,)
         ).fetchone()
         if dupQuestions:
-            return "This question already exists"
+            return None, "This question already exists"
 
     question_id = db.execute(
         """INSERT INTO questions (source, verified, type,
@@ -64,4 +64,4 @@ def submitQuestion(source, question_type, creator, category, difficulty,
             )
 
     db.commit()
-    return None
+    return question_id, None

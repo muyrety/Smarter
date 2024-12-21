@@ -43,7 +43,8 @@ def add():
         error = "Bad question type"
     elif question_type == "boolean":
         correct_answer = request.form["correctAnswerBoolean"]
-        if correct_answer not in ["true", "false"]:
+        incorrect_answers = ["False" if correct_answer == "True" else "True"]
+        if correct_answer not in ["True", "False"]:
             error = "Bad boolean question answer"
     elif question_type == "multiple":
         correct_answer = request.form["correctAnswerMultiple"]
@@ -56,9 +57,9 @@ def add():
         return render_template("questions/add.html")
 
     # Insert the question into the database
-    error = submitQuestion("user", question_type, g.user["id"],
-                           category, difficulty, question,
-                           correct_answer, incorrect_answers)
+    id, error = submitQuestion("user", question_type, g.user["id"],
+                               category, difficulty, question,
+                               correct_answer, incorrect_answers)
     if error is not None:
         flash(error, "danger")
         return render_template("questions/add.html")

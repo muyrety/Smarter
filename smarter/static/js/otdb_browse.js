@@ -54,6 +54,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     const formButton = document.getElementById("formButton");
     configForm.addEventListener("submit", async function(e) {
         e.preventDefault();
+        const submitSetButton = document.getElementById("submitSet");
+        submitSetButton.disabled = true;
         formButton.disabled = true;
 
         // Configure the table, so that future extends make use of user config
@@ -75,6 +77,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         catch (error) {
             logErrors(error);
         }
+        submitSetButton.disabled = false;
         formButton.disabled = false;
     });
 
