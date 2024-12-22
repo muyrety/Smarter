@@ -1,3 +1,11 @@
+document.getElementById("notEnoughQuestionsDismiss").addEventListener("click", function() {
+    document.getElementById("notEnoughQuestions").classList.add("d-none");
+});
+
+document.getElementById("tooManyQuestionsDismiss").addEventListener("click", function() {
+    document.getElementById("tooManyQuestions").classList.add("d-none");
+});
+
 function setButtonText(button, user_questions, otdb_questions) {
     let questionCount = user_questions.length + otdb_questions.length;
     button.textContent = `Submit question set (${questionCount} questions selected)`;
@@ -58,8 +66,4 @@ async function submitSet() {
     }
 }
 
-function hideAlert() {
-    document.getElementById("notEnoughQuestions").classList.add("d-none");
-}
-
-export { setButtonText, submitSet, hideAlert, configureSessionStorage };
+export { setButtonText, submitSet, configureSessionStorage };

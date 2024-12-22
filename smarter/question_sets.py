@@ -85,6 +85,13 @@ def submit_set():
         )
         return {"url": url_for("question_sets.add")}
 
+    if len(userQuestions) + len(otdbQuestions) > 50:
+        flash(
+            "Limit of 50 questions exceeded",
+            "danger"
+        )
+        return {"url": url_for("question_sets.add")}
+
     db = get_db()
     try:
         # Create the question_set entry

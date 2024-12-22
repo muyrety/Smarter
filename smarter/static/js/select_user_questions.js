@@ -1,4 +1,4 @@
-import { setButtonText, submitSet, hideAlert, configureSessionStorage } from "./modules/question_set_shared.js";
+import { setButtonText, submitSet, configureSessionStorage } from "./modules/question_set_shared.js";
 
 document.addEventListener("DOMContentLoaded", function() {
     configureSessionStorage();
@@ -6,8 +6,9 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("otdblink").classList.add("d-none");
     }
     const ids = JSON.parse(sessionStorage.getItem("user_question_ids"));
+    const otdb_questions = JSON.parse(sessionStorage.getItem("otdb_questions"));
     const submitSetButton = document.getElementById("submitSet");
-    setButtonText(submitSetButton, ids, JSON.parse(sessionStorage.getItem("otdb_questions")));
+    setButtonText(submitSetButton, ids, otdb_questions);
     submitSetButton.addEventListener("click", submitSet);
     disableSelected(ids);
 
@@ -17,16 +18,18 @@ document.addEventListener("DOMContentLoaded", function() {
     Array.from(forms).forEach(function(form) {
         form.addEventListener("submit", function(e) {
             e.preventDefault();
-            ids.push(form.elements.id.value);
-            // Add the ID to session storage
-            sessionStorage.setItem("user_question_ids", JSON.stringify(ids));
-            form.elements.submitButton.disabled = true;
-            setButtonText(document.getElementById("submitSet"), ids,
-                JSON.parse(sessionStorage.getItem("otdb_questions")));
+            if (ids.length + otdb_questions.length < 50) {
+                ids.push(form.elements.id.value);
+                // Add the ID to session storage
+                sessionStorage.setItem("user_question_ids", JSON.stringify(ids));
+                form.elements.submitButton.disabled = true;
+                setButtonText(document.getElementById("submitSet"), ids, otdb_questions);
+            }
+            else {
+                document.getElementById("tooManyQuestions").classList.remove("d-none");
+            }
         });
     });
-
-    document.getElementById("notEnoughQuestionsDismiss").addEventListener("click", hideAlert);
 
     // Disable buttons with the selected IDs
     function disableSelected(ids) {

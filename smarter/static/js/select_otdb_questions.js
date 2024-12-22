@@ -1,9 +1,11 @@
-import { setButtonText, submitSet, hideAlert, configureSessionStorage } from "./modules/question_set_shared.js";
+import { setButtonText, submitSet, configureSessionStorage } from "./modules/question_set_shared.js";
+
+const user_questions = JSON.parse(sessionStorage.getItem("user_question_ids"))
 
 document.addEventListener("DOMContentLoaded", function() {
     const questions = JSON.parse(sessionStorage.getItem("otdb_questions"));
     const submitSetButton = document.getElementById("submitSet");
-    setButtonText(submitSetButton, JSON.parse(sessionStorage.getItem("user_question_ids")), questions);
+    setButtonText(submitSetButton, user_questions, questions);
 });
 
 document.addEventListener("tableChanged", function() {
@@ -18,15 +20,17 @@ document.addEventListener("tableChanged", function() {
         form.addEventListener("submit", function(e) {
             e.preventDefault();
 
-            questions.push(getQuestionData(form));
-
-            sessionStorage.setItem("otdb_questions", JSON.stringify(questions));
-            form.elements.submitButton.disabled = true;
-            setButtonText(submitSetButton, JSON.parse(sessionStorage.getItem("user_question_ids")), questions);
+            if (questions.length + user_questions.length < 50) {
+                questions.push(getQuestionData(form));
+                sessionStorage.setItem("otdb_questions", JSON.stringify(questions));
+                form.elements.submitButton.disabled = true;
+                setButtonText(submitSetButton, user_questions, questions);
+            }
+            else {
+                document.getElementById("tooManyQuestions").classList.remove("d-none");
+            }
         });
     });
-
-    document.getElementById("notEnoughQuestionsDismiss").addEventListener("click", hideAlert);
 
     // Disable selected questions' buttons
     function disableSelected(questions, forms) {
