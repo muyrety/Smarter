@@ -19,7 +19,7 @@
             <nav class="navbar navbar-expand-lg bg-body-secondary">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="{{ url_for('index') }}">Smarter</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -34,7 +34,7 @@
                                 <a class="nav-link" href="#">Join game</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                     Questions
                                 </a>
                                 <ul class="dropdown-menu">
@@ -46,7 +46,7 @@
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                     Question sets
                                 </a>
                                 <ul class="dropdown-menu">
@@ -90,7 +90,7 @@
                             <div class="alert alert-info alert-dismissible" role="alert">
                                 <p>{{ message }}</p>
                             {% endif %}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
                         {% endfor %}
                     </div>

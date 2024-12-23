@@ -13,7 +13,30 @@ bp = Blueprint("question_sets", __name__, url_prefix="/question-sets")
 
 @bp.route("/browse")
 def browse():
-    return render_template("question-sets/browse.html")
+    db = get_db()
+    # Select temporary question sets with their creators from the database
+    question_sets = db.execute(
+        """SELECT qs.id, qs.name, u.username AS creator
+        FROM question_sets AS qs JOIN users AS u
+        ON qs.creator_id = u.id WHERE qs.temporary = 0"""
+    ).fetchall()
+
+    for question_set in question_sets:
+        # Select verified(user) questions
+        question_set["questions"] = db.execute(
+            """SELECT q.id, q.question, q.difficulty, q.category
+            FROM question_set_questions AS qsq
+            JOIN questions as q ON qsq.question_id = q.id
+            WHERE qsq.question_set_id = ? AND
+            q.verified = 1 AND q.source = 'user'""",
+            (question_set["id"],)
+        ).fetchall()
+        for question in question_set["questions"]:
+            question["category"] = categories[question["category"]]
+
+    return render_template(
+        "question-sets/browse.html", question_sets=question_sets
+    )
 
 
 @bp.route("/add", methods=["GET", "POST"])
@@ -49,7 +72,7 @@ def add_user_generated():
         """SELECT q.id, q.category, q.difficulty,
         q.question, u.username AS creator
         FROM questions AS q JOIN users AS u ON u.id = q.creator_id
-        WHERE q.source = 'user'"""
+        WHERE q.source = 'user' AND q.verified = 1"""
     ).fetchall()
 
     # Replace category numbers with strings
@@ -92,6 +115,13 @@ def submit_set():
         )
         return {"url": url_for("question_sets.add")}
 
+    if len(userQuestions) + len(otdbQuestions) < 5:
+        flash(
+            "Not enough questions provided",
+            "danger"
+        )
+        return {"url": url_for("question_sets.add")}
+
     db = get_db()
     try:
         # Create the question_set entry
@@ -129,6 +159,16 @@ def submit_set():
 
         # Connect user questions with the question set
         for question in userQuestions:
+            # Don't accept question ids that have not
+            # been verified or don't exist
+            if not db.execute(
+                """SELECT 1 FROM questions WHERE id = ? AND
+                source = 'user' AND verified = 1""",
+                (question,)
+            ).fetchone():
+                flash("This question is not verified", "danger")
+                return {"url": url_for("question_sets.add")}
+
             db.execute(
                 """INSERT INTO question_set_questions (question_set_id,
                    question_id) VALUES (?, ?)""",
