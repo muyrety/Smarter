@@ -35,7 +35,8 @@ def submitQuestion(source, question_type, creator, category, difficulty,
 
     if source == "user":
         dupQuestions = db.execute(
-            "SELECT 1 FROM questions WHERE question = ?", (question,)
+            "SELECT 1 FROM questions WHERE question = ? AND source = 'user'",
+            (question,)
         ).fetchone()
         if dupQuestions:
             return None, "This question already exists"

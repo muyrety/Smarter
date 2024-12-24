@@ -82,7 +82,7 @@ def user_browse():
         """SELECT q.id, q.category, q.difficulty, q.question,
         u.username AS creator
         FROM questions AS q JOIN users AS u ON u.id = q.creator_id
-        WHERE q.source = 'user'"""
+        WHERE q.source = 'user' AND verified = 1"""
     ).fetchall()
 
     # Replace category numbers with strings
