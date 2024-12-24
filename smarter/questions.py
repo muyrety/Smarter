@@ -7,6 +7,7 @@ from .auth import login_required
 from .db import get_db
 from .constants import categories
 from .helpers import submitQuestion
+from better_profanity import profanity
 
 bp = Blueprint("questions", __name__, url_prefix="/questions")
 
@@ -37,6 +38,8 @@ def add():
         error = "Bad category"
     elif not question:
         error = "Bad question"
+    elif profanity.contains_profanity(question):
+        error = "Profanity detected in question"
     elif difficulty not in ["easy", "medium", "hard"]:
         error = "Bad difficulty"
     elif question_type not in ["boolean", "multiple"]:

@@ -51,6 +51,9 @@ def remove_question(id):
     db.execute(
         "DELETE FROM questions WHERE id = ?", (id,)
     )
+    db.execute(
+        "DELETE FROM answers WHERE question_id = ?", (id,)
+    )
     db.commit()
 
     add_notification(
