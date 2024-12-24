@@ -1,4 +1,5 @@
 from .db import get_db
+from .constants import categories
 
 
 # Returns any notifications left for the user and
@@ -66,3 +67,18 @@ def submitQuestion(source, question_type, creator, category, difficulty,
 
     db.commit()
     return question_id, None
+
+
+def getQuestions(question_set_id):
+    db = get_db()
+    questions = db.execute(
+        """SELECT q.id, q.question, q.difficulty, q.category
+            FROM question_set_questions AS qsq
+            JOIN questions as q ON qsq.question_id = q.id
+            WHERE qsq.question_set_id = ?""",
+        (question_set_id,)
+    ).fetchall()
+    for question in questions:
+        question["category"] = categories[question["category"]]
+
+    return questions

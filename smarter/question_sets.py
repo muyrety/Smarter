@@ -6,7 +6,7 @@ from better_profanity import profanity
 from .db import get_db
 from .constants import categories
 from .auth import login_required
-from .helpers import submitQuestion
+from .helpers import submitQuestion, getQuestions
 
 bp = Blueprint("question_sets", __name__, url_prefix="/question-sets")
 
@@ -14,28 +14,30 @@ bp = Blueprint("question_sets", __name__, url_prefix="/question-sets")
 @bp.route("/browse")
 def browse():
     db = get_db()
-    # Select temporary question sets with their creators from the database
+    # Select non-temporary question sets with their creators from the database
     question_sets = db.execute(
         """SELECT qs.id, qs.name, u.username AS creator
         FROM question_sets AS qs JOIN users AS u
         ON qs.creator_id = u.id WHERE qs.temporary = 0"""
     ).fetchall()
 
-    for question_set in question_sets:
-        # Select verified(user) questions
-        question_set["questions"] = db.execute(
-            """SELECT q.id, q.question, q.difficulty, q.category
-            FROM question_set_questions AS qsq
-            JOIN questions as q ON qsq.question_id = q.id
-            WHERE qsq.question_set_id = ? AND
-            q.verified = 1 AND q.source = 'user'""",
-            (question_set["id"],)
+    private_question_sets = []
+    if g.user is not None:
+        private_question_sets = db.execute(
+            """SELECT id, name, temporary FROM question_sets
+            WHERE creator_id = ?""", (g.user["id"],)
         ).fetchall()
-        for question in question_set["questions"]:
-            question["category"] = categories[question["category"]]
+
+    for question_set in question_sets:
+        question_set["questions"] = getQuestions(question_set["id"])
+
+    for question_set in private_question_sets:
+        question_set["questions"] = getQuestions(question_set["id"])
 
     return render_template(
-        "question-sets/browse.html", question_sets=question_sets
+        "question-sets/browse.html",
+        question_sets=question_sets,
+        private_question_sets=private_question_sets
     )
 
 

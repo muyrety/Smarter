@@ -4,6 +4,37 @@
 
 {% block main %}
 <div class="container">
+    {% if session["user_id"] %}
+    <h3 class="text-center mt-2"> Your question sets </h3>
+    {% for question_set in private_question_sets %}
+    <div class="row justify-content-center mt-3">
+        <div class="col-lg-5 card">
+            <div class="card-body">
+                <h6 class="card-title">{{ question_set["name"] }}{% if question_set["temporary"] %} <span class="ms-2 badge rounded-pill text-bg-warning">Temporary</span> {% endif %}</h6>
+                <div class="row">
+                    <p class="col card-text">
+                        {{ question_set["questions"] | length }} questions
+                    </p>
+                    <button class="col-3 btn btn-dark" data-bs-toggle="collapse" data-bs-target="#questionInfo{{ question_set['id'] }}">Show</button>
+                </div>
+                <div class="collapse mt-4" id="questionInfo{{ question_set['id'] }}">
+                    <div class="card">
+                        <ul class="list-group list-group-flush">
+                            {% for question in question_set["questions"] %}
+                            <li class="list-group-item">{{ question["question"] }} ({{ question["category"] }}, {{ question["difficulty"] }}, ID {{ question["id"] }})</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <hr class="border opacity-75">
+    {% endif %}
+
+    <h3 class="text-center mt-2"> All question sets </h3>
     {% for question_set in question_sets %}
     <div class="row justify-content-center mt-3">
         <div class="col-lg-5 card">
@@ -29,5 +60,6 @@
         </div>
     </div>
     {% endfor %}
+    <hr class="my-2 border opacity-75">
 </div>
 {% endblock %}
