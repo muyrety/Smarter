@@ -54,8 +54,10 @@ document.addEventListener("DOMContentLoaded", async function() {
     const formButton = document.getElementById("formButton");
     configForm.addEventListener("submit", async function(e) {
         e.preventDefault();
+        // Will exist in the DOM when selecting questions
         const submitSetButton = document.getElementById("submitSet");
-        submitSetButton.disabled = true;
+        if (submitSetButton !== null)
+            submitSetButton.disabled = true;
         formButton.disabled = true;
 
         // Configure the table, so that future extends make use of user config
@@ -77,7 +79,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         catch (error) {
             logErrors(error);
         }
-        submitSetButton.disabled = false;
+        if (submitSetButton !== null)
+            submitSetButton.disabled = false;
         formButton.disabled = false;
     });
 
