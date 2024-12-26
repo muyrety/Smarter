@@ -92,6 +92,20 @@ def add_opentdb():
     return render_template("question-sets/add_otdb_questions.html")
 
 
+@bp.route("/check_question/<int:id>")
+@login_required()
+def check_question(id):
+    return {
+        "id_ok": bool(
+            get_db().execute(
+                """SELECT 1 FROM questions WHERE id = ? AND
+               source = 'user' AND verified = 1""",
+                (id,)
+            ).fetchone()
+        )
+    }
+
+
 @bp.route("/submit", methods=["POST"])
 @login_required()
 def submit_set():
@@ -168,7 +182,10 @@ def submit_set():
                 source = 'user' AND verified = 1""",
                 (question,)
             ).fetchone():
-                flash("This question is not verified", "danger")
+                flash(
+                    "Some questions are not verified or user-generated",
+                    "danger"
+                )
                 return {"url": url_for("question_sets.add")}
 
             db.execute(

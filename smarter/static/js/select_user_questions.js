@@ -18,15 +18,20 @@ document.addEventListener("DOMContentLoaded", function() {
     Array.from(forms).forEach(function(form) {
         form.addEventListener("submit", function(e) {
             e.preventDefault();
-            if (ids.length + otdb_questions.length < 50) {
-                ids.push(form.elements.id.value);
+            const id = form.elements.id.value;
+            if (ids.length + otdb_questions.length >= 50) {
+                document.getElementById("tooManyQuestions").classList.remove("d-none");
+            }
+            else if (ids.includes(id)) {
+                // TODO: Make nicer alert
+                alert("This question is already selected")
+            }
+            else {
+                ids.push(id);
                 // Add the ID to session storage
                 sessionStorage.setItem("user_question_ids", JSON.stringify(ids));
                 form.elements.submitButton.disabled = true;
                 setButtonText(document.getElementById("submitSet"), ids, otdb_questions);
-            }
-            else {
-                document.getElementById("tooManyQuestions").classList.remove("d-none");
             }
         });
     });
@@ -43,4 +48,39 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    const idForm = document.getElementById("IDSubmitionForm");
+    idForm.addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const id = idForm.elements.id.value;
+        if (ids.includes(id)) {
+            alert("This question is already selected");
+            return;
+        }
+
+        let response = await fetch(`/question-sets/check_question/${id}`);
+        if (!response.ok) {
+            alert("Could not connect to the server! Try again.");
+            return;
+        }
+        response = await response.json();
+        if (!response["id_ok"]) {
+            alert("The ID given does not belong to an user question");
+        }
+        else {
+            idForm.elements.id.value = "";
+            alert("Success");
+            ids.push(id);
+            sessionStorage.setItem("user_question_ids", JSON.stringify(ids));
+            setButtonText(document.getElementById("submitSet"), ids, otdb_questions);
+            disableSelectButton(id);
+        }
+    });
+
+    function disableSelectButton(id) {
+        const forms = document.getElementsByClassName("selectQuestion");
+        for (const form of forms) {
+            if (form.elements.id.value === id)
+                form.elements.submitButton.disabled = true;
+        }
+    }
 });
