@@ -82,3 +82,32 @@ def getQuestions(question_set_id):
         question["category"] = categories[question["category"]]
 
     return questions
+
+
+def deleteSetQuestions(id):
+    db = get_db()
+
+    # Save the questions to delete
+    set_questions = db.execute(
+        """SELECT question_id FROM question_set_questions
+        WHERE question_set_id = ?""", (id,)
+    ).fetchall()
+    set_questions = [question["question_id"] for question in set_questions]
+
+    # Delete the references to them
+    db.execute("""DELETE FROM question_set_questions
+               WHERE question_set_id = ?""", (id,)
+               )
+
+    # Delete each OpenTDB question that is not featured in any question sets
+    for qid in set_questions:
+        if db.execute(
+            """DELETE FROM questions
+            WHERE id = :qid AND source = 'opentdb' AND NOT EXISTS (
+                SELECT 1 FROM question_set_questions WHERE question_id = :qid
+            )""", {"qid": qid}
+        ).rowcount == 1:
+            # Only delete answer if question was deleted
+            db.execute("DELETE FROM answers WHERE question_id = ?", (qid,))
+
+    db.commit()

@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, url_for, redirect
 import os
 
 from . import auth
@@ -39,4 +39,4 @@ db.init_app(app)
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return redirect(url_for("questions.user_browse"))

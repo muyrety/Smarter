@@ -30,7 +30,7 @@
                 <td> {{ ", ".join(question["incorrect_answers"]) }} </td>
                 {% endif %}
                 <td>
-                    <form method="post" action="{{ url_for('admin.remove_question', id=question["id"]) }}">
+                    <form method="post" action="{{ url_for('admin.remove_question', id=question['id']) }}">
                         <button onclick="return confirm('Are you sure? This action is irreversible')" type="submit" class="btn btn-danger">Remove</button>
                     </form>
                 </td>

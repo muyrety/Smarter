@@ -6,7 +6,7 @@ from better_profanity import profanity
 from .db import get_db
 from .constants import categories
 from .auth import login_required
-from .helpers import submitQuestion, getQuestions
+from .helpers import submitQuestion, getQuestions, deleteSetQuestions
 
 bp = Blueprint("question_sets", __name__, url_prefix="/question-sets")
 
@@ -205,3 +205,22 @@ def submit_set():
 
     flash("Question set successfully created", "success")
     return {"url": url_for("index")}
+
+
+@bp.route("/remove/<int:id>", methods=["POST"])
+@login_required()
+def remove(id):
+    db = get_db()
+    if not db.execute(
+        "SELECT 1 FROM question_sets WHERE id = ? AND creator_id = ?",
+        (id, g.user["id"])
+    ).fetchone():
+        flash("You are not permitted to delete this set", "danger")
+        return redirect(url_for("question_sets.browse"), 403)
+
+    db.execute("DELETE FROM question_sets WHERE id = ?", (id,))
+
+    deleteSetQuestions(id)
+
+    flash("Question set deleted", "success")
+    return redirect(url_for("question_sets.browse"))
