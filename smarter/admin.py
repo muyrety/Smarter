@@ -58,8 +58,8 @@ def remove_question(id):
 
     add_notification(
         question["creator_id"],
-        f'Your question "{question["question"]}" was rejected/deleted',
-        category="question-removal"
+        f'Your question "{question["question"]}" was rejected',
+        category="question-rejection"
     )
     return redirect(
         request.args.get("next", url_for("admin.verify_questions"))

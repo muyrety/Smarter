@@ -18,7 +18,7 @@
                <div class="row justify-content-end">
                     <button class="col-4 col-md-2 col-lg-3 col-xl-2 btn btn-dark" data-bs-toggle="collapse" data-bs-target="#questionInfo{{ question_set['id'] }}">Show</button>
                     <form class="col-4 col-md-2 col-lg-3 col-xl-2 ms-2" action="{{ url_for('question_sets.remove', id=question_set['id']) }}" method="post">
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button onclick="return confirm('Are you sure? This action is irreversible.')" type="submit" class="btn btn-danger">Delete</button>
                     </form>
                 </div>
                 <div class="collapse mt-4" id="questionInfo{{ question_set['id'] }}">

@@ -31,7 +31,7 @@ function configureSessionStorage() {
     }
     // If someone tries to access the /add/opentdb|user-generated routes
     // without creating a question-set first, redirect them to create a question-set
-    else if (sessionStorage.length == 0) {
+    else if (sessionStorage.length === 0) {
         window.location.replace("/question-sets/add");
     }
 }

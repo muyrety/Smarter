@@ -37,13 +37,6 @@
             <td>{{ question["difficulty"] }}</td>
             <td>{{ question["question"] }}</td>
             <td>{{ question["creator"] }}</td>
-        {% if g.user["admin"] %}
-            <td>
-                <form method="post" action="{{ url_for('admin.remove_question', id=question["id"], next=request.url) }}">
-                    <button onclick="return confirm('Are you sure? This action is irreversible')" type="submit" class="btn btn-danger">Remove</button>
-                </form>
-            </td>
-        {% endif %}
         </tr>
         {% endfor %}
     </tbody>
