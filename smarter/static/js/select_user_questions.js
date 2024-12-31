@@ -18,19 +18,35 @@ document.addEventListener("DOMContentLoaded", function() {
     Array.from(forms).forEach(function(form) {
         form.addEventListener("submit", function(e) {
             e.preventDefault();
+            const addQuestion = !form.elements.submitButton.classList.contains("d-none");
             const id = form.elements.id.value;
-            if (ids.length + otdb_questions.length >= 50) {
-                document.getElementById("tooManyQuestions").classList.remove("d-none");
-            }
-            else if (ids.includes(id)) {
-                // TODO: Make nicer alert
-                alert("This question is already selected")
+            if (addQuestion) {
+                if (ids.length + otdb_questions.length >= 50) {
+                    document.getElementById("tooManyQuestions").classList.remove("d-none");
+                }
+                else if (ids.includes(id)) {
+                    // TODO: Make nicer alert
+                    alert("This question is already selected")
+                }
+                else {
+                    // Add the ID to session storage
+                    ids.push(id);
+                    sessionStorage.setItem("user_question_ids", JSON.stringify(ids));
+                    form.elements.submitButton.disabled = true;
+                    form.elements.removeButton.disabled = false;
+                    form.elements.submitButton.classList.add("d-none");
+                    form.elements.removeButton.classList.remove("d-none");
+                    setButtonText(document.getElementById("submitSet"), ids, otdb_questions);
+                }
             }
             else {
-                ids.push(id);
-                // Add the ID to session storage
+                // Delete the id from the array
+                ids.splice(ids.indexOf(id), 1);
                 sessionStorage.setItem("user_question_ids", JSON.stringify(ids));
-                form.elements.submitButton.disabled = true;
+                form.elements.removeButton.disabled = true;
+                form.elements.submitButton.disabled = false;
+                form.elements.removeButton.classList.add("d-none");
+                form.elements.submitButton.classList.remove("d-none");
                 setButtonText(document.getElementById("submitSet"), ids, otdb_questions);
             }
         });

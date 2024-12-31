@@ -122,21 +122,21 @@ def submit_set():
             "Non-temporary question sets can only have user created questions",
             "danger"
         )
-        return {"url": url_for("question_sets.add")}
+        return {"success": False}
 
     if len(userQuestions) + len(otdbQuestions) > 50:
         flash(
             "Limit of 50 questions exceeded",
             "danger"
         )
-        return {"url": url_for("question_sets.add")}
+        return {"success": False}
 
     if len(userQuestions) + len(otdbQuestions) < 5:
         flash(
             "Not enough questions provided",
             "danger"
         )
-        return {"url": url_for("question_sets.add")}
+        return {"success": False}
 
     db = get_db()
     try:
@@ -146,6 +146,7 @@ def submit_set():
                 VALUES (?, ?, ?)""", (name, int(g.user["id"]), int(temp))
         ).lastrowid
 
+        used_ids = []
         # Add otdb questions to the database and
         # connect them to the question_set
         for question in otdbQuestions:
@@ -167,12 +168,16 @@ def submit_set():
             else:
                 question_id = question_id["id"]
 
-            db.execute(
-                """INSERT INTO question_set_questions (question_set_id,
+            # Filter duplicate questions
+            if question_id not in used_ids:
+                db.execute(
+                    """INSERT INTO question_set_questions (question_set_id,
                        question_id) VALUES (?, ?)""",
-                (question_set_id, question_id)
-            )
+                    (question_set_id, question_id)
+                )
+            used_ids.append(question_id)
 
+        used_ids.clear()
         # Connect user questions with the question set
         for question in userQuestions:
             # Don't accept question ids that have not
@@ -186,13 +191,16 @@ def submit_set():
                     "Some questions are not verified or user-generated",
                     "danger"
                 )
-                return {"url": url_for("question_sets.add")}
+                return {"success": False}
 
-            db.execute(
-                """INSERT INTO question_set_questions (question_set_id,
+            # Filter duplicate questions
+            if question not in used_ids:
+                db.execute(
+                    """INSERT INTO question_set_questions (question_set_id,
                    question_id) VALUES (?, ?)""",
-                (question_set_id, question)
-            )
+                    (question_set_id, question)
+                )
+            used_ids.append(question)
         db.commit()
 
     except (db.IntegrityError, ValueError):
@@ -201,10 +209,10 @@ def submit_set():
             please try again later""",
             "danger"
         )
-        return {"url": url_for("question_sets.add")}
+        return {"success": False}
 
     flash("Question set successfully created", "success")
-    return {"url": url_for("index")}
+    return {"success": True}
 
 
 @bp.route("/remove/<int:id>", methods=["POST"])

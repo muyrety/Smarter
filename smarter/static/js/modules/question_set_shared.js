@@ -59,7 +59,12 @@ async function submitSet() {
     });
     if (response.ok) {
         const response_json = await response.json();
-        window.location.replace(response_json.url);
+        if (response_json.success) {
+            window.location.replace("/");
+        }
+        else {
+            window.location.replace("/question-sets/add");
+        }
     }
     else {
         alert("Something has gone wrong while contacting the server, check your connection and try again later");

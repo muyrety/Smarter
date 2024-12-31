@@ -184,7 +184,7 @@ async function expandTable(tbl_body, config, token, questions_available, selectR
             row.appendChild(data);
         }
         if (selectRequired) {
-            row.appendChild(getSelectCell(question));
+            row.appendChild(getFormCell(question));
         }
         tbl_body.appendChild(row);
     }
@@ -247,16 +247,24 @@ function changeButton(enable) {
     }
 }
 
-function getSelectCell(question) {
+function getFormCell(question) {
     const form = document.createElement("form");
     form.className = "selectQuestion";
 
-    const button = document.createElement("button");
-    button.name = "submitButton";
-    button.type = "submit";
-    button.className = "btn btn-success";
-    button.textContent = "Select";
-    form.appendChild(button);
+    const submitButton = document.createElement("button");
+    submitButton.name = "submitButton";
+    submitButton.type = "submit";
+    submitButton.className = "btn btn-success";
+    submitButton.textContent = "Select";
+    form.appendChild(submitButton);
+
+    const removeButton = document.createElement("button");
+    removeButton.name = "removeButton";
+    removeButton.type = "submit";
+    removeButton.className = "btn btn-danger d-none";
+    removeButton.textContent = "Remove";
+    removeButton.disabled = true;
+    form.appendChild(removeButton);
 
     const category = document.createElement("input");
     category.name = "category";
