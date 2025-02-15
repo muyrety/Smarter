@@ -1,5 +1,6 @@
 from .db import get_db
 from .constants import categories
+from flask import g
 
 
 # Returns any notifications left for the user and
@@ -111,3 +112,31 @@ def deleteSetQuestions(id):
             db.execute("DELETE FROM answers WHERE question_id = ?", (qid,))
 
     db.commit()
+
+
+def getQuestionSets():
+    db = get_db()
+    # Select non-temporary question sets with their creators from the database
+    question_sets = db.execute(
+        """SELECT qs.id, qs.name, u.username AS creator
+        FROM question_sets AS qs JOIN users AS u
+        ON qs.creator_id = u.id WHERE qs.temporary = 0"""
+    ).fetchall()
+
+    private_question_sets = []
+    if g.user is not None:
+        private_question_sets = db.execute(
+            """SELECT id, name, temporary FROM question_sets
+            WHERE creator_id = ?""", (g.user["id"],)
+        ).fetchall()
+
+    for question_set in question_sets:
+        question_set["questions"] = getQuestions(question_set["id"])
+
+    for question_set in private_question_sets:
+        question_set["questions"] = getQuestions(question_set["id"])
+
+    return {
+        "question_sets": question_sets,
+        "private_question_sets": private_question_sets
+    }

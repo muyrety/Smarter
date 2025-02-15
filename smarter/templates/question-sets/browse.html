@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %} Browse question sets {% endblock %}
+{% block title %}
+    {% if for_game %}
+        Browse question sets 
+    {% else %}
+        Select a question set
+    {% endif %}
+{% endblock %}
 
 {% block main %}
 <div class="container">
@@ -10,22 +16,44 @@
     <div class="row justify-content-center mt-3">
         <div class="col-lg-5 card">
             <div class="card-body">
-                <h6 class="card-title">{{ question_set["name"] }} (ID {{ question_set["id"] }}){% if question_set["temporary"] %} <span class="ms-2 badge rounded-pill text-bg-warning">Temporary</span> {% endif %}</h6>
+                <h6 class="mt-2 card-title">
+                    {{ question_set["name"] }} (ID {{ question_set[id] }})
+                    {% if question_set["temporary"] %}
+                        <span class="ms-2 badge rounded-pill text-bg-warning">Temporary</span>
+                    {% endif %}
+                </h6>
                 <p class="card-text">
                     {{ question_set["questions"] | length }} questions
                 </p>
-                <!-- The button becomes too small when size switches to large, because the parent element becomes smaller -->
+                <!-- The buttons become too small when size switches to large,
+                because the parent element becomes smaller -->
                <div class="row justify-content-end">
-                    <button class="col-4 col-md-2 col-lg-3 col-xl-2 btn btn-dark" data-bs-toggle="collapse" data-bs-target="#questionInfo{{ question_set['id'] }}">Show</button>
-                    <form class="col-4 col-md-2 col-lg-3 col-xl-2 ms-2" action="{{ url_for('question_sets.remove', id=question_set['id']) }}" method="post">
-                        <button onclick="return confirm('Are you sure? This action is irreversible.')" type="submit" class="btn btn-danger">Delete</button>
-                    </form>
+                    <button class="col-4 col-md-2 col-lg-3 col-xl-2 btn btn-dark"
+                    data-bs-toggle="collapse" data-bs-target="#questionInfo{{ question_set['id'] }}">
+                        Show
+                    </button>
+                    {% if for_game %}
+                        <form class="col-4 col-md-3 col-lg-4 col-xl-3 ms-2"
+                        action="{{ url_for('game.create_game', id=question_set['id']) }}" method="post">
+                            <button class="w-100 btn btn-success">Select</button>
+                        </form>
+                    {% else %}
+                        <form class="col-4 col-md-2 col-lg-3 col-xl-2 ms-2"
+                        action="{{ url_for('question_sets.remove', id=question_set['id']) }}" method="post">
+                            <button onclick="return confirm('Are you sure? This action is irreversible.')"
+                            type="submit" class="btn btn-danger">
+                                Delete
+                            </button>
+                        </form>
+                    {% endif %}
                 </div>
                 <div class="collapse mt-4" id="questionInfo{{ question_set['id'] }}">
                     <div class="card">
                         <ul class="list-group list-group-flush">
                             {% for question in question_set["questions"] %}
-                            <li class="list-group-item">{{ question["question"] }} ({{ question["category"] }}, {{ question["difficulty"] }}, ID {{ question["id"] }})</li>
+                                <li class="list-group-item">
+                                    {{ question["question"] }} ({{ question["category"] }}, {{ question["difficulty"] }}, ID {{ question["id"] }})
+                                </li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -43,20 +71,36 @@
     <div class="row justify-content-center mt-3">
         <div class="col-lg-5 card">
             <div class="card-body">
-                <h6 class="card-title">{{ question_set["name"] }} (ID {{ question_set["id"] }})</h6>
-                <h6 class="text-body-secondary card-subtitle mb-2">By {{ question_set["creator"] }}</h6>
-                <div class="row">
-                    <p class="col card-text">
-                        {{ question_set["questions"] | length }} questions
-                    </p>
-                    <!-- The button becomes too small when size switches to large, because the parent element becomes smaller -->
-                    <button class="col-4 col-md-2 col-xl-2 col-lg-3 btn btn-dark" data-bs-toggle="collapse" data-bs-target="#questionInfo{{ question_set['id'] }}">Show</button>
+                <h6 class="card-title">
+                    {{ question_set["name"] }} (ID {{ question_set["id"] }})
+                </h6>
+                <h6 class="text-body-secondary card-subtitle mb-2">
+                    By {{ question_set["creator"] }}
+                </h6>
+                <p class="card-text">
+                    {{ question_set["questions"] | length }} questions
+                </p>
+                <!-- The buttons become too small when size switches to large,
+                because the parent element becomes smaller -->
+                <div class="row justify-content-end">
+                    <button class="col-4 col-md-2 col-xl-2 col-lg-3 btn btn-dark"
+                    data-bs-toggle="collapse" data-bs-target="#questionInfo{{ question_set['id'] }}">
+                        Show
+                    </button>
+                    {% if for_game %}
+                        <form class="col-4 col-md-3 col-lg-4 col-xl-3 ms-2"
+                        action="{{ url_for('game.create_game', id=question_set['id']) }}" method="post">
+                            <button class="w-100 btn btn-success">Select</button>
+                        </form>
+                    {% endif %}
                 </div>
                 <div class="collapse mt-4" id="questionInfo{{ question_set['id'] }}">
                     <div class="card">
                         <ul class="list-group list-group-flush">
                             {% for question in question_set["questions"] %}
-                            <li class="list-group-item">{{ question["question"] }} ({{ question["category"] }}, {{ question["difficulty"] }}, ID {{ question["id"] }})</li>
+                                <li class="list-group-item">
+                                    {{ question["question"] }} ({{ question["category"] }}, {{ question["difficulty"] }}, ID {{ question["id"] }})
+                                </li>
                             {% endfor %}
                         </ul>
                     </div>
