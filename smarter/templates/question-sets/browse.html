@@ -38,10 +38,10 @@
                             <button class="w-100 btn btn-success">Select</button>
                         </form>
                     {% else %}
-                        <form class="col-4 col-md-2 col-lg-3 col-xl-2 ms-2"
+                        <form class="col-4 col-md-3 col-lg-4 col-xl-3 ms-2"
                         action="{{ url_for('question_sets.remove', id=question_set['id']) }}" method="post">
                             <button onclick="return confirm('Are you sure? This action is irreversible.')"
-                            type="submit" class="btn btn-danger">
+                            type="submit" class="w-100 btn btn-danger">
                                 Delete
                             </button>
                         </form>
