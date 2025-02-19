@@ -85,18 +85,17 @@ document.addEventListener("DOMContentLoaded", function() {
         else {
             idForm.elements.id.value = "";
             alert("Success");
+            // Add the ID to session storage
             ids.push(id);
             sessionStorage.setItem("user_question_ids", JSON.stringify(ids));
+            const form = Array.from(forms).find(function(form) {
+                return form.elements.id.value === id;
+            });
+            form.elements.submitButton.disabled = true;
+            form.elements.removeButton.disabled = false;
+            form.elements.submitButton.classList.add("d-none");
+            form.elements.removeButton.classList.remove("d-none");
             setButtonText(document.getElementById("submitSet"), ids, otdb_questions);
-            disableSelectButton(id);
         }
     });
-
-    function disableSelectButton(id) {
-        const forms = document.getElementsByClassName("selectQuestion");
-        for (const form of forms) {
-            if (form.elements.id.value === id)
-                form.elements.submitButton.disabled = true;
-        }
-    }
 });

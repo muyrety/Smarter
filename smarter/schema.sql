@@ -49,6 +49,7 @@ CREATE TABLE notifications (
 
 CREATE TABLE games (
     id INTEGER PRIMARY KEY,
+    uuid TEXT NOT NULL UNIQUE,
     owner_id INTEGER NOT NULL,
     question_set_id INTEGER NOT NULL,
     joinable INTEGER NOT NULL DEFAULT 1 CHECK (joinable = 0 OR joinable = 1),

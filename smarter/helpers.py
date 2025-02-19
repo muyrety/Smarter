@@ -1,6 +1,7 @@
 from .db import get_db
 from .constants import categories
 from flask import g
+from uuid import uuid4
 
 
 # Returns any notifications left for the user and
@@ -140,3 +141,18 @@ def getQuestionSets():
         "question_sets": question_sets,
         "private_question_sets": private_question_sets
     }
+
+
+def addGame(id):
+    uuid = uuid4().hex
+    db = get_db()
+    try:
+        db.execute(
+            """INSERT INTO games (uuid, owner_id, question_set_id)
+                VALUES (?, ?, ?)""", (uuid, g.user["id"], id)
+        )
+        db.commit()
+    except db.IntegrityError:
+        return None
+
+    return uuid
