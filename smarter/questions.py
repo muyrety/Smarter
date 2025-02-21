@@ -67,7 +67,7 @@ def add():
         flash(error, "danger")
         return render_template("questions/add.html")
 
-    flash("Question successfuly submited", "success")
+    flash("Question successfully submited", "success")
     return redirect(url_for("index"))
 
 

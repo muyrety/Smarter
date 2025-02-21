@@ -43,11 +43,31 @@
 <hr class="border opacity-50">
 
 <form id="IDSubmitionForm">
+    <div class="row justify-content-center">
+        <div class="col-auto">
+            <div class="alert alert-danger alert-dismissible d-none" id="serverFailAlert">
+                <p> Could not connect to the server, try again </p>
+                <button type="button" class="btn-close" id="serverFailAlertDismiss"></button>
+            </div>
+            <div class="alert alert-warning alert-dismissible d-none" id="questionChosenAlert">
+                <p> This question has already been added </p>
+                <button type="button" class="btn-close" id="questionChosenAlertDismiss"></button>
+            </div>
+            <div class="alert alert-warning alert-dismissible d-none" id="questionNotValidAlert">
+                <p> This question ID is not valid </p>
+                <button type="button" class="btn-close" id="questionNotValidAlertDismiss"></button>
+            </div>
+            <div class="alert alert-success alert-dismissible d-none" id="successAlert">
+                <p> Question successfully added </p>
+                <button type="button" class="btn-close" id="successAlertDismiss"></button>
+            </div>
+        </div>
+    </div>
     <div class="row justify-content-center text-center mt-3">
-        <div class="col-4 col-sm-3 m-2">
+        <div class="col-auto m-2">
             <input name="id" type="number" class="form-control">
         </div>
-        <div class="col-md-2 m-2">
+        <div class="col-auto m-2">
             <button type="submit" class="btn btn-primary">Select by ID</button>
         </div>
     </div>

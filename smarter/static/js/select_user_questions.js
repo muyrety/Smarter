@@ -25,8 +25,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     document.getElementById("tooManyQuestions").classList.remove("d-none");
                 }
                 else if (ids.includes(id)) {
-                    // TODO: Make nicer alert
-                    alert("This question is already selected")
+                    form.elements.submitButton.disabled = true;
+                    form.elements.removeButton.disabled = false;
+                    form.elements.submitButton.classList.add("d-none");
+                    form.elements.removeButton.classList.remove("d-none");
                 }
                 else {
                     // Add the ID to session storage
@@ -59,7 +61,12 @@ document.addEventListener("DOMContentLoaded", function() {
         for (const row of table.children) {
             if (ids.includes(row.children[id_col].textContent)) {
                 // Select the rows form and disable it's submit button
-                row.getElementsByClassName("selectQuestion")[0].elements.submitButton.disabled = true;
+                // and show the remove button instead
+                const formElements = row.getElementsByClassName("selectQuestion")[0].elements;
+                formElements.submitButton.disabled = true;
+                formElements.submitButton.classList.add("d-none");
+                formElements.removeButton.classList.remove("d-none");
+                formElements.removeButton.disabled = false;
             }
         }
     }
@@ -69,22 +76,36 @@ document.addEventListener("DOMContentLoaded", function() {
         e.preventDefault();
         const id = idForm.elements.id.value;
         if (ids.includes(id)) {
-            alert("This question is already selected");
+            const idAlert = document.getElementById("questionChosenAlert");
+            idAlert.classList.remove("d-none");
             return;
         }
 
-        let response = await fetch(`/question-sets/check_question/${id}`);
+        let response;
+        try {
+            response = await fetch(`/question-sets/check_question/${id}`);
+        }
+        catch (e) {
+            console.log(e);
+            const idAlert = document.getElementById("serverFailAlert");
+            idAlert.classList.remove("d-none");
+            return;
+        }
         if (!response.ok) {
-            alert("Could not connect to the server! Try again.");
+            const idAlert = document.getElementById("serverFailAlert");
+            idAlert.classList.remove("d-none");
             return;
         }
         response = await response.json();
         if (!response["id_ok"]) {
-            alert("The ID given does not belong to an user question");
+            const idAlert = document.getElementById("questionNotValidAlert");
+            idAlert.classList.remove("d-none");
         }
         else {
             idForm.elements.id.value = "";
-            alert("Success");
+            const idAlert = document.getElementById("successAlert");
+            idAlert.classList.remove("d-none");
+
             // Add the ID to session storage
             ids.push(id);
             sessionStorage.setItem("user_question_ids", JSON.stringify(ids));
@@ -98,4 +119,28 @@ document.addEventListener("DOMContentLoaded", function() {
             setButtonText(document.getElementById("submitSet"), ids, otdb_questions);
         }
     });
+
+    document.getElementById("questionChosenAlertDismiss").
+        addEventListener("click", function() {
+            const idAlert = document.getElementById("questionChosenAlert");
+            idAlert.classList.add("d-none");
+        });
+
+    document.getElementById("questionNotValidAlertDismiss").
+        addEventListener("click", function() {
+            const idAlert = document.getElementById("questionNotValidAlert");
+            idAlert.classList.add("d-none");
+        });
+
+    document.getElementById("successAlertDismiss").
+        addEventListener("click", function() {
+            const idAlert = document.getElementById("successAlert");
+            idAlert.classList.add("d-none");
+        });
+
+    document.getElementById("serverFailAlertDismiss").
+        addEventListener("click", function() {
+            const idAlert = document.getElementById("serverFailAlert");
+            idAlert.classList.add("d-none");
+        });
 });

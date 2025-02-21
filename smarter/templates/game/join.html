@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %} Join game {% endblock %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='js/join.js') }}"></script>
+{% endblock %}
+
+{% block main %}
+<div class="container">
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-5">
+            <form id="joinGame">
+                <label for="uuid" class="form-label">Game ID</label>
+                <input required type="text" autocomplete="off" class="form-control" name="uuid" id="uuid">
+                <div class="mt-2 text-center">
+                    <button type="submit" class="btn btn-primary">Join game</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

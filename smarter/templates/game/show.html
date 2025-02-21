@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %} Join game {% endblock %}
+
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{{ url_for('static', filename='js/show.js') }}"></script>
+{% endblock %}
+
+{% block main %}
+<div class="container text-center">
+    <h2 class="mt-2">Share the ID or the QR code with others to let them join</h2>
+    <div class="row text-center justify-content-evenly">
+        <div class="col-auto mt-3">
+            <p> Game ID: <span id="gameID">{{ id }}</span></p>
+            <div class="mt-3 d-flex justify-content-center" id="qrCode">
+            </div>
+        </div>
+        <div class="col-auto mt-3">
+            <ul class="list-group" id="playerList">
+                <li class="list-group-item list-group-item-success">Players in game</li>
+                <li class="list-group-item">{{ g.user["username"] }} (you)</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-3 text-center">
+            <button class="btn btn-dark">Start game</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

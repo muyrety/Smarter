@@ -32,7 +32,7 @@ app.register_blueprint(admin.bp)
 app.register_blueprint(game.bp)
 app.register_blueprint(question_sets.bp)
 
-# Register app with some select files (database managment and admin commands
+# Register app with some select modules (database managment and admin commands)
 admin.init_app(app)
 db.init_app(app)
 

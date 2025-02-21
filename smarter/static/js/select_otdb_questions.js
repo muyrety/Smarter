@@ -20,10 +20,27 @@ document.addEventListener("tableChanged", function() {
         form.addEventListener("submit", function(e) {
             e.preventDefault();
 
-            if (questions.length + user_questions.length < 50) {
+            const addQuestion = !form.elements.submitButton.classList.contains("d-none");
+
+            if (!addQuestion) {
+                const questionIdx = questions.findIndex(function(el) {
+                    return JSON.stringify(el) === JSON.stringify(getQuestionData(form));
+                });
+                questions.splice(questionIdx, 1);
+                sessionStorage.setItem("otdb_questions", JSON.stringify(questions));
+                form.elements.submitButton.disabled = false;
+                form.elements.submitButton.classList.remove("d-none");
+                form.elements.removeButton.classList.add("d-none");
+                form.elements.removeButton.disabled = true;
+                setButtonText(submitSetButton, user_questions, questions);
+            }
+            else if (questions.length + user_questions.length < 50) {
                 questions.push(getQuestionData(form));
                 sessionStorage.setItem("otdb_questions", JSON.stringify(questions));
                 form.elements.submitButton.disabled = true;
+                form.elements.submitButton.classList.add("d-none");
+                form.elements.removeButton.classList.remove("d-none");
+                form.elements.removeButton.disabled = false;
                 setButtonText(submitSetButton, user_questions, questions);
             }
             else {
@@ -36,8 +53,12 @@ document.addEventListener("tableChanged", function() {
     function disableSelected(questions, forms) {
         for (const form of forms) {
             for (const question of questions) {
-                if (JSON.stringify(getQuestionData(form)) === JSON.stringify(question))
+                if (JSON.stringify(getQuestionData(form)) === JSON.stringify(question)) {
                     form.elements.submitButton.disabled = true;
+                    form.elements.submitButton.classList.add("d-none");
+                    form.elements.removeButton.classList.remove("d-none");
+                    form.elements.removeButton.disabled = false;
+                }
             }
         }
     }
