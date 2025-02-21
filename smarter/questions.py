@@ -6,7 +6,7 @@ from flask import (
 from .auth import login_required
 from .db import get_db
 from .constants import categories
-from .helpers import submitQuestion
+from .utility import submitQuestion
 from better_profanity import profanity
 
 bp = Blueprint("questions", __name__, url_prefix="/questions")

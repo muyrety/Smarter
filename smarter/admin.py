@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash
 from .db import get_db
 from .auth import login_required
 from .constants import categories
-from .helpers import add_notification
+from .utility import add_notification
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 

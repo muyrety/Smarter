@@ -6,7 +6,7 @@ from better_profanity import profanity
 from .db import get_db
 from .constants import categories
 from .auth import login_required
-from .helpers import (
+from .utility import (
     submitQuestion, deleteSetQuestions, getQuestionSets
 )
 

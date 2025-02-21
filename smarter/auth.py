@@ -8,7 +8,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db import get_db
 
-from .helpers import get_notifications
+from .utility import get_notifications
 from better_profanity import profanity
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")

@@ -1,7 +1,7 @@
 from flask import (
     Blueprint, render_template, request, flash, redirect, url_for, g
 )
-from .helpers import getQuestionSets, addGame
+from .utility import getQuestionSets, addGame
 from .auth import login_required
 from .db import get_db
 
