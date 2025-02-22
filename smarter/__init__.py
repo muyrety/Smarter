@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_socketio import SocketIO
 import os
 
 from . import auth
@@ -9,6 +8,7 @@ from . import admin
 from . import game
 from . import db
 from . import question_sets
+from . import sockets
 
 app = Flask(__name__, instance_relative_config=True)
 
@@ -18,8 +18,6 @@ app.config.from_mapping(
 )
 
 app.config.from_pyfile("config.py", silent=True)
-
-socketio = SocketIO(app)
 
 # Create the instance folder if necessary
 try:
@@ -35,6 +33,7 @@ app.register_blueprint(admin.bp)
 app.register_blueprint(game.bp)
 app.register_blueprint(question_sets.bp)
 
-# Register app with some select modules (database managment and admin commands)
+# Register app with some select modules
 admin.init_app(app)
 db.init_app(app)
+sockets.init_app(app)

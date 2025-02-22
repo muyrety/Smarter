@@ -61,7 +61,7 @@ CREATE TABLE games (
 
 CREATE TABLE players (
     game_id INTEGER NOT NULL,
-    player_id INTEGER NOT NULL,
+    player_id INTEGER NOT NULL PRIMARY KEY,
     correct_answers INTEGER DEFAULT 0,
     FOREIGN KEY (game_id) REFERENCES games (id),
     FOREIGN KEY (player_id) REFERENCES users (id)

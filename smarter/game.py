@@ -71,12 +71,57 @@ def join_game(id=None):
     if id is None:
         return render_template('game/join.html')
 
-    isOwner = get_db().execute(
+    db = get_db()
+    isOwner = db.execute(
         "SELECT 1 FROM games WHERE uuid = ? AND owner_id = ?",
         (id, g.user["id"])
     ).fetchone()
     if isOwner:
         return render_template('game/show.html', id=id)
     else:
-        pass  # TODO: Complete later
-        # Need to add the user to players
+        qsName = db.execute(
+            """SELECT name FROM question_sets WHERE id =
+                (SELECT question_set_id FROM games WHERE uuid = ?)""",
+            (id,)
+        ).fetchone()
+        if qsName is None:
+            flash("This game does not exist", "danger")
+            return redirect(url_for("game.join_game"))
+
+        qsName = qsName["name"]
+
+        game_id = db.execute(
+            "SELECT id FROM games WHERE uuid = ?",
+            (id,)
+        ).fetchone()["id"]
+
+        players = db.execute(
+            """SELECT username FROM users WHERE id IN
+                (SELECT player_id FROM players WHERE game_id = ?)""",
+            (game_id,)
+        ).fetchall()
+        players = [row["username"] for row in players]
+
+        owner = db.execute(
+            """SELECT username FROM users WHERE id =
+                (SELECT owner_id FROM games WHERE id = ?)""",
+            (game_id,)
+        ).fetchone()["username"]
+
+        # Try to insert user if he is not already in the game
+        if g.user["username"] not in players:
+            try:
+                db.execute(
+                    """INSERT INTO players(game_id, player_id) VALUES(?, ?)""",
+                    (game_id, g.user["id"])
+                )
+                db.commit()
+                players.append(g.user["username"])
+            except db.IntegrityError:
+                # TODO: change to something more logical (ongoing game tab)
+                flash("You are already in an ongoing game", "danger")
+                return redirect(url_for("game.join_game"))
+
+        return render_template(
+            "game/pregame.html", qs_name=qsName, players=players, owner=owner
+        )

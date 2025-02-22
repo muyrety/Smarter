@@ -93,7 +93,7 @@ def register():
             session.permanent = False
             session["user_id"] = user_id
             flash("You have successfully registered", "success")
-            return redirect(url_for("index"))
+            return redirect(url_for("game.index"))
 
     flash(error, "danger")
     return render_template("auth/register.html")
@@ -137,11 +137,11 @@ def login():
 
     flash("You have successfully logged-in", "success")
 
-    return redirect(next if next else url_for("index"))
+    return redirect(next if next else url_for("game.index"))
 
 
 @bp.route("/logout")
 def logout():
     session.clear()
     flash("You are now logged out", "success")
-    return redirect(url_for("index"))
+    return redirect(url_for("game.index"))

@@ -68,7 +68,7 @@ def add():
         return render_template("questions/add.html")
 
     flash("Question successfully submited", "success")
-    return redirect(url_for("index"))
+    return redirect(url_for("game.index"))
 
 
 @bp.route("/browse/otdb")

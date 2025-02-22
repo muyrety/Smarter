@@ -1,2 +1,3 @@
-from .__init__ import socketio, app
-socketio.run(app)
+from .sockets import socketio
+from .__init__ import app
+socketio.run(app, debug=True)
