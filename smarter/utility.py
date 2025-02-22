@@ -147,16 +147,11 @@ def addGame(id):
     uuid = uuid4().hex
     db = get_db()
     try:
-        game_id = db.execute(
+        db.execute(
             """INSERT INTO games (uuid, owner_id, question_set_id)
                 VALUES (?, ?, ?)""", (uuid, g.user["id"], id)
-        ).lastrowid
-
-        # Add owner to players automaticaly
-        db.execute(
-            "INSERT INTO players (game_id, player_id) VALUES (?, ?)",
-            (game_id, g.user["id"])
         )
+
         db.commit()
     except db.IntegrityError:
         return None

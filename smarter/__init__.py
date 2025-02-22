@@ -1,4 +1,5 @@
-from flask import Flask, url_for, redirect
+from flask import Flask
+from flask_socketio import SocketIO
 import os
 
 from . import auth
@@ -18,6 +19,8 @@ app.config.from_mapping(
 
 app.config.from_pyfile("config.py", silent=True)
 
+socketio = SocketIO(app)
+
 # Create the instance folder if necessary
 try:
     os.makedirs(app.instance_path)
@@ -35,8 +38,3 @@ app.register_blueprint(question_sets.bp)
 # Register app with some select modules (database managment and admin commands)
 admin.init_app(app)
 db.init_app(app)
-
-
-@app.route("/")
-def index():
-    return redirect(url_for("questions.user_browse"))

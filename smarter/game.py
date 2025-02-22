@@ -8,6 +8,11 @@ from .db import get_db
 bp = Blueprint("game", __name__)
 
 
+@bp.route("/")
+def index():
+    return redirect(url_for("game.join_game"))
+
+
 @bp.route("/create", methods=['GET', 'POST'])
 @login_required()
 def create_game():

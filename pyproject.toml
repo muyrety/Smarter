@@ -5,6 +5,7 @@ description = "Web application for playing trivia games using Flask and the Open
 dependencies = [
     "flask",
     "better_profanity",
+    "flask-socketio",
 ]
 
 
