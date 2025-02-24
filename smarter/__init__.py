@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect, url_for
 import os
 
 from . import auth
@@ -37,3 +37,8 @@ app.register_blueprint(question_sets.bp)
 admin.init_app(app)
 db.init_app(app)
 sockets.init_app(app)
+
+
+@app.route("/")
+def index():
+    return redirect(url_for("question_sets.browse"))

@@ -1,16 +1,11 @@
 from flask import (
     Blueprint, render_template, request, flash, redirect, url_for, g
 )
-from .utility import getQuestionSets, addGame
+from .utility import getQuestionSets, addGame, gameData
 from .auth import login_required
 from .db import get_db
 
 bp = Blueprint("game", __name__)
-
-
-@bp.route("/")
-def index():
-    return redirect(url_for("game.join_game"))
 
 
 @bp.route("/create", methods=['GET', 'POST'])
@@ -41,7 +36,7 @@ def create_game():
         game_uuid = addGame(id)
         if game_uuid is None:
             flash(
-                'An unexpected error occured while adding question',
+                'You are in an ongoing game',
                 'danger'
             )
             return render_template(
@@ -50,7 +45,7 @@ def create_game():
                 private_question_sets=question_sets["private_question_sets"],
                 for_game=True
             )
-        return redirect(url_for('game.join_game', id=game_uuid))
+        return redirect(url_for('game.join_game', uuid=game_uuid))
     else:
         flash(
             'This ID does not exist or you are not authorized to use it',
@@ -65,63 +60,60 @@ def create_game():
 
 
 @bp.route("/join")
-@bp.route("/join/<id>")
+@bp.route("/join/<uuid>")
 @login_required()
-def join_game(id=None):
-    if id is None:
+def join_game(uuid=None):
+    if uuid is None:
         return render_template('game/join.html')
 
     db = get_db()
     isOwner = db.execute(
         "SELECT 1 FROM games WHERE uuid = ? AND owner_id = ?",
-        (id, g.user["id"])
+        (uuid, g.user["id"])
     ).fetchone()
     if isOwner:
-        return render_template('game/show.html', id=id)
+        return render_template('game/show.html', id=uuid)
     else:
-        qsName = db.execute(
-            """SELECT name FROM question_sets WHERE id =
-                (SELECT question_set_id FROM games WHERE uuid = ?)""",
-            (id,)
-        ).fetchone()
-        if qsName is None:
-            flash("This game does not exist", "danger")
+        game_data = gameData(uuid)
+        if game_data["qs_name"] is None:
+            flash(
+                "This game does not exist",
+                "danger"
+            )
+            return redirect(url_for("game.join_game"))
+        if not game_data["joinable"]:
+            flash(
+                "This game is not joinable anymore",
+                "danger"
+            )
             return redirect(url_for("game.join_game"))
 
-        qsName = qsName["name"]
-
-        game_id = db.execute(
-            "SELECT id FROM games WHERE uuid = ?",
-            (id,)
-        ).fetchone()["id"]
-
-        players = db.execute(
-            """SELECT username FROM users WHERE id IN
-                (SELECT player_id FROM players WHERE game_id = ?)""",
-            (game_id,)
-        ).fetchall()
-        players = [row["username"] for row in players]
-
-        owner = db.execute(
-            """SELECT username FROM users WHERE id =
-                (SELECT owner_id FROM games WHERE id = ?)""",
-            (game_id,)
-        ).fetchone()["username"]
-
-        # Try to insert user if he is not already in the game
-        if g.user["username"] not in players:
-            try:
-                db.execute(
-                    """INSERT INTO players(game_id, player_id) VALUES(?, ?)""",
-                    (game_id, g.user["id"])
-                )
-                db.commit()
-                players.append(g.user["username"])
-            except db.IntegrityError:
-                # TODO: change to something more logical (ongoing game tab)
-                flash("You are already in an ongoing game", "danger")
-                return redirect(url_for("game.join_game"))
+        inOtherGame = (
+            db.execute(
+                "SELECT 1 FROM players WHERE player_id = ? AND game_id != ?",
+                (g.user["id"], game_data["id"])
+            ).fetchone()
+            or
+            db.execute(
+                "SELECT 1 FROM games WHERE owner_id = ? AND id != ?",
+                (g.user["id"], game_data["id"])
+            ).fetchone()
+        )
+        # Try to insert user if he is not already in a game
+        if inOtherGame:
+            # TODO: change to something more logical (ongoing game tab)
+            flash("You are already in an ongoing game", "danger")
+            return redirect(url_for("game.join_game"))
+        elif g.user["username"] not in game_data["players"]:
+            print(g.user["username"], game_data["players"])
+            db.execute(
+                """INSERT INTO players(game_id, player_id) VALUES(?, ?)""",
+                (game_data["id"], g.user["id"])
+            )
+            db.commit()
+            game_data["players"].append(g.user["username"])
 
         return render_template(
-            "game/pregame.html", qs_name=qsName, players=players, owner=owner
+            "game/pregame.html", qs_name=game_data["qs_name"],
+            players=game_data["players"], owner=game_data["owner"]
         )

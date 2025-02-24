@@ -53,10 +53,9 @@ CREATE TABLE games (
     owner_id INTEGER NOT NULL,
     question_set_id INTEGER NOT NULL,
     joinable INTEGER NOT NULL DEFAULT 1 CHECK (joinable = 0 OR joinable = 1),
-    current_question_id INTEGER DEFAULT NULL,
+    current_question INTEGER DEFAULT 1,
     FOREIGN KEY (owner_id) REFERENCES users (id),
-    FOREIGN KEY (question_set_id) REFERENCES question_set (id),
-    FOREIGN KEY (current_question_id) REFERENCES questions (id)
+    FOREIGN KEY (question_set_id) REFERENCES question_set (id)
 );
 
 CREATE TABLE players (

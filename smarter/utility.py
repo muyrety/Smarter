@@ -146,14 +146,68 @@ def getQuestionSets():
 def addGame(id):
     uuid = uuid4().hex
     db = get_db()
-    try:
+    inGame = (
         db.execute(
-            """INSERT INTO games (uuid, owner_id, question_set_id)
-                VALUES (?, ?, ?)""", (uuid, g.user["id"], id)
-        )
-
-        db.commit()
-    except db.IntegrityError:
+            "SELECT 1 FROM players WHERE player_id = ?",
+            (g.user["id"],)
+        ).fetchone()
+        or
+        db.execute(
+            "SELECT 1 FROM games WHERE owner_id = ?",
+            (g.user["id"],)
+        ).fetchone()
+    )
+    if inGame:
         return None
 
+    db.execute(
+        """INSERT INTO games (uuid, owner_id, question_set_id)
+                VALUES (?, ?, ?)""", (uuid, g.user["id"], id)
+    )
+
+    db.commit()
+
     return uuid
+
+
+def gameData(uuid):
+    db = get_db()
+    id = db.execute(
+        "SELECT id FROM games WHERE uuid = ?",
+        (uuid,)
+    ).fetchone()
+    if id:
+        id = id["id"]
+
+    qsName = db.execute(
+        """SELECT name FROM question_sets WHERE id =
+                (SELECT question_set_id FROM games WHERE id = ?)""",
+        (id,)
+    ).fetchone()
+    if qsName:
+        qsName = qsName["name"]
+
+    players = db.execute(
+        """SELECT username FROM users WHERE id IN
+                (SELECT player_id FROM players WHERE game_id = ?)""",
+        (id,)
+    ).fetchall()
+    players = [row["username"] for row in players]
+
+    owner = db.execute(
+        """SELECT username FROM users WHERE id =
+                (SELECT owner_id FROM games WHERE id = ?)""",
+        (id,)
+    ).fetchone()
+    if owner:
+        owner = owner["username"]
+
+    joinable = bool(db.execute(
+        "SELECT 1 FROM games WHERE joinable = 1 AND id = ?",
+        (id,)
+    ).fetchone())
+
+    return {
+        "id": id, "qs_name": qsName, "players": players,
+        "owner": owner, "joinable": joinable
+    }
