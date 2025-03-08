@@ -3,8 +3,9 @@
 {% block title %} Join game {% endblock %}
 
 {% block head %}
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="{{ url_for('static', filename='js/show.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/show.js') }}"></script>
 {% endblock %}
 
 {% block main %}
@@ -20,6 +21,9 @@
             <ul class="list-group" id="playerList">
                 <li class="list-group-item list-group-item-success">Players in game</li>
                 <li class="list-group-item">{{ g.user["username"] }} (you)</li>
+                {% for player in players %}
+                <li class="list-group-item"> {{ player }} </li>
+                {% endfor %}
             </ul>
         </div>
     </div>

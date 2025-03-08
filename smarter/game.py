@@ -1,9 +1,42 @@
 from flask import (
     Blueprint, render_template, request, flash, redirect, url_for, g
 )
+from flask_socketio import join_room, emit
 from .utility import getQuestionSets, addGame, gameData
-from .auth import login_required
+from .auth import login_required, load_logged_in_user
 from .db import get_db
+from .sockets import socketio
+
+
+@socketio.on("connect", namespace="/join")
+def player_joined(data):
+    # Manually register user since before_app_request
+    # doesn't work with socketIO
+    load_logged_in_user()
+
+    db = get_db()
+
+    # Get game id if user is the owner
+    game_id = db.execute(
+        "SELECT id FROM games WHERE owner_id = ?",
+        (g.user["id"],)
+    ).fetchone()
+
+    if game_id is None:
+        # If it fails, get game id from players table
+        game_id = db.execute(
+            "SELECT game_id AS id FROM players WHERE player_id = ?",
+            (g.user["id"],)
+        ).fetchone()
+        join_room(game_id["id"])
+        emit(
+            "user_connected", {"username": g.user["username"]},
+            to=game_id["id"], include_self=False
+        )
+    else:
+        # Don't send any events if owner (re)joined
+        join_room(game_id["id"])
+
 
 bp = Blueprint("game", __name__)
 
@@ -71,10 +104,12 @@ def join_game(uuid=None):
         "SELECT 1 FROM games WHERE uuid = ? AND owner_id = ?",
         (uuid, g.user["id"])
     ).fetchone()
+    game_data = gameData(uuid)
     if isOwner:
-        return render_template('game/show.html', id=uuid)
+        return render_template(
+            'game/show.html', id=uuid, players=game_data["players"]
+        )
     else:
-        game_data = gameData(uuid)
         if game_data["qs_name"] is None:
             flash(
                 "This game does not exist",
@@ -101,11 +136,9 @@ def join_game(uuid=None):
         )
         # Try to insert user if he is not already in a game
         if inOtherGame:
-            # TODO: change to something more logical (ongoing game tab)
             flash("You are already in an ongoing game", "danger")
             return redirect(url_for("game.join_game"))
         elif g.user["username"] not in game_data["players"]:
-            print(g.user["username"], game_data["players"])
             db.execute(
                 """INSERT INTO players(game_id, player_id) VALUES(?, ?)""",
                 (game_data["id"], g.user["id"])

@@ -2,13 +2,18 @@
 
 {% block title %} Join game {% endblock %}
 
+{% block head %}
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
+<script type="module" src="{{ url_for('static', filename='js/pregame.js') }}"></script>
+{% endblock %}
+
 {% block main %}
 <div class="container text-center">
     <h2 class="mt-3"> Waiting for the game to start </h2>
     <p> Question set name: {{ qs_name }} </p>
     <div class="row justify-content-center">
         <div class="col-auto">
-            <ul class="list-group">
+            <ul class="list-group" id="playerList">
                 <li class="list-group-item list-group-item-success"> Players </li>
                 <li class="list-group-item"> {{ owner }} (owner) </li>
                 {% for player in players %}
