@@ -99,6 +99,15 @@ def play_game(uuid=None):
     if uuid is None:
         flash("No UUID supplied, try joining game instead", "danger")
         return redirect(url_for("game.join_game"))
+
+    db = get_db()
+    joinable = bool(db.execute(
+        "SELECT 1 FROM games WHERE uuid = ? AND joinable = 1",
+        (uuid,)
+    ).fetchone())
+    if joinable:
+        print("joinable")
+        return redirect(url_for("game.join_game", uuid=uuid))
     # TODO:
     return "<h1> In progress, check back later </h1>"
 
@@ -117,9 +126,12 @@ def join_game(uuid=None):
     ).fetchone()
     game_data = gameData(uuid)
     if isOwner:
-        return render_template(
-            'game/show.html', id=uuid, players=game_data["players"]
-        )
+        if game_data["joinable"]:
+            return render_template(
+                'game/show.html', id=uuid, players=game_data["players"]
+            )
+        else:
+            return redirect(url_for("game.play_game", uuid=uuid))
     else:
         if game_data["qs_name"] is None:
             flash(
