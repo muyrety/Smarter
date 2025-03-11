@@ -92,6 +92,17 @@ def create_game():
         )
 
 
+@bp.route("/play")
+@bp.route("/play/<uuid>")
+@login_required()
+def play_game(uuid=None):
+    if uuid is None:
+        flash("No UUID supplied, try joining game instead", "danger")
+        return redirect(url_for("game.join_game"))
+    # TODO:
+    return "<h1> In progress, check back later </h1>"
+
+
 @bp.route("/join")
 @bp.route("/join/<uuid>")
 @login_required()
@@ -116,12 +127,6 @@ def join_game(uuid=None):
                 "danger"
             )
             return redirect(url_for("game.join_game"))
-        if not game_data["joinable"]:
-            flash(
-                "This game is not joinable anymore",
-                "danger"
-            )
-            return redirect(url_for("game.join_game"))
 
         inOtherGame = (
             db.execute(
@@ -139,12 +144,25 @@ def join_game(uuid=None):
             flash("You are already in an ongoing game", "danger")
             return redirect(url_for("game.join_game"))
         elif g.user["username"] not in game_data["players"]:
-            db.execute(
-                """INSERT INTO players(game_id, player_id) VALUES(?, ?)""",
-                (game_data["id"], g.user["id"])
-            )
-            db.commit()
-            game_data["players"].append(g.user["username"])
+            # Join the player
+            if game_data["joinable"]:
+                db.execute(
+                    """INSERT INTO players(game_id, player_id) VALUES(?, ?)""",
+                    (game_data["id"], g.user["id"])
+                )
+                db.commit()
+                game_data["players"].append(g.user["username"])
+            # Reject the player
+            else:
+                flash(
+                    "This game is not joinable anymore",
+                    "danger"
+                )
+                return redirect(url_for("game.join_game"))
+        # Player is in player list, but the game is not joinable
+        # (i. e. in progress), redirect to play game
+        elif not game_data["joinable"]:
+            return redirect(url_for("game.play_game", uuid=uuid))
 
         return render_template(
             "game/pregame.html", qs_name=game_data["qs_name"],
