@@ -2,7 +2,7 @@ from flask import (
     Blueprint, render_template, request, flash, redirect, url_for, g
 )
 from flask_socketio import join_room, emit
-from .utility import getQuestionSets, addGame, gameData
+from .utility import getQuestionSets, addGame, gameData, getUserGame
 from .auth import login_required, load_logged_in_user
 from .db import get_db
 from .sockets import socketio
@@ -45,12 +45,13 @@ bp = Blueprint("game", __name__)
 @login_required()
 def create_game():
     question_sets = getQuestionSets()
+    game = getUserGame(g.user["id"])
     if request.method == 'GET':
         return render_template(
             "question-sets/browse.html",
             question_sets=question_sets["question_sets"],
             private_question_sets=question_sets["private_question_sets"],
-            for_game=True
+            for_game=True, game=game
         )
 
     id = request.form.get('id')
@@ -60,7 +61,7 @@ def create_game():
             "question-sets/browse.html",
             question_sets=question_sets["question_sets"],
             private_question_sets=question_sets["private_question_sets"],
-            for_game=True
+            for_game=True, game=game
         )
 
     # Private question sets are the users own
@@ -76,7 +77,7 @@ def create_game():
                 "question-sets/browse.html",
                 question_sets=question_sets["question_sets"],
                 private_question_sets=question_sets["private_question_sets"],
-                for_game=True
+                for_game=True, game=game
             )
         return redirect(url_for('game.join_game', uuid=game_uuid))
     else:
@@ -88,7 +89,7 @@ def create_game():
             "question-sets/browse.html",
             question_sets=question_sets["question_sets"],
             private_question_sets=question_sets["private_question_sets"],
-            for_game=True
+            for_game=True, game=game
         )
 
 
@@ -117,7 +118,8 @@ def play_game(uuid=None):
 @login_required()
 def join_game(uuid=None):
     if uuid is None:
-        return render_template('game/join.html')
+        game = getUserGame(g.user["id"])
+        return render_template('game/join.html', game=game)
 
     db = get_db()
     isOwner = db.execute(

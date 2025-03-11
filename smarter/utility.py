@@ -211,3 +211,20 @@ def gameData(uuid):
         "id": id, "qs_name": qsName, "players": players,
         "owner": owner, "joinable": joinable
     }
+
+
+def getUserGame(id):
+    db = get_db()
+    owner = db.execute(
+        "SELECT uuid FROM games WHERE owner_id = ?", (id,)
+    ).fetchone()
+    if owner is not None:
+        return owner["uuid"]
+    player = db.execute(
+        """SELECT uuid FROM games WHERE id =
+        (SELECT game_id FROM players WHERE player_id = ? LIMIT 1)""",
+        (id,)
+    ).fetchone()
+    if player is not None:
+        return player["uuid"]
+    return None

@@ -11,6 +11,16 @@
 {% block main %}
 <div class="container">
     {% if for_game %}
+        {% if game is not none %}
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-6">
+                <div class="alert alert-warning" role="alert">
+                    You are already in a game. <a href={{ "/join/" + game }}>Rejoin</a>.
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         <h2 class="text-center mt-2">Select a question set for playing</h2>
         <hr class="border opacity-75">
         <form action="{{ url_for('game.create_game') }}" method="post">
