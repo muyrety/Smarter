@@ -60,6 +60,26 @@ def delete_game():
     )
 
 
+@socketio.on("start_game")
+def start_game():
+    load_logged_in_user()
+    db = get_db()
+    game_data = db.execute(
+        "SELECT id, uuid FROM games WHERE owner_id = ?",
+        (g.user["id"],)
+    ).fetchone()
+    db.execute(
+        "UPDATE games SET joinable = 0 WHERE id = ?", (game_data["id"],)
+    )
+    db.commit()
+
+    emit(
+        "game_started",
+        {"url": url_for("game.play_game", uuid=game_data["uuid"])},
+        to=game_data["id"], include_self=True
+    )
+
+
 bp = Blueprint("game", __name__)
 
 
