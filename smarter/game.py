@@ -39,31 +39,28 @@ def player_joined(data):
         join_room(game_id["id"])
 
 
-bp = Blueprint("game", __name__)
+@socketio.on("delete_game", namespace="/join")
+def delete_game():
+    # Manually register user since before_app_request
+    # doesn't work with socketIO
+    load_logged_in_user()
 
-
-@bp.route("/delete/<uuid>")
-@login_required()
-def delete_game(uuid):
     db = get_db()
     game_id = db.execute(
-        "SELECT id FROM games WHERE uuid = ? AND owner_id = ?",
-        (uuid, g.user["id"])
+        "SELECT id FROM games WHERE owner_id = ?",
+        (g.user["id"],)
     ).fetchone()
-    if game_id is None:
-        flash("You are not the owner of this game", "danger")
-        return redirect(url_for("index"))
 
     game_id = game_id["id"]
     db.execute("DELETE FROM games WHERE id = ?", (game_id,))
     db.execute("DELETE FROM players WHERE game_id = ?", (game_id,))
     db.commit()
     emit(
-        "game_deleted", to=game_id, include_self=False,
-        namespace="/join", skip_sid=g.user["id"]
+        "game_deleted", to=game_id, include_self=False, namespace="/join"
     )
-    flash("Game deleted", "success")
-    return redirect(url_for("index"))
+
+
+bp = Blueprint("game", __name__)
 
 
 @bp.route("/create", methods=['GET', 'POST'])
