@@ -42,6 +42,30 @@ def player_joined(data):
 bp = Blueprint("game", __name__)
 
 
+@bp.route("/delete/<uuid>")
+@login_required()
+def delete_game(uuid):
+    db = get_db()
+    game_id = db.execute(
+        "SELECT id FROM games WHERE uuid = ? AND owner_id = ?",
+        (uuid, g.user["id"])
+    ).fetchone()
+    if game_id is None:
+        flash("You are not the owner of this game", "danger")
+        return redirect(url_for("index"))
+
+    game_id = game_id["id"]
+    db.execute("DELETE FROM games WHERE id = ?", (game_id,))
+    db.execute("DELETE FROM players WHERE game_id = ?", (game_id,))
+    db.commit()
+    emit(
+        "game_deleted", to=game_id, include_self=False,
+        namespace="/join", skip_sid=g.user["id"]
+    )
+    flash("Game deleted", "success")
+    return redirect(url_for("index"))
+
+
 @bp.route("/create", methods=['GET', 'POST'])
 @login_required()
 def create_game():
@@ -103,13 +127,64 @@ def play_game(uuid=None):
         return redirect(url_for("game.join_game"))
 
     db = get_db()
+    id = db.execute(
+        "SELECT id FROM games WHERE uuid = ?", (uuid,)
+    ).fetchone()
+
+    if id is None:
+        flash("Invalid UUID supplied, try joining game instead", "danger")
+        return redirect(url_for("game.join_game"))
+    id = id["id"]
+
     joinable = bool(db.execute(
         "SELECT 1 FROM games WHERE uuid = ? AND joinable = 1",
         (uuid,)
     ).fetchone())
     if joinable:
         return redirect(url_for("game.join_game", uuid=uuid))
-    abort(404)
+
+    game_data = db.execute(
+        "SELECT question_set_id, owner_id FROM games WHERE id = ?",
+        (id,)
+    ).fetchone()
+    qs_id = game_data["question_set_id"]
+
+    total = db.execute(
+        """SELECT COUNT(*) AS total FROM questions WHERE id IN (
+              SELECT question_id FROM question_set_questions WHERE
+              question_set_id = ?
+            )""",
+        (qs_id,)
+    ).fetchone()
+    qs_name = db.execute(
+        "SELECT name FROM question_sets WHERE id = ?",
+        (qs_id,)
+    ).fetchone()
+    question_data = db.execute(
+        """SELECT id, question FROM questions WHERE id IN (
+            SELECT question_id FROM question_set_questions
+            WHERE question_set_id = ?
+        ) ORDER BY id LIMIT 1""",
+        (qs_id,)
+    ).fetchone()
+
+    if total is None or qs_name is None or question_data is None:
+        flash("Unexpected error: questions not found", "danger")
+        return redirect(url_for("game.join_game"))
+
+    total = total["total"]
+    name = qs_name["name"]
+    question = question_data["question"]
+
+    if game_data["owner_id"] == g.user["id"]:
+        return render_template(
+            "game/owner_view.html", total=total,
+            name=name, question=question, uuid=uuid
+        )
+    return render_template(
+        "game/play.html", total=total,
+        name=name, question=question, uuid=uuid
+    )
 
 
 @bp.route("/join")

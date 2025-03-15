@@ -27,9 +27,12 @@
             </ul>
         </div>
     </div>
-    <div class="row justify-content-center mt-3">
+    <div class="row justify-content-evenly mt-4">
         <div class="col-md-3 text-center">
             <button class="btn btn-dark">Start game</button>
+        </div>
+        <div class="col-md-3 text-center">
+            <a href="{{ url_for('game.delete_game', uuid=id) }}"><button class="btn btn-danger">Delete game</button></a>
         </div>
     </div>
 </div>
