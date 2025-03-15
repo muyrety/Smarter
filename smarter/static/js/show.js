@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const joinURL = window.location.origin + "/join/" + gameID;
     new QRCode("qrCode", joinURL);
 
-    const socket = io("/join");
+    const socket = io();
 
     document.getElementById("deleteGame").addEventListener("click", function() {
         if (confirm("Are you sure you want to delete this game?")) {

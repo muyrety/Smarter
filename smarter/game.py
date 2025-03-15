@@ -8,7 +8,7 @@ from .db import get_db
 from .sockets import socketio
 
 
-@socketio.on("connect", namespace="/join")
+@socketio.on("connect")
 def player_joined(data):
     # Manually register user since before_app_request
     # doesn't work with socketIO
@@ -38,7 +38,7 @@ def player_joined(data):
         join_room(game_id["id"])
 
 
-@socketio.on("delete_game", namespace="/join")
+@socketio.on("delete_game")
 def delete_game():
     # Manually register user since before_app_request
     # doesn't work with socketIO
@@ -55,7 +55,7 @@ def delete_game():
     db.execute("DELETE FROM players WHERE game_id = ?", (game_id,))
     db.commit()
     emit(
-        "game_deleted", to=game_id, include_self=False, namespace="/join"
+        "game_deleted", to=game_id, include_self=False
     )
 
 
