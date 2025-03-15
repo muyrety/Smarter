@@ -7,6 +7,13 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     const socket = io("/join");
 
+    document.getElementById("deleteGame").addEventListener("click", function() {
+        if (confirm("Are you sure you want to delete this game?")) {
+            socket.emit("delete_game");
+            window.location.replace("/");
+        }
+    });
+
     const playerList = getPlayerList("playerList");
 
     socket.on("user_connected", function(data) {
