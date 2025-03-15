@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const socket = io("/join");
+    const socket = io();
 
     document.getElementById("deleteGame").addEventListener("click", function() {
         if (confirm("Are you sure you want to delete this game?")) {

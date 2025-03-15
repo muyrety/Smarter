@@ -1,7 +1,7 @@
 import { addUser, getPlayerList } from "./modules/list_manip.js";
 
 document.addEventListener("DOMContentLoaded", async function() {
-    const socket = io("/join");
+    const socket = io();
 
     const playerList = getPlayerList("playerList");
 
