@@ -14,6 +14,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     });
 
+    document.getElementById("startGame").addEventListener("click", function() {
+        socket.emit("start_game");
+    });
+
     const playerList = getPlayerList("playerList");
 
     socket.on("user_connected", function(data) {
@@ -23,4 +27,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     });
 
+    socket.on("game_started", function(data) {
+        window.location.replace(data.url);
+    });
 });

@@ -16,4 +16,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         alert("This game has been deleted by the owner");
         window.location.replace("/");
     });
+
+    socket.on("game_started", function(data) {
+        window.location.replace(data.url);
+    });
 });
