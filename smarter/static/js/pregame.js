@@ -11,4 +11,9 @@ document.addEventListener("DOMContentLoaded", async function() {
             playerList.push(data.username);
         }
     });
+
+    socket.on("game_deleted", function() {
+        alert("This game has been deleted by the owner");
+        window.location.replace("/");
+    });
 });

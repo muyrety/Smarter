@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %} Owner dashboard {% endblock %}
+
+{% block main %}
+<div class="container text-center">
+    <div class="row mt-3">
+        <div class="row justify-content-between">
+            <h1 class="col"> {{ name }} <span id="currentQuestion">1</span> / {{ total }} </h1>
+            <h1 class="col"> Time left: <span id="timer">10</span> </h1>
+            <a class="col" href="{{ url_for('game.delete_game', uuid=uuid) }}">
+                <button class="btn btn-danger">Delete game</button>
+            </a>
+        </div>
+        <hr>
+        <h2 class="border border-info rounded p-2 border-opacity-50"> Upcoming question: {{ question }} </h2>
+    </div>
+</div>
+{% endblock %}
