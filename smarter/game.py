@@ -60,6 +60,28 @@ def delete_game():
     )
 
 
+@socketio.on("leave_game")
+def leave_game():
+    # Manually register user since before_app_request
+    # doesn't work with socketIO
+    load_logged_in_user()
+
+    # Get game_id (for room) and delete player from players
+    db = get_db()
+    game_id = db.execute(
+        "SELECT game_id FROM players WHERE player_id = ?",
+        (g.user["id"],)
+    ).fetchone()
+    game_id = game_id["game_id"]
+    db.execute("DELETE FROM players WHERE player_id = ?", (g.user["id"],))
+    db.commit()
+
+    emit(
+        "player_left", {"username": g.user["username"]},
+        to=game_id, include_self=False
+    )
+
+
 @socketio.on("start_game")
 def start_game():
     load_logged_in_user()

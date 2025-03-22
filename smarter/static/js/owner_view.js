@@ -7,4 +7,8 @@ document.addEventListener("DOMContentLoaded", function() {
             window.location.replace("/");
         }
     });
+
+    socket.on("player_left", function(data) {
+        // NOTE: Update the player list
+    });
 });
