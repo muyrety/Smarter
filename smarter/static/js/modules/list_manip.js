@@ -6,6 +6,15 @@ function addUser(name, listName) {
     list.append(newItem);
 }
 
+function removeUser(name, listName) {
+    const list = document.getElementById(listName);
+    for (const item of list.children) {
+        if (item.textContent.trim() === name) {
+            item.remove();
+        }
+    }
+}
+
 function getPlayerList(listName) {
     let playerList = document.getElementById(listName).children;
     playerList = Array.from(playerList, function(el, idx) {
@@ -15,4 +24,4 @@ function getPlayerList(listName) {
     return playerList;
 }
 
-export { addUser, getPlayerList };
+export { addUser, getPlayerList, removeUser };

@@ -1,4 +1,6 @@
-import { addUser, getPlayerList } from "./modules/list_manip.js";
+import { addUser, getPlayerList, removeUser } from "./modules/list_manip.js";
+
+const listName = "playerList";
 
 document.addEventListener("DOMContentLoaded", async function() {
     const gameID = document.getElementById("gameID").textContent;
@@ -18,16 +20,24 @@ document.addEventListener("DOMContentLoaded", async function() {
         socket.emit("start_game");
     });
 
-    const playerList = getPlayerList("playerList");
+    const playerList = getPlayerList(listName);
 
     socket.on("user_connected", function(data) {
         if (!playerList.includes(data.username)) {
-            addUser(data.username, "playerList");
+            addUser(data.username, listName);
             playerList.push(data.username);
         }
     });
 
     socket.on("game_started", function(data) {
         window.location.replace(data.url);
+    });
+
+    socket.on("player_left", function(data) {
+        removeUser(data.username, listName);
+        const index = playerList.indexOf(data.username);
+        if (index > -1) {
+            playerList.splice(index, 1);
+        }
     });
 });
