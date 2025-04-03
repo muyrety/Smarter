@@ -183,10 +183,14 @@ def play_game(uuid=None):
         return redirect(url_for("game.join_game", uuid=uuid))
 
     game_data = db.execute(
-        "SELECT question_set_id, owner_id FROM games WHERE id = ?",
+        """SELECT question_set_id, owner_id, current_question, answering
+        FROM games WHERE id = ?""",
         (id,)
     ).fetchone()
     qs_id = game_data["question_set_id"]
+    owner_id = game_data["owner_id"]
+    current_question = game_data["current_question"]
+    answering = bool(game_data["answering"])
 
     total = db.execute(
         """SELECT COUNT(*) AS total FROM questions WHERE id IN (
@@ -194,36 +198,67 @@ def play_game(uuid=None):
               question_set_id = ?
             )""",
         (qs_id,)
-    ).fetchone()
+    ).fetchone()["total"]
     qs_name = db.execute(
         "SELECT name FROM question_sets WHERE id = ?",
         (qs_id,)
-    ).fetchone()
-    question_data = db.execute(
-        """SELECT id, question FROM questions WHERE id IN (
-            SELECT question_id FROM question_set_questions
-            WHERE question_set_id = ?
-        ) ORDER BY id LIMIT 1""",
-        (qs_id,)
-    ).fetchone()
+    ).fetchone()["name"]
 
-    if total is None or qs_name is None or question_data is None:
-        flash("Unexpected error: questions not found", "danger")
-        return redirect(url_for("game.join_game"))
+    if owner_id == g.user["id"]:
+        leaderboard = db.execute("""
+            SELECT username, correct_answers, incorrect_answers
+            FROM players JOIN users ON id = player_id
+            WHERE game_id = ? ORDER BY correct_answers DESC
+            """, (id,)
+        ).fetchall()
+        question = db.execute(
+            """SELECT question FROM questions WHERE id IN (
+                SELECT question_id FROM question_set_questions
+                WHERE question_set_id = ?
+                ) ORDER BY id LIMIT ?""",
+            (qs_id, current_question)
+        ).fetchall()[-1]["question"]
 
-    total = total["total"]
-    name = qs_name["name"]
-    question = question_data["question"]
+        if answering:
+            for player in leaderboard:
+                player["answered"] = (
+                    player["correct_answers"] +
+                    player["incorrect_answers"] == current_question
+                )
 
-    if game_data["owner_id"] == g.user["id"]:
-        return render_template(
-            "game/owner_view.html", total=total,
-            name=name, question=question, uuid=uuid
-        )
-    return render_template(
-        "game/play.html", total=total,
-        name=name, question=question, uuid=uuid
-    )
+            return render_template(
+                "game/owner_view.html", total=total,
+                name=qs_name, leaderboard=leaderboard,
+                curr_question=current_question, question=question,
+                answering=answering
+            )
+        else:
+            return render_template(
+                "game/owner_view.html", total=total,
+                name=qs_name, leaderboard=leaderboard,
+                curr_question=current_question,
+                question=question, answering=answering
+            )
+    else:
+        if answering:
+            return render_template(
+                "game/play.html", total=total,
+                name=qs_name, curr_question=current_question,
+                answering=answering
+            )
+        else:
+            question = db.execute(
+                """SELECT question FROM questions WHERE id IN (
+                SELECT question_id FROM question_set_questions
+                WHERE question_set_id = ?
+                ) ORDER BY id LIMIT ?""",
+                (qs_id, current_question)
+            ).fetchall()[-1]["question"]
+            return render_template(
+                "game/play.html", total=total,
+                name=qs_name, curr_question=current_question,
+                question=question, answering=answering
+            )
 
 
 @bp.route("/join")

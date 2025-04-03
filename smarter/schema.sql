@@ -54,6 +54,7 @@ CREATE TABLE games (
     question_set_id INTEGER NOT NULL,
     joinable INTEGER NOT NULL DEFAULT 1 CHECK (joinable = 0 OR joinable = 1),
     current_question INTEGER DEFAULT 1,
+    answering INTEGER NOT NULL DEFAULT 0 CHECK (answering = 0 OR answering = 1),
     FOREIGN KEY (owner_id) REFERENCES users (id),
     FOREIGN KEY (question_set_id) REFERENCES question_set (id)
 );
@@ -62,6 +63,7 @@ CREATE TABLE players (
     game_id INTEGER NOT NULL,
     player_id INTEGER NOT NULL PRIMARY KEY,
     correct_answers INTEGER DEFAULT 0,
+    incorrect_answers INTEGER DEFAULT 0,
     FOREIGN KEY (game_id) REFERENCES games (id),
     FOREIGN KEY (player_id) REFERENCES users (id)
 );
