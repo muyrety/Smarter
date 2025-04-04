@@ -24,7 +24,7 @@
             <span id="nextQuestion">{{ question }}</span>
         </h2>
         <div class="col mt-2">
-            <button class="{{ 'd-none' if answering }} btn btn-success" id="goNextQuestion"> Go to the next question </button>
+            <button class="{{ 'd-none' if answering }} btn btn-success" id="goNextQuestion"> Begin answering </button>
             <button class="{{ 'd-none' if not answering }} btn btn-danger" id="endAnswering"> Stop question answering </button>
         </div>
         <hr class="mt-3">
@@ -34,9 +34,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Username</th>
                     <th scope="col">Score</th>
-                    {% if answering %}
                     <th class="{{ 'd-none' if not answering }}" scope="col">Answered</th>
-                    {% endif %}
                 </tr>
             </thead>
             <tbody>
