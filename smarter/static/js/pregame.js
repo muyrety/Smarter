@@ -6,8 +6,9 @@ document.addEventListener("DOMContentLoaded", async function() {
     const socket = io();
 
     document.getElementById("leaveGame").addEventListener("click", function() {
-        socket.emit("leave_game");
-        window.location.replace("/");
+        socket.emit("leave_game", function() {
+            window.location.replace("/");
+        });
     });
 
     const playerList = getPlayerList(listName);

@@ -11,13 +11,16 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     document.getElementById("deleteGame").addEventListener("click", function() {
         if (confirm("Are you sure you want to delete this game?")) {
-            socket.emit("delete_game");
-            window.location.replace("/");
+            socket.emit("delete_game", function() {
+                window.location.replace("/");
+            });
         }
     });
 
     document.getElementById("startGame").addEventListener("click", function() {
-        socket.emit("start_game");
+        socket.emit("start_game", function(url) {
+            window.location.replace(url);
+        });
     });
 
     const playerList = getPlayerList(listName);
@@ -27,10 +30,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             addUser(data.username, listName);
             playerList.push(data.username);
         }
-    });
-
-    socket.on("game_started", function(data) {
-        window.location.replace(data.url);
     });
 
     socket.on("player_left", function(data) {

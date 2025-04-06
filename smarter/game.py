@@ -95,11 +95,14 @@ def start_game():
     )
     db.commit()
 
+    url = url_for("game.play_game", uuid=game_data["uuid"])
+
     emit(
         "game_started",
-        {"url": url_for("game.play_game", uuid=game_data["uuid"])},
-        to=game_data["id"], include_self=True
+        {"url": url},
+        to=game_data["id"], include_self=False
     )
+    return url
 
 
 bp = Blueprint("game", __name__)
