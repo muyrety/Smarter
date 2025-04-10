@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, render_template, request, flash, redirect, url_for, g
+    Blueprint, render_template, request, flash, redirect, url_for, g, abort
 )
 from flask_socketio import join_room, emit
 from .utility import getQuestionSets, addGame, gameData, getUserGame
@@ -107,10 +107,8 @@ def play_game(uuid=None):
         (uuid,)
     ).fetchone())
     if joinable:
-        print("joinable")
         return redirect(url_for("game.join_game", uuid=uuid))
-    # TODO:
-    return "<h1> In progress, check back later </h1>"
+    abort(404)
 
 
 @bp.route("/join")
