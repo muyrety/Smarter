@@ -1,14 +1,25 @@
+[build-system]
+requires = ["flit_core >=3.11,<4"]
+build-backend = "flit_core.buildapi"
+
 [project]
 name = "smarter"
+authors = [
+    {name = "Mykolas Uselis"},
+]
 version = "1.0.0"
 description = "Web application for playing trivia games using Flask and the Open Trivia Database API"
+readme = "README.md"
+requires-python = ">=3,<4"
+license = "GPL-3.0-only"
+license-files = ["COPYING"]
+keywords = ["trivia", "question", "OpenTriviaDB"]
 dependencies = [
     "flask",
     "better_profanity",
     "flask-socketio",
 ]
 
-
-[build-system]
-requires = ["flit_core<4"]
-build-backend = "flit_core.buildapi"
+[project.urls]
+Source = "https://github.com/muyrety/Smarter"
+Website = "https://mykolas.eu.pythonanywhere.com"
