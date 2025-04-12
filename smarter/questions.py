@@ -2,12 +2,12 @@ from flask import (
     Blueprint, render_template, request, flash,
     redirect, url_for, g
 )
+from better_profanity import profanity
 
 from .auth import login_required
 from .db import get_db
 from .constants import categories
 from .utility import submitQuestion
-from better_profanity import profanity
 
 bp = Blueprint("questions", __name__, url_prefix="/questions")
 

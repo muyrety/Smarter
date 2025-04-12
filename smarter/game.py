@@ -2,6 +2,7 @@ from flask import (
     Blueprint, render_template, request, flash, redirect, url_for, g, abort
 )
 from flask_socketio import join_room, emit
+
 from .utility import getQuestionSets, addGame, gameData, getUserGame
 from .auth import login_required, load_logged_in_user
 from .db import get_db

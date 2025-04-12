@@ -1,3 +1,2 @@
-from .sockets import socketio
-from .__init__ import app
+from . import socketio, app
 socketio.run(app)

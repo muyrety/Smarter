@@ -1,6 +1,7 @@
 from flask import Flask, redirect, url_for
 import os
 
+from .sockets import socketio
 from . import auth
 from . import questions
 from . import about
@@ -8,7 +9,6 @@ from . import admin
 from . import game
 from . import db
 from . import question_sets
-from . import sockets
 
 app = Flask(__name__, instance_relative_config=True)
 
@@ -36,7 +36,8 @@ app.register_blueprint(question_sets.bp)
 # Register app with some select modules
 admin.init_app(app)
 db.init_app(app)
-sockets.init_app(app)
+
+socketio.init_app(app)
 
 
 @app.route("/")

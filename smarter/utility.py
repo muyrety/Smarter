@@ -1,7 +1,8 @@
-from .db import get_db
-from .constants import categories
 from flask import g
 from uuid import uuid4
+
+from .db import get_db
+from .constants import categories
 
 
 # Returns any notifications left for the user and

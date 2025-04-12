@@ -1,6 +1,7 @@
 import click
 from flask import Blueprint, render_template, redirect, url_for, request
 from werkzeug.security import generate_password_hash
+
 from .db import get_db
 from .auth import login_required
 from .constants import categories

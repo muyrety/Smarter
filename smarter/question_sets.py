@@ -3,6 +3,7 @@ from flask import (
     flash, redirect, url_for, g
 )
 from better_profanity import profanity
+
 from .db import get_db
 from .constants import categories
 from .auth import login_required
