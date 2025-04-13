@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, render_template, request, flash, redirect, url_for, g, abort
+    Blueprint, render_template, request, flash, redirect, url_for, g
 )
 from flask_socketio import join_room, emit
 
