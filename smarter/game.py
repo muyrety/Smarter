@@ -90,19 +90,26 @@ def start_game():
         "SELECT id, uuid FROM games WHERE owner_id = ?",
         (g.user["id"],)
     ).fetchone()
-    db.execute(
-        "UPDATE games SET joinable = 0 WHERE id = ?", (game_data["id"],)
+    has_players = bool(
+        db.execute(
+            "SELECT 1 FROM players WHERE game_id = ?",
+            (game_data["id"],)
+        ).fetchone()
     )
-    db.commit()
 
-    url = url_for("game.play_game", uuid=game_data["uuid"])
-
-    emit(
-        "game_started",
-        {"url": url},
-        to=game_data["id"], include_self=False
-    )
-    return url
+    if has_players:
+        db.execute(
+            "UPDATE games SET joinable = 0 WHERE id = ?", (game_data["id"],)
+        )
+        db.commit()
+        url = url_for("game.play_game", uuid=game_data["uuid"])
+        emit(
+            "game_started",
+            {"url": url},
+            to=game_data["id"], include_self=False
+        )
+        return {"ok": True, "url": url}
+    return {"ok": False, "error": "No players joined"}
 
 
 bp = Blueprint("game", __name__)

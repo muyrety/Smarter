@@ -10,6 +10,12 @@
 
 {% block main %}
 <div class="container text-center">
+    <div class="row justify-content-center">
+        <div class="d-none col-md-5 mt-3 alert alert-danger alert-dismissible" id="errorAlert">
+            <p id="errorMessage"></p>
+            <button id="errorAlertDismiss" type="button" class="btn-close"></button>
+        </div>
+    </div>
     <h2 class="mt-2">Share the ID or the QR code with others to let them join</h2>
     <div class="row text-center justify-content-evenly">
         <div class="col-auto mt-3">

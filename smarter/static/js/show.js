@@ -9,6 +9,10 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     const socket = io();
 
+    document.getElementById("errorAlertDismiss").addEventListener("click", function() {
+        document.getElementById("errorAlert").classList.add("d-none");
+    });
+
     document.getElementById("deleteGame").addEventListener("click", function() {
         if (confirm("Are you sure you want to delete this game?")) {
             socket.emit("delete_game", function() {
@@ -18,8 +22,17 @@ document.addEventListener("DOMContentLoaded", async function() {
     });
 
     document.getElementById("startGame").addEventListener("click", function() {
-        socket.emit("start_game", function(url) {
-            window.location.replace(url);
+        socket.emit("start_game", function(data) {
+            if (data.ok) {
+                window.location.replace(data.url);
+            }
+            else {
+                const errorMessage = document.getElementById("errorMessage");
+                errorMessage.textContent = data.error;
+
+                const errorAlert = document.getElementById("errorAlert");
+                errorAlert.classList.remove("d-none");
+            }
         });
     });
 
