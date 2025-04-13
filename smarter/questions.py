@@ -23,7 +23,7 @@ def add():
 
     difficulty = request.form["difficulty"]
     question_type = request.form["type"]
-    question = request.form["question"]
+    question = request.form["question"].strip()
     category = None
     incorrect_answers = None
     correct_answer = None
@@ -50,8 +50,10 @@ def add():
         if correct_answer not in ["True", "False"]:
             error = "Bad boolean question answer"
     elif question_type == "multiple":
-        correct_answer = request.form["correctAnswerMultiple"]
-        incorrect_answers = request.form.getlist("incorrectAnswers")
+        correct_answer = request.form["correctAnswerMultiple"].strip()
+        incorrect_answers = [s.strip() for s in
+                             request.form.getlist("incorrectAnswers")]
+
         if len(incorrect_answers) != 3 or "" in incorrect_answers:
             error = "Bad incorrect answers"
 

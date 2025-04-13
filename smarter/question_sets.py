@@ -32,7 +32,7 @@ def add():
     if request.method == "GET":
         return render_template("question-sets/add.html")
 
-    name = request.form.get("name")
+    name = request.form.get("name").strip()
     error = None
     if not name:
         error = "Name is required"
@@ -95,7 +95,7 @@ def check_question(id):
 @login_required()
 def submit_set():
     request_json = request.get_json()
-    name = request_json["name"]
+    name = request_json["name"].strip()
     temp = request_json["temporary"]
     userQuestions = request_json["user_questions"]
     otdbQuestions = request_json["otdb_questions"]
