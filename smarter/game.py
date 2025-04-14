@@ -204,6 +204,14 @@ def play_game(uuid=None):
     current_question = game_data["current_question"]
     answering = bool(game_data["answering"])
 
+    is_player = bool(db.execute(
+        "SELECT 1 FROM players WHERE player_id = ? AND game_id = ?",
+        (g.user["id"], id,)
+    ).fetchone())
+    if not is_player and g.user["id"] != owner_id:
+        flash("You are not part of this game", "danger")
+        return redirect(url_for("game.join_game"))
+
     total = db.execute(
         """SELECT COUNT(*) AS total FROM questions WHERE id IN (
               SELECT question_id FROM question_set_questions WHERE
