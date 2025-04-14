@@ -1,7 +1,7 @@
 from flask import (
     Blueprint, render_template, request, flash, redirect, url_for, g
 )
-from flask_socketio import join_room, emit
+from flask_socketio import join_room, leave_room, close_room, emit
 
 from .utility import getQuestionSets, addGame, gameData, getUserGame
 from .auth import login_required, load_logged_in_user
@@ -58,6 +58,7 @@ def delete_game():
     emit(
         "game_deleted", to=game_id, include_self=False
     )
+    close_room(game_id)
 
 
 @socketio.on("leave_game")
@@ -80,6 +81,7 @@ def leave_game():
         "player_left", {"username": g.user["username"]},
         to=game_id, include_self=False
     )
+    leave_room(game_id)
 
 
 @socketio.on("start_game")
