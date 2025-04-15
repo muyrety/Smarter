@@ -3,7 +3,15 @@ import { addUser, getPlayerList, removeUser } from "./modules/list_manip.js";
 const listName = "playerList";
 
 document.addEventListener("DOMContentLoaded", async function() {
+    document.getElementById("reconnectAlertDismiss").addEventListener("click", function() {
+        document.getElementById("reconnectAlert").classList.add("d-none");
+    });
+
     const socket = io();
+
+    socket.io.on("reconnect", function(n) {
+        document.getElementById("reconnectAlert").classList.remove("d-none");
+    });
 
     document.getElementById("leaveGame").addEventListener("click", function() {
         socket.emit("leave_game", function() {

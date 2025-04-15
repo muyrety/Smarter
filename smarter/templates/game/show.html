@@ -11,6 +11,12 @@
 {% block main %}
 <div class="container text-center">
     <div class="row justify-content-center">
+        <div class="d-none col-md-5 mt-1 alert alert-warning alert-dismissible" id="reconnectAlert">
+            You lost your connection but have now been reconnected. Info shown might be out of date. Please refresh the page for the newest data.
+            <button id="reconnectAlertDismiss" type="button" class="btn-close"></button>
+        </div>
+    </div>
+    <div class="row justify-content-center">
         <div class="d-none col-md-5 mt-3 alert alert-danger alert-dismissible" id="errorAlert">
             <p id="errorMessage"></p>
             <button id="errorAlertDismiss" type="button" class="btn-close"></button>

@@ -7,7 +7,15 @@ document.addEventListener("DOMContentLoaded", async function() {
     const joinURL = window.location.origin + "/join/" + gameID;
     new QRCode("qrCode", joinURL);
 
+    document.getElementById("reconnectAlertDismiss").addEventListener("click", function() {
+        document.getElementById("reconnectAlert").classList.add("d-none");
+    });
+
     const socket = io();
+
+    socket.io.on("reconnect", function(n) {
+        document.getElementById("reconnectAlert").classList.remove("d-none");
+    });
 
     document.getElementById("errorAlertDismiss").addEventListener("click", function() {
         document.getElementById("errorAlert").classList.add("d-none");
