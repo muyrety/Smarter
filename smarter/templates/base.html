@@ -63,7 +63,8 @@
                         </ul>
 
                         <ul class="ms-auto navbar-nav mb-2 mb-lg-0">
-                            {% if session["user_id"] %}
+                            {% if g.user %}
+                            <span class="navbar-text me-2">Logged in as <strong>{{ g.user["username"] }}</strong></span>
                             <li class="nav-item">
                             <a class="nav-link me-2" href="{{ url_for('auth.logout') }}">Log out</a>
                             </li>
