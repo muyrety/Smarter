@@ -18,7 +18,17 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     document.getElementById("beginAnswering").addEventListener("click", function() {
-        socket.emit("load_next_question", function() {
+        socket.emit("load_next_question", function(question) {
+            // Very likely that 2+ requests happened
+            if (!question)
+                return;
+            // Reset answered status
+            const leaderboard = document.getElementById("leaderboard");
+            const rows = leaderboard.getElementsByTagName("tbody")[0].children;
+            for (const row of rows) {
+                row.getElementsByClassName("answered-data")[0].textContent = "No";
+            }
+
             // Handle question display
             const nextQuestionH = document.getElementById("nextQuestionH");
             const nextQuestion = document.getElementById("nextQuestion");
@@ -26,7 +36,8 @@ document.addEventListener("DOMContentLoaded", function() {
             const currQuestion = document.getElementById("currentQuestion");
             nextQuestionH.classList.add("d-none");
             currQuestionH.classList.remove("d-none");
-            currQuestion.textContent = nextQuestion.textContent;
+            nextQuestion.textContent = "";
+            currQuestion.textContent = question;
 
             // Change the buttons
             const beginButton = document.getElementById("beginAnswering");
@@ -45,18 +56,29 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     document.getElementById("endAnswering").addEventListener("click", function() {
-        socket.emit("stop_answering", function(progressNr, question) {
+        socket.emit("stop_answering", function(data) {
+            // Very likely that 2+ requests happened
+            if (!data)
+                return;
+
+            if (data.gameOver) {
+                window.location.replace(data.url);
+                return;
+            }
+
             // Correct the progress indicator
             const currQuestionNr = document.getElementById("currentQuestionNr");
-            currQuestionNr.textContent = progressNr;
+            currQuestionNr.textContent = data.progressNr;
 
             // Handle question display
             const nextQuestionH = document.getElementById("nextQuestionH");
             const nextQuestion = document.getElementById("nextQuestion");
             const currQuestionH = document.getElementById("currentQuestionH");
+            const currQuestion = document.getElementById("currentQuestion");
             nextQuestionH.classList.remove("d-none");
             currQuestionH.classList.add("d-none");
-            nextQuestion.textContent = question;
+            nextQuestion.textContent = data.question;
+            currQuestion.textContent = "";
 
             // Change the buttons
             const beginButton = document.getElementById("beginAnswering");
@@ -76,6 +98,24 @@ document.addEventListener("DOMContentLoaded", function() {
 
     socket.on("player_left", function(data) {
         removePlayerFromLeaderboard(data.username);
+    });
+
+    socket.on("player_answered", function(player, correct) {
+        const leaderboard = document.getElementById("leaderboard");
+        const rows = leaderboard.getElementsByTagName("tbody")[0].children;
+
+        for (const row of rows) {
+            const username = row.getElementsByClassName("username")[0].textContent;
+            if (username === player) {
+                row.getElementsByClassName("answered-data")[0].textContent = "Yes";
+                if (correct) {
+                    const pointsEl = row.getElementsByClassName("points")[0];
+                    const points = parseInt(pointsEl.textContent);
+                    pointsEl.textContent = points + 1;
+                    sortLeaderboard()
+                }
+            }
+        }
     });
 
     function removePlayerFromLeaderboard(username) {

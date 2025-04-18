@@ -211,6 +211,17 @@ def remove(id):
         flash("You are not permitted to delete this set", "danger")
         return redirect(url_for("question_sets.browse"), 403)
 
+    used_in_game = bool(db.execute(
+        "SELECT 1 FROM games WHERE question_set_id = ?",
+        (id,)
+    ).fetchone())
+    if used_in_game:
+        flash(
+            "This question set is used in a game and cannot be deleted",
+            "danger"
+        )
+        return redirect(url_for("question_sets.browse"))
+
     db.execute("DELETE FROM question_sets WHERE id = ?", (id,))
 
     deleteSetQuestions(id)
