@@ -63,6 +63,7 @@ def register():
     username = request.form["username"]
     password = request.form["password"]
     repeat_password = request.form["repeatPassword"]
+    next = request.form["next"]
     error = None
 
     if not username or not password or not repeat_password:
@@ -92,9 +93,14 @@ def register():
             session.permanent = False
             session["user_id"] = user_id
             flash("You have successfully registered", "success")
-            return redirect(url_for("index"))
+            return redirect(next if next else url_for("index"))
 
     flash(error, "danger")
+
+    # Keep the next argument between requests
+    if next:
+        return redirect(url_for("auth.register", next=next))
+
     return render_template("auth/register.html")
 
 
