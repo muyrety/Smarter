@@ -54,7 +54,7 @@
                 because the parent element becomes smaller -->
                <div class="row justify-content-end">
                     <button class="col-4 col-md-2 col-lg-3 col-xl-2 btn btn-dark"
-                    data-bs-toggle="collapse" data-bs-target="#questionInfo{{ question_set['id'] }}">
+                    data-bs-toggle="collapse" data-bs-target="#questionInfo{{ question_set['id'] }}priv">
                         Show
                     </button>
                     {% if for_game %}
@@ -73,7 +73,7 @@
                         </form>
                     {% endif %}
                 </div>
-                <div class="collapse mt-4" id="questionInfo{{ question_set['id'] }}">
+                <div class="collapse mt-4" id="questionInfo{{ question_set['id'] }}priv">
                     <div class="card">
                         <ul class="list-group list-group-flush">
                             {% for question in question_set["questions"] %}
@@ -110,7 +110,7 @@
                 because the parent element becomes smaller -->
                 <div class="row justify-content-end">
                     <button class="col-4 col-md-2 col-xl-2 col-lg-3 btn btn-dark"
-                    data-bs-toggle="collapse" data-bs-target="#questionInfo{{ question_set['id'] }}">
+                    data-bs-toggle="collapse" data-bs-target="#questionInfo{{ question_set['id'] }}pub">
                         Show
                     </button>
                     {% if for_game %}
@@ -121,7 +121,7 @@
                         </form>
                     {% endif %}
                 </div>
-                <div class="collapse mt-4" id="questionInfo{{ question_set['id'] }}">
+                <div class="collapse mt-4" id="questionInfo{{ question_set['id'] }}pub">
                     <div class="card">
                         <ul class="list-group list-group-flush">
                             {% for question in question_set["questions"] %}
