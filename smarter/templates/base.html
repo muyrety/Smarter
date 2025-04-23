@@ -14,67 +14,64 @@
 
         <title> Smarter: {% block title %}{% endblock %} </title>
     </head>
-    <body>
+    <body class="bg-primary-subtle">
         <header>
             {% if config["BETA_VERSION"] %}
-            <div class="alert alert-warning text-center rounded-0 mb-0 p-1">This website is in a beta version. Expect bugs.</div>
+            <div class="alert bg-info-subtle text-success border-success-subtle border-bottom text-center rounded-0 mb-0 p-1">This website is in a beta version. Expect bugs.</div>
             {% endif %}
-            <nav class="navbar navbar-expand-lg bg-body-secondary">
+            <nav class="navbar navbar-expand-lg bg-info-subtle border-bottom border-success-subtle">
                 <div class="container-fluid">
-                    <a class="navbar-brand mb-1" href="{{ url_for('index') }}">Smarter</a>
+                    <a class="text-success navbar-brand h1 mb-0" href="{{ url_for('index') }}">Smarter</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <ul class="text-success navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                                <a class="text-success nav-link" href="{{ url_for('game.create_game') }}">Create game</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('game.create_game') }}">Create game</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('game.join_game') }}">Join game</a>
+                                <a class="text-success nav-link" href="{{ url_for('game.join_game') }}">Join game</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <a class="text-success nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                     Questions
                                 </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ url_for('questions.otdb_browse') }}">Browse</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('questions.add') }}">Add</a></li>
+                                <ul class="dropdown-menu border-success-subtle bg-info-subtle">
+                                    <li><a class="text-success dropdown-item" href="{{ url_for('questions.otdb_browse') }}">Browse</a></li>
+                                    <li><a class="text-success dropdown-item" href="{{ url_for('questions.add') }}">Add</a></li>
                                     {% if g.user.admin %}
-                                    <li><a class="dropdown-item" href="{{ url_for('admin.verify_questions') }}">Verify</a></li>
+                                    <li><a class="text-success dropdown-item" href="{{ url_for('admin.verify_questions') }}">Verify</a></li>
                                     {% endif %}
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <a class="text-success nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                     Question sets
                                 </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ url_for('question_sets.browse') }}">Browse</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('question_sets.add') }}">Add</a></li>
+                                <ul class="dropdown-menu border-success-subtle bg-info-subtle">
+                                    <li><a class="text-success dropdown-item" href="{{ url_for('question_sets.browse') }}">Browse</a></li>
+                                    <li><a class="text-success dropdown-item" href="{{ url_for('question_sets.add') }}">Add</a></li>
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('about.index') }}">About</a>
+                                <a class="text-success nav-link" href="{{ url_for('about.index') }}">About</a>
                             </li>
                         </ul>
 
                         <ul class="ms-auto navbar-nav mb-2 mb-lg-0">
                             {% if g.user %}
-                            <span class="navbar-text me-2">Logged in as <strong>{{ g.user["username"] }}</strong></span>
+                            <span class="text-success navbar-text me-2">Logged in as <strong>{{ g.user["username"] }}</strong></span>
                             <li class="nav-item">
-                            <a class="nav-link me-2" href="{{ url_for('auth.logout') }}">Log out</a>
+                            <a class="text-success nav-link me-2" href="{{ url_for('auth.logout') }}">Log out</a>
                             </li>
                             {% else %}
                             <li class="nav-item">
-                            <a class="nav-link me-2" href="{{ url_for('auth.register') }}">Register</a>
+                            <a class="text-success nav-link me-2" href="{{ url_for('auth.register') }}">Register</a>
                             </li>
 
                             <li class="nav-item">
-                            <a class="nav-link me-2" href="{{ url_for('auth.login') }}">Login</a>
+                            <a class="text-success nav-link me-2" href="{{ url_for('auth.login') }}">Login</a>
                             </li>
                             {% endif %}
                         </ul>
@@ -88,21 +85,15 @@
                 <div class="row justify-content-center mt-3">
                     <div class="col-lg-4 col-md-6 col-sm-8">
                         {% for category, message in messages %}
-                            {% if category == "danger" %}
-                            <div class="alert alert-danger alert-dismissible" role="alert">
-                                <p>{{ message }}</p>
-                            {% elif category == "question-rejection" %}
-                            <div class="alert alert-danger alert-dismissible row" role="alert">
-                                <p class="col-10">{{ message }}</p>
+                            {% if category == "question-rejection" %}
+                            <div class="alert bg-info-subtle border-success-subtle alert-dismissible row" role="alert">
+                                <p class="text-success col-10">{{ message }}</p>
                                 <div class="col-2 text-end">
-                                    <a class="link-offset-2" href="{{ url_for('about.question_removed') }}">Why?</a>
+                                    <a class="text-success link-offset-2" href="{{ url_for('about.question_removed') }}">Why?</a>
                                 </div>
-                            {% elif category == "success" %}
-                            <div class="alert alert-success alert-dismissible" role="alert">
-                                <p>{{ message }}</p>
                             {% else %}
-                            <div class="alert alert-info alert-dismissible" role="alert">
-                                <p>{{ message }}</p>
+                            <div class="alert bg-info-subtle border-success-subtle alert-dismissible" role="alert">
+                                <p class="text-success">{{ message }}</p>
                             {% endif %}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>

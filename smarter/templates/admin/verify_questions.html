@@ -3,40 +3,38 @@
 
 {% block main %}
 <div class="container">
-    <table class="table mt-3">
+    <table class="table table-primary border-primary-subtle mt-3">
         <thead>
             <tr>
-                <th scope="col">Type</th>
-                <th scope="col">Category</th>
-                <th scope="col">Difficulty</th>
-                <th scope="col">Question</th>
-                <th scope="col">Creator username</th>
-                <th scope="col">Correct answer</th>
-                <th scope="col">Incorrect answers</th>
+                <th class="text-primary-emphasis" scope="col">Type</th>
+                <th class="text-primary-emphasis" scope="col">Category</th>
+                <th class="text-primary-emphasis" scope="col">Difficulty</th>
+                <th class="text-primary-emphasis" scope="col">Question</th>
+                <th class="text-primary-emphasis" scope="col">Creator username</th>
+                <th class="text-primary-emphasis" scope="col">Correct answer</th>
+                <th class="text-primary-emphasis" scope="col">Incorrect answers</th>
+                <th class="invisible text-primary-emphasis" scope="col">Remove</th>
+                <th class="invisible text-primary-emphasis" scope="col">Verify</th>
             </tr>
         </thead>
         <tbody>
             {% for question in questions %}
             <tr>
-                <td> {{ question["type"] }} </td>
-                <td> {{ question["category"] }} </td>
-                <td> {{ question["difficulty"] }} </td>
-                <td> {{ question["question"] }} </td>
-                <td> {{ question["creator"] }} </td>
-                <td> {{ question["correct_answer"] }} </td>
-                {% if not question["incorrect_answers"] %}
-                <td> - </td>
-                {% else %}
-                <td> {{ ", ".join(question["incorrect_answers"]) }} </td>
-                {% endif %}
+                <td class="text-primary-emphasis"> {{ question["type"] }} </td>
+                <td class="text-primary-emphasis"> {{ question["category"] }} </td>
+                <td class="text-primary-emphasis"> {{ question["difficulty"] }} </td>
+                <td class="text-primary-emphasis"> {{ question["question"] }} </td>
+                <td class="text-primary-emphasis"> {{ question["creator"] }} </td>
+                <td class="text-primary-emphasis"> {{ question["correct_answer"] }} </td>
+                <td class="text-primary-emphasis"> {{ ", ".join(question["incorrect_answers"]) }} </td>
                 <td>
                     <form method="post" action="{{ url_for('admin.remove_question', id=question['id']) }}">
-                        <button onclick="return confirm('Are you sure? This action is irreversible')" type="submit" class="btn btn-danger">Remove</button>
+                        <button onclick="return confirm('Are you sure? This action is irreversible')" type="submit" class="btn btn-outline-danger">Remove</button>
                     </form>
                 </td>
                 <td>
                     <form method="post" action="{{ url_for('admin.accept_question', id=question["id"]) }}">
-                        <button type="submit" class="btn btn-success">Verify</button>
+                        <button type="submit" class="btn btn-outline-primary">Verify</button>
                     </form>
                 </td>
             </tr>

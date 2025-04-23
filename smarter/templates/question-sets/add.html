@@ -8,18 +8,18 @@
         <div class="col-md-5">
             <form method="post" action="{{ url_for('question_sets.add') }}">
                 <div class="mt-4">
-                    <label for="name" class="form-label">Question set name</label>
-                    <input required type="text" autocomplete="off" class="form-control" name="name" id="name">
+                    <label for="name" class="text-primary-emphasis form-label">Question set name</label>
+                    <input required type="text" autocomplete="off" class="form-control bg-info-subtle border-success-subtle text-success" name="name" id="name">
                 </div>
                 <div class="form-check mt-3">
                     <input class="form-check-input" name="temp" type="checkbox" value="" id="temp">
-                    <label class="form-check-label" for="temp">
-                        Create a temporary question set <a class="ms-1 link-offset-2" href="{{ url_for('about.temp_sets') }}">?</a>
+                    <label class="form-check-label text-primary-emphasis" for="temp">
+                        Create a temporary question set <a class="ms-1 link-offset-2 text-primary-emphasis" href="{{ url_for('about.temp_sets') }}">?</a>
                     </label>
                 </div>
-                <p class="text-danger text-center mt-1"> Only temporary question sets can use questions from OpenTriviaDB </p>
+                <p class="text-primary-emphasis text-center mt-1"><strong>Only temporary question sets can use questions from OpenTriviaDB</strong></p>
                 <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary">Proceed to question selection</button>
+                    <button type="submit" class="btn btn-outline-primary">Proceed to question selection</button>
                 </div>
             </form>
         </div>

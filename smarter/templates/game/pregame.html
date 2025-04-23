@@ -10,23 +10,23 @@
 {% block main %}
 <div class="container text-center">
     <div class="row justify-content-center">
-        <div class="d-none col-md-5 mt-1 alert alert-warning alert-dismissible" id="reconnectAlert">
+        <div class="d-none col-md-5 mt-1 alert bg-info-subtle text-success border-success-subtle alert-dismissible" id="reconnectAlert">
             You lost your connection but have now been reconnected. Info shown might be out of date. Please refresh the page for the newest data.
             <button id="reconnectAlertDismiss" type="button" class="btn-close"></button>
         </div>
     </div>
-    <h2 class="mt-3"> Waiting for the game to start </h2>
-    <p> Question set name: {{ qs_name }} </p>
+    <h2 class="mt-3 text-primary-emphasis"> Waiting for the game to start </h2>
+    <p class="text-primary-emphasis"> Question set name: {{ qs_name }} </p>
     <div class="row justify-content-center">
         <div class="col-auto">
             <ul class="list-group" id="playerList">
-                <li class="list-group-item list-group-item-success"> Players </li>
-                <li class="list-group-item"> {{ owner }} (owner) </li>
+                <li class="list-group-item list-group-item-info text-success border-success-subtle"><strong>Players</strong></li>
+                <li class="list-group-item list-group-item-info text-success border-success-subtle"> {{ owner }} (owner) </li>
                 {% for player in players %}
                 {% if player == g.user["username"] %}
-                <li class="list-group-item"> {{ player }} (you) </li>
+                <li class="list-group-item list-group-item-info text-success border-success-subtle"> {{ player }} (you) </li>
                 {% else %}
-                <li class="list-group-item"> {{ player }} </li>
+                <li class="list-group-item list-group-item-info text-success border-success-subtle"> {{ player }} </li>
                 {% endif %}
                 {% endfor %}
             </ul>
@@ -34,10 +34,10 @@
     </div>
     <div class="row justify-content-evenly mt-2">
         <div class="col-md-3 m-2 text-center">
-            <button class="btn btn-danger" id="leaveGame">Leave game</button>
+            <button class="btn btn-outline-danger" id="leaveGame">Leave game</button>
         </div>
         <div class="col-md-3 m-2 text-center">
-            <button class="btn btn-dark" disabled>
+            <button class="btn btn-outline-primary" disabled>
                 <span class="spinner-border spinner-border-sm"></span>
                 <span role="status">Waiting for owner...</span>
             </button>

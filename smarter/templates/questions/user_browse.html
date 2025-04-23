@@ -13,33 +13,33 @@
         <a href="{{ url_for('about.opentdb') }}" class="link-offset-2 link-underline ms-1">?</a>
     </div>
     <div class="col-lg-4 col-md-5 m-2 text-center">
-        <button class="btn btn-primary" disabled>User-created questions</button>
+        <button class="btn btn-outline-primary" disabled>User-created questions</button>
     </div>
 </div>
 {% endblock %}
 
 {% block table %}
-<table class="table mt-3">
+<table class="table table-primary border-primary-subtle mt-3">
     <thead>
         <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Category</th>
-            <th scope="col">Difficulty</th>
-            <th scope="col">Question</th>
-            <th scope="col">Created by</th>
+            <th class="text-primary-emphasis" scope="col">ID</th>
+            <th class="text-primary-emphasis" scope="col">Category</th>
+            <th class="text-primary-emphasis" scope="col">Difficulty</th>
+            <th class="text-primary-emphasis" scope="col">Question</th>
+            <th class="text-primary-emphasis" scope="col">Created by</th>
         </tr>
     </thead>
     <tbody id="questionTableBody">
         {% for question in questions %}
         <tr>
-            <th scope="row">{{ question["id"] }}</th>
-            <td>{{ question["category"] }}</td>
-            <td>{{ question["difficulty"] }}</td>
-            <td>{{ question["question"] }}</td>
-            <td>{{ question["creator"] }}</td>
+            <th class="text-primary-emphasis" scope="row">{{ question["id"] }}</th>
+            <td class="text-primary-emphasis">{{ question["category"] }}</td>
+            <td class="text-primary-emphasis">{{ question["difficulty"] }}</td>
+            <td class="text-primary-emphasis">{{ question["question"] }}</td>
+            <td class="text-primary-emphasis">{{ question["creator"] }}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-<p class="text-center">You have reached the end</p>
+<p class="text-center text-primary-emphasis">You have reached the end</p>
 {% endblock %}

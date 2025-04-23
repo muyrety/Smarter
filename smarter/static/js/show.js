@@ -5,7 +5,11 @@ const listName = "playerList";
 document.addEventListener("DOMContentLoaded", async function() {
     const gameID = document.getElementById("gameID").textContent;
     const joinURL = window.location.origin + "/join/" + gameID;
-    new QRCode("qrCode", joinURL);
+    new QRCode("qrCode", {
+        text: joinURL,
+        colorLight: "#cfe2ff",
+        colorDark: "#052c65"
+    });
 
     document.getElementById("reconnectAlertDismiss").addEventListener("click", function() {
         document.getElementById("reconnectAlert").classList.add("d-none");

@@ -180,6 +180,7 @@ async function expandTable(tbl_body, config, token, questions_available, selectR
         const row = document.createElement("tr");
         for (const attribute of ["category", "difficulty", "question"]) {
             const data = document.createElement("td");
+            data.classList.add("text-primary-emphasis");
             data.textContent = HTMLToText(question[attribute]);
             row.appendChild(data);
         }
@@ -254,14 +255,14 @@ function getFormCell(question) {
     const submitButton = document.createElement("button");
     submitButton.name = "submitButton";
     submitButton.type = "submit";
-    submitButton.className = "btn btn-success";
+    submitButton.className = "btn btn-outline-success";
     submitButton.textContent = "Select";
     form.appendChild(submitButton);
 
     const removeButton = document.createElement("button");
     removeButton.name = "removeButton";
     removeButton.type = "submit";
-    removeButton.className = "btn btn-danger d-none";
+    removeButton.className = "btn btn-outline-danger d-none";
     removeButton.textContent = "Remove";
     removeButton.disabled = true;
     form.appendChild(removeButton);

@@ -10,8 +10,8 @@
 {% block header %}
 <div class="row justify-content-center">
     <div class="col-lg-5">
-        <div id="notEnoughQuestions" class="d-none mt-3 alert alert-warning alert-dismissible">
-            <p> All question sets must have at least 5 questions </p>
+        <div id="notEnoughQuestions" class="d-none mt-3 alert bg-info-subtle border-success-subtle alert-dismissible">
+            <p class="text-success"> All question sets must have at least 5 questions </p>
             <button type="button" class="btn-close" id="notEnoughQuestionsDismiss"></button>
         </div>
     </div>
@@ -19,93 +19,93 @@
 
 <div class="row justify-content-center">
     <div class="col-lg-5">
-        <div id="tooManyQuestions" class="d-none mt-3 alert alert-warning alert-dismissible">
-            <p> All question sets must have no more than 50 questions </p>
+        <div id="tooManyQuestions" class="d-none mt-3 alert bg-info-subtle border-success-subtle alert-dismissible">
+            <p class="text-success"> All question sets must have no more than 50 questions </p>
             <button type="button" class="btn-close" id="tooManyQuestionsDismiss"></button>
         </div>
     </div>
 </div>
 
 <div class="text-center mt-3">
-    <button class="btn btn-success" id="submitSet">Submit question set</button>
+    <button class="btn btn-primary" id="submitSet">Submit question set</button>
 </div>
 
 <div class="row justify-content-center mt-3">
     <div id="otdblink" class="col-lg-4 col-md-5 m-2 text-center">
         <a href="{{ url_for('question_sets.add_opentdb') }}" class="btn btn-primary">Open Trivia DB questions</a>
-        <a href="{{ url_for('about.opentdb') }}" class="link-offset-2 link-underline ms-1">?</a>
+        <a href="{{ url_for('about.opentdb') }}" class="link-offset-2 text-primary-emphasis ms-1">?</a>
     </div>
     <div class="col-lg-4 col-md-5 m-2 text-center">
-        <button class="btn btn-primary" disabled>User-created questions</button>
+        <button class="btn btn-outline-primary" disabled>User-created questions</button>
     </div>
 </div>
 
-<hr class="border opacity-50">
+<hr class="border-primary">
 
 <form id="IDSubmitionForm">
     <div class="row justify-content-center">
         <div class="col-auto">
-            <div class="alert alert-danger alert-dismissible d-none" id="serverFailAlert">
-                <p> Could not connect to the server, try again </p>
+            <div class="alert bg-info-subtle border-success-subtle alert-dismissible d-none" id="serverFailAlert">
+                <p class="text-success"> Could not connect to the server, try again </p>
                 <button type="button" class="btn-close" id="serverFailAlertDismiss"></button>
             </div>
-            <div class="alert alert-warning alert-dismissible d-none" id="questionChosenAlert">
-                <p> This question has already been added </p>
+            <div class="alert bg-info-subtle border-success-subtle alert-dismissible d-none" id="questionChosenAlert">
+                <p class="text-success"> This question has already been added </p>
                 <button type="button" class="btn-close" id="questionChosenAlertDismiss"></button>
             </div>
-            <div class="alert alert-warning alert-dismissible d-none" id="questionNotValidAlert">
-                <p> This question ID is not valid </p>
+            <div class="alert bg-info-subtle border-success-subtle alert-dismissible d-none" id="questionNotValidAlert">
+                <p class="text-success"> This question ID is not valid </p>
                 <button type="button" class="btn-close" id="questionNotValidAlertDismiss"></button>
             </div>
-            <div class="alert alert-success alert-dismissible d-none" id="successAlert">
-                <p> Question successfully added </p>
+            <div class="alert bg-info-subtle border-success-subtle alert-dismissible d-none" id="successAlert">
+                <p class="text-success"> Question successfully added </p>
                 <button type="button" class="btn-close" id="successAlertDismiss"></button>
             </div>
         </div>
     </div>
     <div class="row justify-content-center text-center mt-3">
         <div class="col-auto m-2">
-            <input name="id" type="number" class="form-control">
+            <input name="id" type="number" class="form-control bg-info-subtle border-success-subtle text-success">
         </div>
         <div class="col-auto m-2">
-            <button type="submit" class="btn btn-primary">Select by ID</button>
+            <button type="submit" class="btn btn-outline-primary">Select by ID</button>
         </div>
     </div>
 </form>
 
-<hr class="border opacity-50">
+<hr class="border-primary">
 {% endblock %}
 
 {% block table %}
-<table class="table mt-3">
+<table class="table table-primary border-primary-subtle mt-3">
     <thead>
         <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Category</th>
-            <th scope="col">Difficulty</th>
-            <th scope="col">Question</th>
-            <th scope="col">Created by</th>
-            <th scope="col" class="invisible">Select</th>
+            <th scope="col" class="text-primary-emphasis">ID</th>
+            <th scope="col" class="text-primary-emphasis">Category</th>
+            <th scope="col" class="text-primary-emphasis">Difficulty</th>
+            <th scope="col" class="text-primary-emphasis">Question</th>
+            <th scope="col" class="text-primary-emphasis">Created by</th>
+            <th scope="col" class="invisible text-primary-emphasis">Select</th>
         </tr>
     </thead>
     <tbody id="questionTableBody">
         {% for question in questions %}
         <tr>
-            <th scope="row">{{ question["id"] }}</th>
-            <td>{{ question["category"] }}</td>
-            <td>{{ question["difficulty"] }}</td>
-            <td>{{ question["question"] }}</td>
-            <td>{{ question["creator"] }}</td>
+            <th scope="row" class="text-primary-emphasis">{{ question["id"] }}</th>
+            <td class="text-primary-emphasis">{{ question["category"] }}</td>
+            <td class="text-primary-emphasis">{{ question["difficulty"] }}</td>
+            <td class="text-primary-emphasis">{{ question["question"] }}</td>
+            <td class="text-primary-emphasis">{{ question["creator"] }}</td>
             <td>
                 <form class="selectQuestion">
                     <input name="id" type="hidden" value="{{ question["id"] }}">
-                    <button name="submitButton" class="btn btn-success" type="submit">Select</button>
-                    <button name="removeButton" class="btn btn-danger d-none" disabled type="submit">Remove</button>
+                    <button name="submitButton" class="btn btn-outline-success" type="submit">Select</button>
+                    <button name="removeButton" class="btn btn-outline-danger d-none" disabled type="submit">Remove</button>
                 </form>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-<p class="text-center">You have reached the end</p>
+<p class="text-center text-primary-emphasis">You have reached the end</p>
 {% endblock %}

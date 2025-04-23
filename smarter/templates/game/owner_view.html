@@ -10,45 +10,45 @@
 {% block main %}
 <div class="container text-center">
     <div class="row justify-content-center">
-        <div class="d-none col-md-5 mt-1 alert alert-warning alert-dismissible" id="reconnectAlert">
+        <div class="d-none col-md-5 mt-1 alert bg-info-subtle text-success border-success-subtle alert-dismissible" id="reconnectAlert">
             You lost your connection but have now been reconnected. Info shown might be out of date. Please refresh the page for the newest data.
             <button id="reconnectAlertDismiss" type="button" class="btn-close"></button>
         </div>
     </div>
     <div class="row mt-3 justify-content-between">
-        <h1 class="col-md-4"> {{ name }} <span id="currentQuestionNr">{{ curr_question }}</span>/{{ total }}</h1>
+        <h1 class="col-md-4 text-primary-emphasis"> {{ name }} <span id="currentQuestionNr">{{ curr_question }}</span>/{{ total }}</h1>
         <div class="col-md-4">
-            <button class="btn btn-danger" id="deleteGame">Delete game</button>
+            <button class="btn btn-outline-danger" id="deleteGame">Delete game</button>
         </div>
     </div>
-    <hr class="mt-3">
-    <h2 class="{{ 'd-none' if not answering }}" id="currentQuestionH"> Current question:
+    <hr class="border-primary">
+    <h2 class="{{ 'd-none' if not answering }} text-primary-emphasis" id="currentQuestionH"> Current question:
         <span id="currentQuestion">{{ question if answering}}</span>
     </h2>
-    <h2 class="{{ 'd-none' if answering }}" id="nextQuestionH"> Next question:
+    <h2 class="{{ 'd-none' if answering }} text-primary-emphasis" id="nextQuestionH"> Next question:
         <span id="nextQuestion">{{ question if not answering}}</span>
     </h2>
     <div class="col mt-2">
-        <button class="{{ 'd-none' if answering }} btn btn-success" id="beginAnswering"> Begin answering </button>
-        <button class="{{ 'd-none' if not answering }} btn btn-danger" id="endAnswering"> Stop question answering </button>
+        <button class="{{ 'd-none' if answering }} btn btn-outline-primary" id="beginAnswering"> Begin answering </button>
+        <button class="{{ 'd-none' if not answering }} btn btn-outline-danger" id="endAnswering"> Stop question answering </button>
     </div>
-    <hr class="mt-3">
-    <table class="table" id="leaderboard">
+    <hr class="border-primary">
+    <table class="table table-primary border-primary-subtle" id="leaderboard">
         <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">Username</th>
-                <th scope="col">Score</th>
-                <th class="{{ 'd-none' if not answering }}" id="answeredHeader" scope="col">Answered</th>
+                <th scope="col" class="text-primary-emphasis">#</th>
+                <th scope="col" class="text-primary-emphasis">Username</th>
+                <th scope="col" class="text-primary-emphasis">Score</th>
+                <th class="{{ 'd-none' if not answering }} text-primary-emphasis" id="answeredHeader" scope="col">Answered</th>
             </tr>
         </thead>
         <tbody>
             {% for player in leaderboard %}
             <tr>
-                <th class="position" scope="row">{{ loop.index }}</th>
-                <td class="username">{{ player.username }}</td>
-                <td class="points">{{ player.correct_answers }}</td>
-                <td class="answered-data {{ 'd-none' if not answering }}">{{ 'Yes' if player.answered else 'No' }}</td>
+                <th class="position text-primary-emphasis" scope="row">{{ loop.index }}</th>
+                <td class="username text-primary-emphasis">{{ player.username }}</td>
+                <td class="points text-primary-emphasis">{{ player.correct_answers }}</td>
+                <td class="answered-data text-primary-emphasis {{ 'd-none' if not answering }}">{{ 'Yes' if player.answered else 'No' }}</td>
             </tr>
             {% endfor %}
         </tbody>

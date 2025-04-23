@@ -341,7 +341,7 @@ def load_results(uuid):
         (uuid,)
     ).fetchone()
     if game_data is None:
-        flash("This game does not exist or has been deleted", "danger")
+        flash("This game does not exist or has been deleted")
         return redirect(url_for("index"))
 
     name = db.execute(
@@ -389,7 +389,7 @@ def create_game():
 
     id = request.form.get('id')
     if not id:
-        flash('No id provided', 'danger')
+        flash('No id provided')
         return render_template(
             "question-sets/browse.html",
             question_sets=question_sets["question_sets"],
@@ -402,10 +402,7 @@ def create_game():
        question_sets["private_question_sets"]):
         game_uuid = addGame(id)
         if game_uuid is None:
-            flash(
-                'You are in an ongoing game',
-                'danger'
-            )
+            flash('You are in an ongoing game')
             return render_template(
                 "question-sets/browse.html",
                 question_sets=question_sets["question_sets"],
@@ -414,10 +411,7 @@ def create_game():
             )
         return redirect(url_for('game.join_game', uuid=game_uuid))
     else:
-        flash(
-            'This ID does not exist or you are not authorized to use it',
-            'danger'
-        )
+        flash('This ID does not exist or you are not authorized to use it')
         return render_template(
             "question-sets/browse.html",
             question_sets=question_sets["question_sets"],
@@ -431,7 +425,7 @@ def create_game():
 @login_required()
 def play_game(uuid=None):
     if uuid is None:
-        flash("No UUID supplied, try joining game instead", "danger")
+        flash("No UUID supplied, try joining game instead")
         return redirect(url_for("game.join_game"))
 
     db = get_db()
@@ -440,7 +434,7 @@ def play_game(uuid=None):
     ).fetchone()
 
     if id is None:
-        flash("Invalid UUID supplied, try joining game instead", "danger")
+        flash("Invalid UUID supplied, try joining game instead")
         return redirect(url_for("game.join_game"))
     id = id["id"]
 
@@ -466,7 +460,7 @@ def play_game(uuid=None):
         (g.user["id"], id,)
     ).fetchone())
     if not is_player and g.user["id"] != owner_id:
-        flash("You are not part of this game", "danger")
+        flash("You are not part of this game")
         return redirect(url_for("game.join_game"))
 
     total = db.execute(
@@ -575,10 +569,7 @@ def join_game(uuid=None):
             return redirect(url_for("game.play_game", uuid=uuid))
     else:
         if game_data["qs_name"] is None:
-            flash(
-                "This game does not exist",
-                "danger"
-            )
+            flash("This game does not exist")
             return redirect(url_for("game.join_game"))
 
         inOtherGame = (
@@ -594,7 +585,7 @@ def join_game(uuid=None):
         )
         # Try to insert user if he is not already in a game
         if inOtherGame:
-            flash("You are already in an ongoing game", "danger")
+            flash("You are already in an ongoing game")
             return redirect(url_for("game.join_game"))
         elif g.user["username"] not in game_data["players"]:
             # Join the player
@@ -607,10 +598,7 @@ def join_game(uuid=None):
                 game_data["players"].append(g.user["username"])
             # Reject the player
             else:
-                flash(
-                    "This game is not joinable anymore",
-                    "danger"
-                )
+                flash("This game is not joinable anymore")
                 return redirect(url_for("game.join_game"))
         # Player is in player list, but the game is not joinable
         # (i. e. in progress), redirect to play game

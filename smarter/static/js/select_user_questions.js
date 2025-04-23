@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (addQuestion) {
                 if (ids.length + otdb_questions.length >= 50) {
                     document.getElementById("tooManyQuestions").classList.remove("d-none");
+                    window.scroll(0, 0);
                 }
                 else if (ids.includes(id)) {
                     form.elements.submitButton.disabled = true;

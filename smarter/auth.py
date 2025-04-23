@@ -92,10 +92,10 @@ def register():
             # Remember user
             session.permanent = False
             session["user_id"] = user_id
-            flash("You have successfully registered", "success")
+            flash("You have successfully registered")
             return redirect(next if next else url_for("index"))
 
-    flash(error, "danger")
+    flash(error)
 
     # Keep the next argument between requests
     if next:
@@ -125,7 +125,7 @@ def login():
         error = "The password you entered is incorrect"
 
     if error is not None:
-        flash(error, "danger")
+        flash(error)
 
         # Keep the next argument between requests
         if next:
@@ -140,7 +140,7 @@ def login():
         session.permanent = False
     session["user_id"] = user_data["id"]
 
-    flash("You have successfully logged-in", "success")
+    flash("You have successfully logged-in")
 
     return redirect(next if next else url_for("index"))
 
@@ -148,5 +148,5 @@ def login():
 @bp.route("/logout")
 def logout():
     session.clear()
-    flash("You are now logged out", "success")
+    flash("You are now logged out")
     return redirect(url_for("index"))

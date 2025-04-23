@@ -12,15 +12,15 @@
         <div class="col-lg-5 col-md-7 col-sm-9">
             <form method="post" action="{{ url_for('questions.add') }}">
                 <div class="my-2">
-                    <label for="type" class="form-label text-info">Type</label>
-                    <select required class="form-select" name="type" id="type">
+                    <label for="type" class="form-label text-primary-emphasis">Type</label>
+                    <select required class="form-select bg-info-subtle border-success-subtle text-success" name="type" id="type">
                         <option selected value="multiple">Multiple choice</option>
                         <option value="boolean">True / False</option>
                     </select>
                 </div>
                 <div class="my-2">
-                    <label for="category" class="form-label text-info">Category</label>
-                    <select required class="form-select" id="category" name="category">
+                    <label for="category" class="form-label text-primary-emphasis">Category</label>
+                    <select required class="form-select bg-info-subtle border-success-subtle text-success" id="category" name="category">
                         <option selected value="9">General Knowledge</option>
                         <option value="10">Entertainment: Books</option>
                         <option value="11">Entertainment: Film</option>
@@ -48,42 +48,42 @@
                     </select>
                 </div>
                 <div class="my-2">
-                    <label for="difficulty" class="form-label text-info">Difficulty</label>
-                    <select required class="form-select" id="difficulty" name="difficulty">
+                    <label for="difficulty" class="form-label text-primary-emphasis">Difficulty</label>
+                    <select required class="form-select bg-info-subtle border-success-subtle text-success" id="difficulty" name="difficulty">
                         <option selected value="easy">Easy</option>
                         <option value="medium">Medium</option>
                         <option value="hard">Hard</option>
                     </select>
                 </div>
                 <div class="my-2">
-                    <label for="question" class="form-label text-info">Question</label>
-                    <input required type="text" autocomplete="off" class="form-control" name="question" id="question" value="{{ request.form.get("question", "") }}">
+                    <label for="question" class="form-label text-primary-emphasis">Question</label>
+                    <input required type="text" autocomplete="off" class="form-control bg-info-subtle border-success-subtle text-success" name="question" id="question" value="{{ request.form.get("question", "") }}">
                 </div>
                 <div class="my-2">
-                    <label for="correctAnswerMultiple" class="form-label text-success">Correct answer</label>
-                    <input required type="text" autocomplete="off" class="form-control" name="correctAnswerMultiple" id="correctAnswerMultiple">
+                    <label for="correctAnswerMultiple" class="form-label text-primary-emphasis">Correct answer</label>
+                    <input required type="text" autocomplete="off" class="form-control bg-info-subtle border-success-subtle text-success" name="correctAnswerMultiple" id="correctAnswerMultiple">
                 </div>
                 <div class="my-2 d-none">
-                    <label for="correctAnswerBoolean" class="form-label text-success">Correct answer</label>
-                    <select class="form-select" name="correctAnswerBoolean" id="correctAnswerBoolean">
+                    <label for="correctAnswerBoolean" class="form-label text-primary-emphasis">Correct answer</label>
+                    <select class="form-select bg-info-subtle border-success-subtle text-success" name="correctAnswerBoolean" id="correctAnswerBoolean">
                         <option selected value="True">True</option>
                         <option value="False">False</option>
                     </select>
                 </div>
                 <div class="my-2">
-                    <label for="incorrectAnswer1" class="form-label text-danger">Incorrect answer 1</label>
-                    <input required type="text" autocomplete="off" class="form-control" name="incorrectAnswers" id="incorrectAnswer1">
+                    <label for="incorrectAnswer1" class="form-label text-primary-emphasis">Incorrect answer 1</label>
+                    <input required type="text" autocomplete="off" class="form-control bg-info-subtle border-success-subtle text-success" name="incorrectAnswers" id="incorrectAnswer1">
                 </div>
                 <div class="my-2">
-                    <label for="incorrectAnswer2" class="form-label text-danger">Incorrect answer 2</label>
-                    <input required type="text" autocomplete="off" class="form-control" name="incorrectAnswers" id="incorrectAnswer2">
+                    <label for="incorrectAnswer2" class="form-label text-primary-emphasis">Incorrect answer 2</label>
+                    <input required type="text" autocomplete="off" class="form-control bg-info-subtle border-success-subtle text-success" name="incorrectAnswers" id="incorrectAnswer2">
                 </div>
                 <div class="my-2">
-                    <label for="incorrectAnswer3" class="form-label text-danger">Incorrect answer 3</label>
-                    <input required type="text" autocomplete="off" class="form-control" name="incorrectAnswers" id="incorrectAnswer3">
+                    <label for="incorrectAnswer3" class="form-label text-primary-emphasis">Incorrect answer 3</label>
+                    <input required type="text" autocomplete="off" class="form-control bg-info-subtle border-success-subtle text-success" name="incorrectAnswers" id="incorrectAnswer3">
                 </div>
                 <div class="text-center">
-                    <button type="submit" class="btn btn-primary mt-2">Submit for review</button>
+                    <button type="submit" class="btn btn-outline-primary mt-2">Submit for review</button>
                 </div>
             </form>
         </div>

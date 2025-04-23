@@ -31,7 +31,7 @@ def add():
     try:
         category = int(request.form["category"])
     except ValueError:
-        flash("Bad category", "danger")
+        flash("Bad category")
         return render_template("questions/add.html")
 
     if category not in range(9, 33):
@@ -58,7 +58,7 @@ def add():
             error = "Bad incorrect answers"
 
     if error is not None:
-        flash(error, "danger")
+        flash(error)
         return render_template("questions/add.html")
 
     # Insert the question into the database
@@ -66,10 +66,10 @@ def add():
                                category, difficulty, question,
                                correct_answer, incorrect_answers)
     if error is not None:
-        flash(error, "danger")
+        flash(error)
         return render_template("questions/add.html")
 
-    flash("Question successfully submited", "success")
+    flash("Question successfully submited")
     return redirect(url_for("index"))
 
 

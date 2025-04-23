@@ -14,37 +14,37 @@
         {% if game is not none %}
         <div class="row justify-content-center mt-3">
             <div class="col-md-6">
-                <div class="alert alert-warning" role="alert">
-                    You are already in a game. <a href={{ "/join/" + game }}>Rejoin</a>.
+                <div class="alert bg-info-subtle text-success border-success-subtle" role="alert">
+                    You are already in a game. <a class="text-success link-offset-2" href={{ "/join/" + game }}>Rejoin</a>.
                 </div>
             </div>
         </div>
         {% endif %}
 
-        <h2 class="text-center mt-2">Select a question set for playing</h2>
-        <hr class="border opacity-75">
+        <h2 class="text-center text-primary-emphasis mt-2">Select a question set for playing</h2>
+        <hr class="border-primary">
         <form action="{{ url_for('game.create_game') }}" method="post">
             <div class="row justify-content-center text-center mt-3">
                 <div class="col-4 col-sm-3 m-2">
-                    <input name="id" type="number" required class="form-control">
+                    <input class="bg-info-subtle text-success border-success-subtle form-control" name="id" type="number" required>
                 </div>
                 <div class="col-md-2 m-2">
-                    <button type="submit" class="btn btn-success">Select by ID</button>
+                    <button type="submit" class="btn btn-outline-primary">Select by ID</button>
                 </div>
             </div>
         </form>
-        <hr class="border opacity-75">
+        <hr class="border-primary">
     {% endif %}
     {% if g.user %}
-    <h3 class="text-center mt-2"> Your question sets </h3>
+    <h3 class="text-center mt-2 text-primary-emphasis"> Your question sets </h3>
     {% for question_set in private_question_sets %}
     <div class="row justify-content-center mt-3">
-        <div class="col-lg-5 card">
+        <div class="col-lg-5 card bg-info-subtle border-success-subtle text-success">
             <div class="card-body">
                 <h6 class="mt-2 card-title">
                     {{ question_set["name"] }} (ID {{ question_set["id"] }})
                     {% if question_set["temporary"] %}
-                        <span class="ms-2 badge rounded-pill text-bg-warning">Temporary</span>
+                        <span class="ms-2 badge rounded-pill bg-success">Temporary</span>
                     {% endif %}
                 </h6>
                 <p class="card-text">
@@ -53,7 +53,7 @@
                 <!-- The buttons become too small when size switches to large,
                 because the parent element becomes smaller -->
                <div class="row justify-content-end">
-                    <button class="col-4 col-md-2 col-lg-3 col-xl-2 btn btn-dark"
+                    <button class="col-4 col-md-2 col-lg-3 col-xl-2 btn btn-outline-primary"
                     data-bs-toggle="collapse" data-bs-target="#questionInfo{{ question_set['id'] }}priv">
                         Show
                     </button>
@@ -61,13 +61,13 @@
                         <form class="col-4 col-md-3 col-lg-4 col-xl-3 ms-2"
                         action="{{ url_for('game.create_game') }}" method="post">
                             <input type="hidden" name="id" value="{{ question_set['id'] }}">
-                            <button class="w-100 btn btn-success">Select</button>
+                            <button class="w-100 btn btn-outline-success">Select</button>
                         </form>
                     {% else %}
                         <form class="col-4 col-md-3 col-lg-4 col-xl-3 ms-2"
                         action="{{ url_for('question_sets.remove', id=question_set['id']) }}" method="post">
                             <button onclick="return confirm('Are you sure? This action is irreversible.')"
-                            type="submit" class="w-100 btn btn-danger">
+                            type="submit" class="w-100 btn btn-outline-danger">
                                 Delete
                             </button>
                         </form>
@@ -77,7 +77,7 @@
                     <div class="card">
                         <ul class="list-group list-group-flush">
                             {% for question in question_set["questions"] %}
-                                <li class="list-group-item">
+                                <li class="list-group-item list-group-item-primary border-success-subtle text-primary-emphasis">
                                     {{ question["question"] }} ({{ question["category"] }}, {{ question["difficulty"] }}, ID {{ question["id"] }})
                                 </li>
                             {% endfor %}
@@ -89,19 +89,19 @@
     </div>
     {% endfor %}
 
-    <hr class="border opacity-75">
+    <hr class="border-primary">
     {% endif %}
 
-    <h3 class="text-center mt-2"> All question sets </h3>
+    <h3 class="text-center text-primary-emphasis mt-2"> All question sets </h3>
     {% for question_set in question_sets %}
     <div class="row justify-content-center mt-3">
-        <div class="col-lg-5 card">
+        <div class="col-lg-5 card bg-info-subtle border-success-subtle text-success">
             <div class="card-body">
                 <h6 class="card-title">
                     {{ question_set["name"] }} (ID {{ question_set["id"] }})
                 </h6>
-                <h6 class="text-body-secondary card-subtitle mb-2">
-                    By {{ question_set["creator"] }}
+                <h6 class="card-subtitle mb-2">
+                    <strong>By {{ question_set["creator"] }}</strong>
                 </h6>
                 <p class="card-text">
                     {{ question_set["questions"] | length }} questions
@@ -109,7 +109,7 @@
                 <!-- The buttons become too small when size switches to large,
                 because the parent element becomes smaller -->
                 <div class="row justify-content-end">
-                    <button class="col-4 col-md-2 col-xl-2 col-lg-3 btn btn-dark"
+                    <button class="col-4 col-md-2 col-xl-2 col-lg-3 btn btn-outline-primary"
                     data-bs-toggle="collapse" data-bs-target="#questionInfo{{ question_set['id'] }}pub">
                         Show
                     </button>
@@ -117,7 +117,7 @@
                         <form class="col-4 col-md-3 col-lg-4 col-xl-3 ms-2"
                         action="{{ url_for('game.create_game') }}" method="post">
                             <input type="hidden" name="id" value="{{ question_set['id'] }}">
-                            <button class="w-100 btn btn-success">Select</button>
+                            <button class="w-100 btn btn-outline-success">Select</button>
                         </form>
                     {% endif %}
                 </div>
@@ -125,7 +125,7 @@
                     <div class="card">
                         <ul class="list-group list-group-flush">
                             {% for question in question_set["questions"] %}
-                                <li class="list-group-item">
+                                <li class="list-group-item list-group-item-primary border-success-subtle text-primary-emphasis">
                                     {{ question["question"] }} ({{ question["category"] }}, {{ question["difficulty"] }}, ID {{ question["id"] }})
                                 </li>
                             {% endfor %}
@@ -136,6 +136,6 @@
         </div>
     </div>
     {% endfor %}
-    <hr class="border opacity-75">
+    <hr class="border-primary">
 </div>
 {% endblock %}

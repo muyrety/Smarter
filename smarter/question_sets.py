@@ -43,7 +43,7 @@ def add():
         error = "This question set name is already used"
 
     if error is not None:
-        flash(error, "danger")
+        flash(error)
         return render_template("question-sets/add.html")
 
     return redirect(url_for(
@@ -103,24 +103,15 @@ def submit_set():
     # Only temporary question sets can have questions
     # from the Open Trivia Database
     if not temp and otdbQuestions:
-        flash(
-            "Non-temporary question sets can only have user created questions",
-            "danger"
-        )
+        flash("Non-temporary question sets can only have user created questions")
         return {"success": False}
 
     if len(userQuestions) + len(otdbQuestions) > 50:
-        flash(
-            "Limit of 50 questions exceeded",
-            "danger"
-        )
+        flash("Limit of 50 questions exceeded")
         return {"success": False}
 
     if len(userQuestions) + len(otdbQuestions) < 5:
-        flash(
-            "Not enough questions provided",
-            "danger"
-        )
+        flash("Not enough questions provided")
         return {"success": False}
 
     db = get_db()
@@ -172,10 +163,7 @@ def submit_set():
                 source = 'user' AND verified = 1""",
                 (question,)
             ).fetchone():
-                flash(
-                    "Some questions are not verified or user-generated",
-                    "danger"
-                )
+                flash("Some questions are not verified or user-generated")
                 return {"success": False}
 
             # Filter duplicate questions
@@ -191,12 +179,11 @@ def submit_set():
     except (db.IntegrityError, ValueError):
         flash(
             """An unexpected error occured while processing your request,
-            please try again later""",
-            "danger"
+            please try again later"""
         )
         return {"success": False}
 
-    flash("Question set successfully created", "success")
+    flash("Question set successfully created")
     return {"success": True}
 
 
@@ -208,7 +195,7 @@ def remove(id):
         "SELECT 1 FROM question_sets WHERE id = ? AND creator_id = ?",
         (id, g.user["id"])
     ).fetchone():
-        flash("You are not permitted to delete this set", "danger")
+        flash("You are not permitted to delete this set")
         return redirect(url_for("question_sets.browse"), 403)
 
     used_in_game = bool(db.execute(
@@ -216,15 +203,12 @@ def remove(id):
         (id,)
     ).fetchone())
     if used_in_game:
-        flash(
-            "This question set is used in a game and cannot be deleted",
-            "danger"
-        )
+        flash("This question set is used in a game and cannot be deleted")
         return redirect(url_for("question_sets.browse"))
 
     db.execute("DELETE FROM question_sets WHERE id = ?", (id,))
 
     deleteSetQuestions(id)
 
-    flash("Question set deleted", "success")
+    flash("Question set deleted")
     return redirect(url_for("question_sets.browse"))

@@ -45,6 +45,7 @@ document.addEventListener("tableChanged", function() {
             }
             else {
                 document.getElementById("tooManyQuestions").classList.remove("d-none");
+                window.scroll(0, 0);
             }
         });
     });

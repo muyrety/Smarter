@@ -9,8 +9,8 @@
 {% block header %}
 <div class="row justify-content-center mt-3">
     <div class="col-lg-4 col-md-5 m-2 text-center">
-        <button class="btn btn-primary" disabled>Open Trivia DB questions</button>
-        <a href="{{ url_for('about.opentdb') }}" class="link-offset-2 link-underline ms-1">?</a>
+        <button class="btn btn-outline-primary" disabled>Open Trivia DB questions</button>
+        <a href="{{ url_for('about.opentdb') }}" class="link-offset-2 text-primary-emphasis ms-1">?</a>
     </div>
     <div class="col-lg-4 col-md-5 m-2 text-center">
         <a href="{{ url_for('questions.user_browse') }}" class="btn btn-primary">User-created questions</a>
@@ -19,17 +19,17 @@
 {% endblock %}
 
 {% block table %}
-<table id="questionTable" class="table mt-3">
+<table id="questionTable" class="table table-primary border-primary-subtle mt-3">
     <thead>
         <tr>
-            <th scope="col">Category</th>
-            <th scope="col">Difficulty</th>
-            <th scope="col">Question</th>
+            <th class="text-primary-emphasis" scope="col">Category</th>
+            <th class="text-primary-emphasis" scope="col">Difficulty</th>
+            <th class="text-primary-emphasis" scope="col">Question</th>
         </tr>
     </thead>
 </table>
 <div class="text-center">
-    <button class="btn btn-outline-secondary mb-3" id="loadQuestions">Load more</button>
-    <p class="d-none" id="endReached">You have reached the end</p>
+    <button class="btn btn-outline-primary mb-3" id="loadQuestions">Load more</button>
+    <p class="text-primary-emphasis d-none" id="endReached">You have reached the end</p>
 </div>
 {% endblock %}

@@ -1,7 +1,7 @@
 function addUser(name, listName) {
     const list = document.getElementById(listName);
     const newItem = document.createElement("li");
-    newItem.className = "list-group-item";
+    newItem.className = "list-group-item list-group-item-info text-success border-success-subtle";
     newItem.textContent = name;
     list.append(newItem);
 }

@@ -11,40 +11,40 @@
 {% block main %}
 <div class="container text-center">
     <div class="row justify-content-center">
-        <div class="d-none col-md-5 mt-1 alert alert-warning alert-dismissible" id="reconnectAlert">
+        <div class="d-none col-md-5 mt-2 alert bg-info-subtle text-success border-success-subtle alert-dismissible" id="reconnectAlert">
             You lost your connection but have now been reconnected. Info shown might be out of date. Please refresh the page for the newest data.
             <button id="reconnectAlertDismiss" type="button" class="btn-close"></button>
         </div>
     </div>
     <div class="row justify-content-center">
-        <div class="d-none col-md-5 mt-3 alert alert-danger alert-dismissible" id="errorAlert">
+        <div class="d-none col-md-5 mt-3 alert bg-info-subtle text-success border-success-subtle alert-dismissible" id="errorAlert">
             <p id="errorMessage"></p>
             <button id="errorAlertDismiss" type="button" class="btn-close"></button>
         </div>
     </div>
-    <h2 class="mt-2">Share the ID or the QR code with others to let them join</h2>
+    <h2 class="mt-2 text-primary-emphasis">Share the ID or the QR code with others to let them join</h2>
     <div class="row text-center justify-content-evenly">
         <div class="col-auto mt-3">
-            <p> Game ID: <span id="gameID">{{ id }}</span></p>
+            <p class="text-primary-emphasis"> Game ID: <span id="gameID">{{ id }}</span></p>
             <div class="mt-3 d-flex justify-content-center" id="qrCode">
             </div>
         </div>
         <div class="col-auto mt-3">
             <ul class="list-group" id="playerList">
-                <li class="list-group-item list-group-item-success">Players in game</li>
-                <li class="list-group-item">{{ g.user["username"] }} (you)</li>
+                <li class="list-group-item list-group-item-info text-success border-success-subtle"><strong>Players in game</strong></li>
+                <li class="list-group-item list-group-item-info text-success border-success-subtle">{{ g.user["username"] }} (you)</li>
                 {% for player in players %}
-                <li class="list-group-item"> {{ player }} </li>
+                <li class="list-group-item list-group-item-info text-success border-success-subtle"> {{ player }} </li>
                 {% endfor %}
             </ul>
         </div>
     </div>
     <div class="row justify-content-evenly mt-2">
         <div class="col-md-3 m-2 text-center">
-            <button class="btn btn-danger" id="deleteGame">Delete game</button>
+            <button class="btn btn-outline-danger" id="deleteGame">Delete game</button>
         </div>
         <div class="col-md-3 m-2 text-center">
-            <button class="btn btn-dark" id="startGame">Start game</button>
+            <button class="btn btn-outline-primary" id="startGame">Start game</button>
         </div>
     </div>
 </div>
