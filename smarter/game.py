@@ -12,6 +12,16 @@ from .db import get_db
 from .sockets import socketio
 
 
+def orderAnswers(answers):
+    # Always send boolean answers as True first and False second
+    if len(answers) == 2:
+        if answers[0]["answer"] != "True":
+            answers.reverse()
+    # Order alphabetically if question is multiple choice
+    else:
+        answers.sort(key=itemgetter("answer"))
+
+
 @socketio.on("connect")
 def player_joined(data=None):
     # Manually register user since before_app_request
@@ -166,14 +176,13 @@ def load_next_question():
     # Sort by id since the client sends back the index of the answer,
     # not the answer itself
     answers = db.execute(
-        "SELECT answer FROM answers WHERE question_id = ? ORDER BY id",
+        "SELECT answer FROM answers WHERE question_id = ?",
         (question_data["id"],)
     ).fetchall()
-    answers = [d["answer"] for d in answers]
 
-    # Always send boolean answers as True first and False second
-    if len(answers) == 2:
-        answers = ["True", "False"]
+    orderAnswers(answers)
+
+    answers = [d["answer"] for d in answers]
 
     # Trigger answering flag
     db.execute(
@@ -226,12 +235,8 @@ def check_answer(answerIdx):
         (question_id,)
     ).fetchall()
 
-    # Always send boolean answers as True first and False second
-    if len(answers) == 2:
-        answers = (
-            answers if answers[0]["answer"] == "True"
-            else list(reversed(answers))
-        )
+    orderAnswers(answers)
+
     correct = bool(answers[answerIdx]["correct"])
 
     if correct:
