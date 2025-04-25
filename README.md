@@ -60,7 +60,7 @@ This method is recommended if you want to host (deploy) the app.
 
 ### 1. Download the wheel file from [GitHub releases](https://github.com/muyrety/Smarter/releases)
 ```
-$ wget https://github.com/muyrety/Smarter/releases/download/pre-release/smarter-VERSION-py3-none-any.whl
+$ wget https://github.com/muyrety/Smarter/releases/download/VERSION/smarter-VERSION-py3-none-any.whl
 ```
 or just navigate to the releases page and download through a browser.
 
