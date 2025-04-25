@@ -2,8 +2,7 @@
 Web application for playing trivia games using [Flask](https://flask.palletsprojects.com/),
 [SQLite](https://www.sqlite.org/index.html), [Bootstrap](https://getbootstrap.com/) and JavaScript.
 Users are able to add new questions or use the ones provided by the [OpenTriviaDatabase](https://opentdb.com/).
-The server has moderation, so submited questions are first reviewed by an admin.
-This project is still under development and many features are not yet implemented.
+The server has moderation, so submitted questions must first be reviewed by an admin.
 
 # Building
 ## Cloning the repo
@@ -14,14 +13,14 @@ $ git clone https://github.com/muyrety/Smarter.git
 ```
 
 ### 2. Create a Python virtual environment ([Python](https://www.python.org/downloads/) is required)
-#### Linux/MacOS
+Linux/MacOS
 ```
 $ cd Smarter
 $ python -m venv .venv 
 $ . .venv/bin/activate
 ```
 
-#### Windows
+Windows
 ```
 > cd Smarter
 > python -m venv .venv
@@ -66,13 +65,13 @@ $ wget https://github.com/muyrety/Smarter/releases/download/pre-release/smarter-
 or just navigate to the releases page and download through a browser.
 
 ### 2. Navigate to the directory you downloaded the file to and create a Python virtual environment ([Python](https://www.python.org/downloads/) is required)
-#### Linux/MacOS
+Linux/MacOS
 ```
 $ python -m venv .venv 
 $ . .venv/bin/activate
 ```
 
-#### Windows
+Windows
 ```
 > python -m venv .venv
 > .venv\Scripts\activate
@@ -95,7 +94,7 @@ YOUR_GENERATED_VALUE
 ```
 ```
 # .venv/var/smarter-instance/config.py
-SECRET_KEY = YOUR_GENERATED_VALUE
+SECRET_KEY = 'YOUR_GENERATED_VALUE'
 ```
 
 ### 6. Create an admin account if neccessary
@@ -108,6 +107,7 @@ $ flask --app smarter add-admin --username YOUR_USERNAME --password YOUR_PASSWOR
 ```
 
 ### 7. Run the app
+#### 7.1 Accessible to your computer only
 ```
 $ flask --app smarter run
 ```
@@ -115,3 +115,10 @@ or
 ```
 $ python -m smarter
 ```
+#### 7.2 Accessible to LAN
+```
+$ flask --app smarter run --host 0.0.0.0
+```
+You can connect to the website over LAN using the host device's local IPv4 address or hostname and the default port 5000. You can learn how to find out the local IPv4 address of a device [here](https://www.whatismybrowser.com/detect/what-is-my-local-ip-address/). Example URL: http://192.168.1.1:5000/.
+> [!WARNING]
+> Don't use `flask run` when opening Smarter to the internet. Use a WSGI server like [gunicorn](https://gunicorn.org/) with a web server like [nginx](https://nginx.org/) instead.

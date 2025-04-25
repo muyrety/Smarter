@@ -8,12 +8,12 @@ authors = [
     {name = "Mykolas Uselis"},
 ]
 version = "1.0.0"
-description = "Web application for playing trivia games using Flask and the Open Trivia Database API"
+description = "Self-hostable web application for playing trivia games using Flask and the Open Trivia Database API"
 readme = "README.md"
 requires-python = ">=3,<4"
 license = "GPL-3.0-only"
 license-files = ["COPYING"]
-keywords = ["trivia", "question", "OpenTriviaDB"]
+keywords = ["trivia", "question", "OpenTriviaDB", "self-hosted"]
 dependencies = [
     "flask",
     "better_profanity",
