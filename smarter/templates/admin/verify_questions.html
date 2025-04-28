@@ -1,8 +1,31 @@
 {% extends "base.html" %}
 {% block title %} Verify questions {% endblock %}
 
+{% block after_bootstrap_js %}
+<script src="{{ url_for('static', filename='js/verify_questions.js') }}"></script>
+{% endblock %}
+
 {% block main %}
 <div class="container">
+    <div id="confirmDeleteModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-info-subtle text-success border-success-subtle">
+                <div class="modal-header border-success-subtle">
+                    <h5 class="modal-title">Confirm deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Do you really want to delete this question? This action is irreversible.</p>
+                </div>
+                <div class="modal-footer justify-content-evenly border-success-subtle">
+                    <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Cancel</button>
+                    <form id="confirmDeleteForm" method="post">
+                        <button type="submit" class="btn btn-outline-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <table class="table table-primary border-primary-subtle mt-3">
         <thead>
             <tr>
@@ -28,9 +51,7 @@
                 <td class="text-primary-emphasis"> {{ question["correct_answer"] }} </td>
                 <td class="text-primary-emphasis"> {{ ", ".join(question["incorrect_answers"]) }} </td>
                 <td>
-                    <form method="post" action="{{ url_for('admin.remove_question', id=question['id']) }}">
-                        <button onclick="return confirm('Are you sure? This action is irreversible')" type="submit" class="btn btn-outline-danger">Remove</button>
-                    </form>
+                    <button data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-bs-question-id="{{ question['id'] }}" class="btn btn-outline-danger">Remove</button>
                 </td>
                 <td>
                     <form method="post" action="{{ url_for('admin.accept_question', id=question["id"]) }}">

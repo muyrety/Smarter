@@ -62,9 +62,7 @@ def remove_question(id):
         f'Your question "{question["question"]}" was rejected',
         category="question-rejection"
     )
-    return redirect(
-        request.args.get("next", url_for("admin.verify_questions"))
-    )
+    return redirect(url_for("admin.verify_questions"))
 
 
 @bp.route("/accept/<int:id>", methods=["POST"])

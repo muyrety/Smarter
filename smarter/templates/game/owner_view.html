@@ -4,11 +4,31 @@
 
 {% block head %}
 <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block after_bootstrap_js %}
 <script src="{{ url_for('static', filename='js/owner_view.js') }}"></script>
 {% endblock %}
 
 {% block main %}
 <div class="container text-center">
+    <div id="deleteGameModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-info-subtle text-success border-success-subtle">
+                <div class="modal-header border-success-subtle">
+                    <h5 class="modal-title">Are you sure?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete the game? This action is irreversible.</p>
+                </div>
+                <div class="modal-footer justify-content-evenly border-success-subtle">
+                    <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-danger" id="deleteGame" data-bs-dismiss="modal">Delete game</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row justify-content-center">
         <div class="d-none col-md-5 mt-1 alert bg-info-subtle text-success border-success-subtle alert-dismissible" id="reconnectAlert">
             You lost your connection but have now been reconnected. Info shown might be out of date. Please refresh the page for the newest data.
@@ -18,7 +38,7 @@
     <div class="row mt-3 justify-content-between">
         <h1 class="col-md-4 text-primary-emphasis"> {{ name }} <span id="currentQuestionNr">{{ curr_question }}</span>/{{ total }}</h1>
         <div class="col-md-4">
-            <button class="btn btn-outline-danger" id="deleteGame">Delete game</button>
+            <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteGameModal">Delete game</button>
         </div>
     </div>
     <hr class="border-primary">
