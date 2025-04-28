@@ -13,10 +13,17 @@ from . import question_sets
 app = Flask(__name__, instance_relative_config=True)
 
 app.config.from_mapping(
-    SECRET_KEY="dev",
-    DATABASE=os.path.join(app.instance_path, "smarter.sqlite"),
+    # SECURITY NOTICE:
+    # Make sure to set the SECRET_KEY environment variable for production use.
+    # Fallback to 'dev' is only for local development.
+    SECRET_KEY=os.environ.get("SECRET_KEY", "dev"),
+    
+    # DATABASE path can be overridden with DATABASE_URL env variable for production deployments.
+    DATABASE=os.environ.get("DATABASE_URL", os.path.join(app.instance_path, "smarter.sqlite")),
+    
     BETA_VERSION=False
 )
+
 
 app.config.from_pyfile("config.py", silent=True)
 
