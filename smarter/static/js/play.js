@@ -46,11 +46,6 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("currentQuestion").textContent = data.question;
         document.getElementById("currentQuestionH").classList.remove("d-none");
 
-        // The server guarantees that boolean answers will always display True first
-        // False second, so the green button (answer0) will always be True and the red (answer1) False
-        for (let i in data.answers) {
-            document.getElementById("answer".concat(i)).textContent = data.answers[i];
-        }
         if (data.answers.length === 2) {
             document.getElementById("upperRow").classList.remove("d-none");
             document.getElementById("lowerRow").classList.add("d-none");
@@ -58,6 +53,13 @@ document.addEventListener("DOMContentLoaded", function() {
         else if (data.answers.length === 4) {
             document.getElementById("upperRow").classList.remove("d-none");
             document.getElementById("lowerRow").classList.remove("d-none");
+        }
+        // The server guarantees that boolean answers will always display True first
+        // False second, so the green button (answer0) will always be True and the red (answer1) False
+        for (let i in data.answers) {
+            const button = document.getElementById("answer".concat(i));
+            button.textContent = data.answers[i];
+            button.disabled = false;
         }
     });
 
@@ -70,6 +72,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     document.getElementById("waitingButton").classList.remove("d-none");
 
                     document.getElementById("currentQuestionH").classList.add("d-none");
+                    for (let i = 0; i < 4; ++i) {
+                        const button = document.getElementById("answer".concat(i));
+                        button.disabled = true;
+                    }
                     document.getElementById("upperRow").classList.add("d-none");
                     document.getElementById("lowerRow").classList.add("d-none");
                 });
@@ -91,11 +97,13 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("answered").classList.add("d-none");
         document.getElementById("currentQuestion").textContent = "";
         document.getElementById("currentQuestionH").classList.add("d-none");
+        for (let i = 0; i < 4; ++i) {
+            const button = document.getElementById("answer".concat(i));
+            button.textContent = "";
+            button.disabled = true;
+        }
         document.getElementById("upperRow").classList.add("d-none");
         document.getElementById("lowerRow").classList.add("d-none");
-        for (let i = 0; i < 4; ++i) {
-            document.getElementById("answer".concat(i)).textContent = "";
-        }
 
         // Show relevant elements
         document.getElementById("currentQuestionNr").textContent = data.currQuestionNr;
