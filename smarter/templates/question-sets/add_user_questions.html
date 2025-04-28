@@ -3,11 +3,30 @@
 {% block title %} Select questions {% endblock %}
 
 {% block head %}
-<script type="module" src="{{ url_for('static', filename='js/select_user_questions.js') }}"></script>
 <script src="{{ url_for('static', filename='js/user_browse.js') }}"></script>
 {% endblock %}
 
+{% block after_bootstrap_js %}
+<script type="module" src="{{ url_for('static', filename='js/select_user_questions.js') }}"></script>
+{% endblock %}
+
 {% block header %}
+<div id="serverErrorModal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-info-subtle text-success border-success-subtle">
+            <div class="modal-header border-success-subtle">
+                <h5 class="modal-title">Server error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>There has been an error while contacting the server, try again later</p>
+            </div>
+            <div class="modal-footer justify-content-center border-success-subtle">
+                <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="row justify-content-center">
     <div class="col-lg-5">
         <div id="notEnoughQuestions" class="d-none mt-3 alert bg-info-subtle border-success-subtle alert-dismissible">
@@ -29,6 +48,7 @@
 <div class="text-center mt-3">
     <button class="btn btn-primary" id="submitSet">Submit question set</button>
 </div>
+
 
 <div class="row justify-content-center mt-3">
     <div id="otdblink" class="col-lg-4 col-md-5 m-2 text-center">

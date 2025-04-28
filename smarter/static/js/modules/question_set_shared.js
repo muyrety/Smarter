@@ -52,22 +52,27 @@ async function submitSet() {
         user_questions: JSON.parse(sessionStorage.getItem("user_question_ids"))
     }
 
-    const response = await fetch("/question-sets/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    });
-    if (response.ok) {
-        const response_json = await response.json();
-        if (response_json.success) {
-            window.location.replace("/");
+    try {
+        const response = await fetch("/question-sets/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+        if (response.ok) {
+            const response_json = await response.json();
+            if (response_json.success) {
+                window.location.replace("/");
+            }
+            else {
+                window.location.replace("/question-sets/add");
+            }
         }
         else {
-            window.location.replace("/question-sets/add");
+            new bootstrap.Modal("#serverErrorModal").show();
         }
     }
-    else {
-        alert("Something has gone wrong while contacting the server, check your connection and try again later");
+    catch {
+        new bootstrap.Modal("#serverErrorModal").show();
     }
 }
 

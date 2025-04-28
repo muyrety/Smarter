@@ -29,8 +29,12 @@ document.addEventListener("DOMContentLoaded", async function() {
     });
 
     socket.on("game_deleted", function() {
-        alert("This game has been deleted by the owner");
-        window.location.replace("/");
+        const modalEl = document.getElementById("gameDeletedModal");
+        new bootstrap.Modal(modalEl).show();
+
+        modalEl.addEventListener("hide.bs.modal", function() {
+            window.location.replace("/");
+        });
     });
 
     socket.on("game_started", function(data) {

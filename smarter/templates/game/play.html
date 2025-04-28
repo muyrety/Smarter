@@ -4,11 +4,30 @@
 
 {% block head %}
 <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block after_bootstrap_js %}
 <script src="{{ url_for('static', filename='js/play.js') }}"></script>
 {% endblock %}
 
 {% block main %}
 <div class="container text-center">
+    <div id="gameDeletedModal" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-info-subtle text-success border-success-subtle">
+                <div class="modal-header border-success-subtle">
+                    <h5 class="modal-title">Game deleted</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This game has been deleted by the owner</p>
+                </div>
+                <div class="modal-footer justify-content-center border-success-subtle">
+                    <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row justify-content-center">
         <div class="d-none col-md-5 mt-1 alert bg-info-subtle text-success border-success-subtle alert-dismissible" id="reconnectAlert">
             You lost your connection but have now been reconnected. Info shown might be out of date. Please refresh the page for the newest data.

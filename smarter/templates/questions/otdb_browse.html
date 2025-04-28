@@ -2,11 +2,43 @@
 
 {% block title %} Browse questions {% endblock %}
 
-{% block head %}
+{% block after_bootstrap_js %}
 <script type="module" src="{{ url_for('static', filename='js/otdb_browse.js') }}"></script>
 {% endblock %}
 
 {% block header %}
+<div id="tooManyRequestsModal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-info-subtle text-success border-success-subtle">
+            <div class="modal-header border-success-subtle">
+                <h5 class="modal-title">Too many requests</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>You have made too many question requests. Please wait at least 5 seconds between requests.</p>
+            </div>
+            <div class="modal-footer justify-content-center border-success-subtle">
+                <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="unexpectedErrorModal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-info-subtle text-success border-success-subtle">
+            <div class="modal-header border-success-subtle">
+                <h5 class="modal-title">Unexpected error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>An unexpected error has occured. Please refresh the page.</p>
+            </div>
+            <div class="modal-footer justify-content-center border-success-subtle">
+                <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="row justify-content-center mt-3">
     <div class="col-lg-4 col-md-5 m-2 text-center">
         <button class="btn btn-outline-primary" disabled>Open Trivia DB questions</button>

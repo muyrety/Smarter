@@ -228,10 +228,10 @@ function logErrors(error) {
     console.error(error);
 
     if (error.message === `${errors.getQuestions_http}${errors.too_many_requests_code}`) {
-        alert("You have made too many question requests. Please wait at least 5 seconds before loading more questions.");
+        new bootstrap.Modal("#tooManyRequestsModal").show();
     }
     else {
-        alert("An unexpected error occured, try refreshing the page");
+        new bootstrap.Modal("#unexpectedErrorModal").show();
     }
 }
 
