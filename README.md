@@ -1,59 +1,10 @@
 # Smarter
 Web application for playing trivia games using [Flask](https://flask.palletsprojects.com/),
-[SQLite](https://www.sqlite.org/index.html), [Bootstrap](https://getbootstrap.com/) and JavaScript.
+[SQLite](https://www.sqlite.org/index.html) and [Bootstrap](https://getbootstrap.com/).
 Users are able to add new questions or use the ones provided by the [OpenTriviaDatabase](https://opentdb.com/).
-The server has moderation, so submitted questions must first be reviewed by an admin.
+The server has moderation, so submitted questions must first be reviewed by an admin. You can try out the app on our [flagship instance](https://www.uselis.eu/).
 
 # Building
-## Cloning the repo
-This method is recommended if you want to edit the code.
-### 1. Clone the GitHub repository ([git](https://git-scm.com/downloads) is required)
-```
-$ git clone https://github.com/muyrety/Smarter.git
-```
-
-### 2. Create a Python virtual environment ([Python](https://www.python.org/downloads/) is required)
-Linux/MacOS
-```
-$ cd Smarter
-$ python -m venv .venv 
-$ . .venv/bin/activate
-```
-
-Windows
-```
-> cd Smarter
-> python -m venv .venv
-> .venv\Scripts\activate
-```
-
-### 3. Install the project in development mode
-```
-$ pip install -e .
-```
-
-### 4. Initialize the database
-```
-$ flask --app smarter init-db
-```
-
-### 5. Create an admin account if neccessary
-```
-$ flask --app smarter add-admin
-```
-or
-```
-$ flask --app smarter add-admin --username YOUR_USERNAME --password YOUR_PASSWORD
-```
-
-### 6. Run the app
-```
-$ flask --app smarter run
-```
-or
-```
-$ python -m smarter
-```
 
 ## Installing a release
 This method is recommended if you want to host (deploy) the app.
@@ -122,3 +73,53 @@ $ flask --app smarter run --host 0.0.0.0
 You can connect to the website over LAN using the host device's local IPv4 address or hostname and the default port 5000. You can learn how to find out the local IPv4 address of a device [here](https://www.whatismybrowser.com/detect/what-is-my-local-ip-address/). Example URL: http://192.168.1.1:5000/.
 > [!WARNING]
 > Don't use `flask run` when opening Smarter to the internet. Use a WSGI server like [gunicorn](https://gunicorn.org/) with a web server like [nginx](https://nginx.org/) instead.
+
+## Cloning the repo
+This method is recommended if you want to edit the code.
+### 1. Clone the GitHub repository ([git](https://git-scm.com/downloads) is required)
+```
+$ git clone https://github.com/muyrety/Smarter.git
+```
+
+### 2. Create a Python virtual environment ([Python](https://www.python.org/downloads/) is required)
+Linux/MacOS
+```
+$ cd Smarter
+$ python -m venv .venv 
+$ . .venv/bin/activate
+```
+
+Windows
+```
+> cd Smarter
+> python -m venv .venv
+> .venv\Scripts\activate
+```
+
+### 3. Install the project in development mode
+```
+$ pip install -e .
+```
+
+### 4. Initialize the database
+```
+$ flask --app smarter init-db
+```
+
+### 5. Create an admin account if neccessary
+```
+$ flask --app smarter add-admin
+```
+or
+```
+$ flask --app smarter add-admin --username YOUR_USERNAME --password YOUR_PASSWORD
+```
+
+### 6. Run the app
+```
+$ flask --app smarter run
+```
+or
+```
+$ python -m smarter
+```
