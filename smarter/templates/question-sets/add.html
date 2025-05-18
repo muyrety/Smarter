@@ -12,12 +12,10 @@
                     <input required type="text" autocomplete="off" class="form-control bg-info-subtle border-success-subtle text-success" name="name" id="name">
                 </div>
                 <div class="form-check mt-3">
-                    <input class="form-check-input border-primary" name="temp" type="checkbox" value="" id="temp">
-                    <label class="form-check-label text-primary-emphasis" for="temp">
-                        Create a temporary question set <a class="ms-1 link-offset-2 text-primary-emphasis" href="{{ url_for('about.temp_sets') }}">?</a>
-                    </label>
+                    <input class="form-check-input border-primary" name="private" type="checkbox" value="" id="private">
+                    <label class="form-check-label text-primary-emphasis" for="private">Create a private question set</label>
                 </div>
-                <p class="text-primary-emphasis text-center mt-1"><strong>Only temporary question sets can use questions from OpenTriviaDB</strong></p>
+                <p class="text-primary-emphasis text-center mt-1"><strong>Only private question sets can use questions from OpenTriviaDB</strong></p>
                 <div class="text-center mt-4">
                     <button type="submit" class="btn btn-outline-primary">Proceed to question selection</button>
                 </div>

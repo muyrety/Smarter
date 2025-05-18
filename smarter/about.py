@@ -26,8 +26,3 @@ def license():
 @bp.route("/contacts")
 def contacts():
     return render_template("about/contacts.html")
-
-
-@bp.route("/temporary-question-sets")
-def temp_sets():
-    return render_template("about/temp_sets.html")

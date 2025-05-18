@@ -5,7 +5,7 @@ from flask import (
 from flask_socketio import join_room, leave_room, close_room, emit
 
 from .utility import (
-    getQuestionSets, addGame, gameData, getUserGame, deleteSetQuestions
+    getQuestionSets, addGame, gameData, getUserGame
 )
 from .auth import login_required, load_logged_in_user
 from .db import get_db
@@ -70,16 +70,6 @@ def delete_game():
 
     if game_data is not None:
         game_id = game_data["id"]
-        question_set_id = game_data["question_set_id"]
-        temp = bool(db.execute(
-            "SELECT 1 FROM question_sets WHERE id = ? AND temporary = 1",
-            (question_set_id,)
-        ).fetchone())
-        if temp:
-            db.execute("DELETE FROM question_sets WHERE id = ?",
-                       (question_set_id,))
-            deleteSetQuestions(question_set_id)
-
         db.execute("DELETE FROM games WHERE id = ?", (game_id,))
         db.execute("DELETE FROM players WHERE game_id = ?", (game_id,))
         db.commit()
@@ -388,7 +378,7 @@ def create_game():
         return render_template(
             "question-sets/browse.html",
             question_sets=question_sets["question_sets"],
-            private_question_sets=question_sets["private_question_sets"],
+            owned_question_sets=question_sets["owned_question_sets"],
             for_game=True, game=game
         )
 
@@ -398,20 +388,20 @@ def create_game():
         return render_template(
             "question-sets/browse.html",
             question_sets=question_sets["question_sets"],
-            private_question_sets=question_sets["private_question_sets"],
+            owned_question_sets=question_sets["owned_question_sets"],
             for_game=True, game=game
         )
 
     # Private question sets are the users own
     if any(str(qs['id']) == id for qs in question_sets["question_sets"] +
-       question_sets["private_question_sets"]):
+       question_sets["owned_question_sets"]):
         game_uuid = addGame(id)
         if game_uuid is None:
             flash('You are in an ongoing game')
             return render_template(
                 "question-sets/browse.html",
                 question_sets=question_sets["question_sets"],
-                private_question_sets=question_sets["private_question_sets"],
+                owned_question_sets=question_sets["owned_question_sets"],
                 for_game=True, game=game
             )
         return redirect(url_for('game.join_game', uuid=game_uuid))
@@ -420,7 +410,7 @@ def create_game():
         return render_template(
             "question-sets/browse.html",
             question_sets=question_sets["question_sets"],
-            private_question_sets=question_sets["private_question_sets"],
+            owned_question_sets=question_sets["owned_question_sets"],
             for_game=True, game=game
         )
 

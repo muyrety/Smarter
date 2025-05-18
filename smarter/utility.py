@@ -75,9 +75,9 @@ def submitQuestion(source, question_type, creator, category, difficulty,
 def getQuestions(question_set_id):
     db = get_db()
     questions = db.execute(
-        """SELECT q.id, q.question, q.difficulty, q.category
+        """SELECT q.id, q.question, q.difficulty, q.category, q.source
             FROM question_set_questions AS qsq
-            JOIN questions as q ON qsq.question_id = q.id
+            JOIN questions AS q ON qsq.question_id = q.id
             WHERE qsq.question_set_id = ?""",
         (question_set_id,)
     ).fetchall()
@@ -118,29 +118,29 @@ def deleteSetQuestions(id):
 
 def getQuestionSets():
     db = get_db()
-    # Select non-temporary question sets with their creators from the database
+    # Select non-private question sets with their creators from the database
     question_sets = db.execute(
         """SELECT qs.id, qs.name, u.username AS creator
         FROM question_sets AS qs JOIN users AS u
-        ON qs.creator_id = u.id WHERE qs.temporary = 0"""
+        ON qs.creator_id = u.id WHERE qs.private = 0"""
     ).fetchall()
 
-    private_question_sets = []
+    owned_question_sets = []
     if g.user is not None:
-        private_question_sets = db.execute(
-            """SELECT id, name, temporary FROM question_sets
+        owned_question_sets = db.execute(
+            """SELECT id, name, private FROM question_sets
             WHERE creator_id = ?""", (g.user["id"],)
         ).fetchall()
 
     for question_set in question_sets:
         question_set["questions"] = getQuestions(question_set["id"])
 
-    for question_set in private_question_sets:
+    for question_set in owned_question_sets:
         question_set["questions"] = getQuestions(question_set["id"])
 
     return {
         "question_sets": question_sets,
-        "private_question_sets": private_question_sets
+        "owned_question_sets": owned_question_sets
     }
 
 

@@ -2,7 +2,7 @@ import { setButtonText, submitSet, configureSessionStorage } from "./modules/que
 
 document.addEventListener("DOMContentLoaded", function() {
     configureSessionStorage();
-    if (!JSON.parse(sessionStorage.getItem("temporary"))) {
+    if (!JSON.parse(sessionStorage.getItem("private"))) {
         document.getElementById("otdblink").classList.add("d-none");
     }
     const ids = JSON.parse(sessionStorage.getItem("user_question_ids"));

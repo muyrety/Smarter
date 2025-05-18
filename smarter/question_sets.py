@@ -21,7 +21,7 @@ def browse():
     return render_template(
         "question-sets/browse.html",
         question_sets=question_sets["question_sets"],
-        private_question_sets=question_sets["private_question_sets"],
+        owned_question_sets=question_sets["owned_question_sets"],
         for_game=False
     )
 
@@ -48,7 +48,7 @@ def add():
 
     return redirect(url_for(
         "question_sets.add_user_generated",
-        name=name, temp=request.form.get("temp")
+        name=name, private=request.form.get("private")
     ))
 
 
@@ -96,14 +96,14 @@ def check_question(id):
 def submit_set():
     request_json = request.get_json()
     name = request_json["name"].strip()
-    temp = request_json["temporary"]
+    private = request_json["private"]
     userQuestions = request_json["user_questions"]
     otdbQuestions = request_json["otdb_questions"]
 
-    # Only temporary question sets can have questions
+    # Only private question sets can have questions
     # from the Open Trivia Database
-    if not temp and otdbQuestions:
-        flash("Non-temporary question sets can only have user created questions")
+    if not private and otdbQuestions:
+        flash("Non-private question sets can only have user created questions")
         return {"success": False}
 
     if len(userQuestions) + len(otdbQuestions) > 50:
@@ -118,8 +118,8 @@ def submit_set():
     try:
         # Create the question_set entry
         question_set_id = db.execute(
-            """INSERT INTO question_sets (name, creator_id, temporary)
-                VALUES (?, ?, ?)""", (name, int(g.user["id"]), int(temp))
+            """INSERT INTO question_sets (name, creator_id, private)
+                VALUES (?, ?, ?)""", (name, int(g.user["id"]), int(private))
         ).lastrowid
 
         used_ids = []

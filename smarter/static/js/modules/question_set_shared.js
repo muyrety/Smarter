@@ -20,11 +20,11 @@ function configureSessionStorage() {
         sessionStorage.setItem("name", parameters.get("name"));
         sessionStorage.setItem("user_question_ids", JSON.stringify([]));
         sessionStorage.setItem("otdb_questions", JSON.stringify([]));
-        if (parameters.get("temp") === null) {
-            sessionStorage.setItem("temporary", JSON.stringify(false));
+        if (parameters.get("private") === null) {
+            sessionStorage.setItem("private", JSON.stringify(false));
         }
         else {
-            sessionStorage.setItem("temporary", JSON.stringify(true));
+            sessionStorage.setItem("private", JSON.stringify(true));
         }
         // Remove the arguments from the url, so that page refreshes don't reset sessionStorage
         window.location.replace("/question-sets/add/user-generated");
@@ -47,7 +47,7 @@ async function submitSet() {
 
     const data = {
         name: sessionStorage.getItem("name"),
-        temporary: JSON.parse(sessionStorage.getItem("temporary")),
+        private: JSON.parse(sessionStorage.getItem("private")),
         otdb_questions: JSON.parse(sessionStorage.getItem("otdb_questions")),
         user_questions: JSON.parse(sessionStorage.getItem("user_question_ids"))
     }

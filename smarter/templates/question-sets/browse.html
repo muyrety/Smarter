@@ -62,14 +62,14 @@
     {% endif %}
     {% if g.user %}
     <h3 class="text-center mt-2 text-primary-emphasis"> Your question sets </h3>
-    {% for question_set in private_question_sets %}
+    {% for question_set in owned_question_sets %}
     <div class="row justify-content-center mt-3">
         <div class="col-lg-5 card bg-info-subtle border-primary-subtle text-primary-emphasis">
             <div class="card-body">
                 <h6 class="mt-2 card-title">
                     {{ question_set["name"] }} (ID {{ question_set["id"] }})
-                    {% if question_set["temporary"] %}
-                        <span class="ms-2 badge rounded-pill bg-primary">Temporary</span>
+                    {% if question_set["private"] %}
+                        <span class="ms-2 badge rounded-pill bg-primary">Private</span>
                     {% endif %}
                 </h6>
                 <p class="card-text">
@@ -97,7 +97,7 @@
                         <ul class="list-group list-group-flush">
                             {% for question in question_set["questions"] %}
                                 <li class="list-group-item list-group-item-info border-primary-subtle text-primary-emphasis">
-                                    {{ question["question"] }} ({{ question["category"] }}, {{ question["difficulty"] }}, ID {{ question["id"] }})
+                                    {{ question["question"] }} ({{ question["category"] }}, {{ question["difficulty"] }}{{ ', ID ' ~ question["id"] if question["source"] == 'user' }})
                                 </li>
                             {% endfor %}
                         </ul>

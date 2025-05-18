@@ -72,7 +72,7 @@ CREATE TABLE question_sets (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
     creator_id INTEGER NOT NULL,
-    temporary INTEGER NOT NULL CHECK (temporary = 0 OR temporary = 1),
+    private INTEGER NOT NULL CHECK (private = 0 OR private = 1),
     FOREIGN KEY (creator_id) REFERENCES users (id)
 );
 
