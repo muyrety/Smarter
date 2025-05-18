@@ -64,12 +64,12 @@
     <h3 class="text-center mt-2 text-primary-emphasis"> Your question sets </h3>
     {% for question_set in private_question_sets %}
     <div class="row justify-content-center mt-3">
-        <div class="col-lg-5 card bg-info-subtle border-success-subtle text-success">
+        <div class="col-lg-5 card bg-info-subtle border-primary-subtle text-primary-emphasis">
             <div class="card-body">
                 <h6 class="mt-2 card-title">
                     {{ question_set["name"] }} (ID {{ question_set["id"] }})
                     {% if question_set["temporary"] %}
-                        <span class="ms-2 badge rounded-pill bg-success">Temporary</span>
+                        <span class="ms-2 badge rounded-pill bg-primary">Temporary</span>
                     {% endif %}
                 </h6>
                 <p class="card-text">
@@ -93,10 +93,10 @@
                     {% endif %}
                 </div>
                 <div class="collapse mt-4" id="questionInfo{{ question_set['id'] }}priv">
-                    <div class="card">
+                    <div class="card border-primary-subtle">
                         <ul class="list-group list-group-flush">
                             {% for question in question_set["questions"] %}
-                                <li class="list-group-item list-group-item-primary border-success-subtle text-primary-emphasis">
+                                <li class="list-group-item list-group-item-info border-primary-subtle text-primary-emphasis">
                                     {{ question["question"] }} ({{ question["category"] }}, {{ question["difficulty"] }}, ID {{ question["id"] }})
                                 </li>
                             {% endfor %}
@@ -114,7 +114,7 @@
     <h3 class="text-center text-primary-emphasis mt-2"> All question sets </h3>
     {% for question_set in question_sets %}
     <div class="row justify-content-center mt-3">
-        <div class="col-lg-5 card bg-info-subtle border-success-subtle text-success">
+        <div class="col-lg-5 card bg-info-subtle border-primary-subtle text-primary-emphasis">
             <div class="card-body">
                 <h6 class="card-title">
                     {{ question_set["name"] }} (ID {{ question_set["id"] }})
@@ -141,10 +141,10 @@
                     {% endif %}
                 </div>
                 <div class="collapse mt-4" id="questionInfo{{ question_set['id'] }}pub">
-                    <div class="card">
+                    <div class="card border-primary-subtle">
                         <ul class="list-group list-group-flush">
                             {% for question in question_set["questions"] %}
-                                <li class="list-group-item list-group-item-primary border-success-subtle text-primary-emphasis">
+                                <li class="list-group-item list-group-item-info border-primary-subtle text-primary-emphasis">
                                     {{ question["question"] }} ({{ question["category"] }}, {{ question["difficulty"] }}, ID {{ question["id"] }})
                                 </li>
                             {% endfor %}
