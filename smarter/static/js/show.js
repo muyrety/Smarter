@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const joinURL = window.location.origin + "/join/" + gameID;
     new QRCode("qrCode", {
         text: joinURL,
-        colorLight: "#cfe2ff",
+        colorLight: "#cff4fc",
         colorDark: "#052c65"
     });
 
