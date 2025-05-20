@@ -7,7 +7,7 @@ name = "smarter"
 authors = [
     {name = "Mykolas Uselis"},
 ]
-version = "1.1.0"
+version = "1.1.1"
 description = "Self-hostable web application for playing trivia games using Flask and the Open Trivia Database API"
 readme = "README.md"
 requires-python = ">=3,<4"
