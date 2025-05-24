@@ -1,5 +1,6 @@
 # Smarter
 _Migrated to [https://git.ari.lt/muyrety/Smarter](https://git.ari.lt/muyrety/Smarter)_
+
 Web application for playing trivia games using [Flask](https://flask.palletsprojects.com/),
 [SQLite](https://www.sqlite.org/index.html) and [Bootstrap](https://getbootstrap.com/).
 Users are able to add new questions or use the ones provided by the [OpenTriviaDatabase](https://opentdb.com/).
